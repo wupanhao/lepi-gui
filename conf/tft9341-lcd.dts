@@ -1,0 +1,82 @@
+/dts-v1/;
+
+/ {
+	compatible = "brcm,bcm2835\0brcm,bcm2708\0brcm,bcm2709";
+
+	fragment@0 {
+		target = < 0xdeadbeef >;
+
+		__overlay__ {
+			status = "okay";
+
+			spidev@0 {
+				status = "disabled";
+			};
+		};
+	};
+
+	fragment@1 {
+		target = < 0xdeadbeef >;
+
+		__overlay__ {
+
+			tft9341_pins {
+				brcm,pins = < 0x11 0x1b >;
+				brcm,function = < 0x00 0x00 >;
+				linux,phandle = < 0x01 >;
+				phandle = < 0x01 >;
+			};
+		};
+	};
+
+	fragment@2 {
+		target = < 0xdeadbeef >;
+
+		__overlay__ {
+			#address-cells = < 0x01 >;
+			#size-cells = < 0x00 >;
+
+			tft9341@0 {
+				compatible = "ilitek,ili9340";
+				reg = < 0x00 >;
+				pinctrl-names = "default";
+				pinctrl-0 = < 0x01 >;
+				spi-max-frequency = < 0xf42400 >;
+				txbuflen = < 0x8000 >;
+				rotate = < 0x5a >;
+				fps = < 0x19 >;
+				bgr = < 0x00 >;
+				buswidth = < 0x08 >;
+				reset-gpios = < 0xdeadbeef 0x1b 0x00 >;
+				dc-gpios = < 0xdeadbeef 0x16 0x00 >;
+				debug = < 0x00 >;
+				linux,phandle = < 0x02 >;
+				phandle = < 0x02 >;
+			};
+		};
+	};
+
+	__overrides__ {
+		speed = < 0x02 0x7370692d 0x6d61782d 0x66726571 0x75656e63 0x793a3000 >;
+		txbuflen = [ 00 00 00 02 74 78 62 75 66 6c 65 6e 3a 30 00 ];
+		rotate = [ 00 00 00 02 72 6f 74 61 74 65 3a 30 00 ];
+		fps = [ 00 00 00 02 66 70 73 3a 30 00 ];
+		bgr = [ 00 00 00 02 62 67 72 3a 30 00 ];
+		debug = < 0x02 0x64656275 0x673a3000 >;
+		swapxy = [ 00 00 00 03 73 77 61 70 2d 78 79 3f 00 ];
+	};
+
+	__symbols__ {
+		tft9341_pins = "/fragment@1/__overlay__/tft9341_pins";
+		tft9341 = "/fragment@2/__overlay__/tft9341@0";
+	};
+
+	__fixups__ {
+		spi0 = "/fragment@0:target:0\0/fragment@2:target:0";
+		gpio = "/fragment@1:target:0\0/fragment@2/__overlay__/tft9341@0:reset-gpios:0\0/fragment@2/__overlay__/tft9341@0:dc-gpios:0";
+	};
+
+	__local_fixups__ {
+		fixup = "/fragment@2/__overlay__/tft9341@0:pinctrl-0:0\0/__overrides__:speed:0\0/__overrides__:txbuflen:0\0/__overrides__:rotate:0\0/__overrides__:fps:0\0/__overrides__:bgr:0\0/__overrides__:debug:0\0/__overrides__:swapxy:0";
+	};
+};

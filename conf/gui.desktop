@@ -1,0 +1,6 @@
+#/home/pi/.config/autostart/gui.desktop
+[Desktop Entry]
+
+Type=Application
+
+Exec=/home/pi/start.sh > /tmp/start.log

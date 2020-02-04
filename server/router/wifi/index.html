@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>乐派wifi管理</title>
+    <!-- for-mobile-apps -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <!-- //for-mobile-apps -->
+    <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+
+</head>
+<body>
+    <!-- main -->
+    <div class="main">
+        <h1>
+            wifi管理
+        </h1>
+        <form id='wifiFun'>
+            <input type="text" id="name"  placeholder="wifi名">
+            <input type="password" id="password"
+                   placeholder="密码">
+            <input type="button" value="提交" onclick="subForm()"> 
+            <div class="showMsg" id='showMsg'></div>
+        </form>
+    </div>
+    
+</body>
+<script type="text/javascript">
+    function ajaxObject() {
+    var xmlHttp;
+    try {
+        // Firefox, Opera 8.0+, Safari
+        xmlHttp = new XMLHttpRequest();
+        } 
+    catch (e) {
+        // Internet Explorer
+        try {
+                xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
+            } catch (e) {
+            try {
+                xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+            } catch (e) {
+                alert("您的浏览器不支持AJAX！");
+                return false;
+            }
+        }
+    }
+    return xmlHttp;
+}
+ // ajax get请求：
+function ajaxGet ( url, data, fnSucceed , fnFail , fnLoading ) {
+    var ajax = ajaxObject();
+    ajax.open( 'get' , url , true );
+    ajax.onreadystatechange = function () {
+        if( ajax.readyState == 4 ) {
+            if( ajax.status == 200 ) {
+                fnSucceed( ajax.responseText );
+            }
+            else {
+                fnFail( "HTTP请求错误！错误码："+ajax.status );
+            }
+        }
+        else {
+            fnLoading();
+        }
+    }
+    ajax.send( data );
+ 
+}
+// ajax post请求：
+function ajaxPost ( url , data,fnSucceed , fnFail , fnLoading ) {
+    var ajax = ajaxObject();
+    ajax.open( 'post' , url , true );
+    ajax.setRequestHeader( "Content-Type" , "application/json" );
+    ajax.onreadystatechange = function () {
+        if( ajax.readyState == 4 ) {
+            if( ajax.status == 200 ) {
+                fnSucceed( ajax.responseText );
+            }
+            else {
+                fnFail( "HTTP请求错误！错误码："+ajax.status );
+            }
+        }
+        else {
+            fnLoading();
+        }
+    }
+    ajax.send( data );
+ 
+}
+
+    function myfun(){
+        
+        var url = '/wifi/info';
+        ajaxGet(url, {}, function(str){
+            var str = JSON.parse(str);
+           // console.log('str : ', str);
+            if( str && str.ip_address )
+            document.getElementById('showMsg').innerHTML = '<span style="color: green">wifi已连接，IP为：'+str.ip_address+'</span>'
+            else
+            document.getElementById('showMsg').innerHTML = '<span style="color: red">wifi未连接！</span>'
+
+        }, function(err){
+            document.getElementById('showMsg').innerHTML = '<span style="color: red">wifi未连接！</span>'
+        }, function(msg){
+           // console.log('加载中...')
+        });    
+    }
+    function subForm(){
+    
+        var name = document.getElementById('name').value;
+        var pwd = document.getElementById('password').value;
+        var url = '/wifi/connect';
+        var data = JSON.stringify({ssid: name, psk: pwd});
+        ajaxPost(url, data, function(str){
+            var str = JSON.parse(str);
+            //sconsole.log('post : ', str.status);
+            if(str.status === "OK"){
+                document.getElementById('showMsg').innerHTML = '<span style="color: green">wifi连接成功，IP为：'+ str.ip_address +'</span>'
+            }else{
+                document.getElementById('showMsg').innerHTML = '<span style="color: red">wifi连接失败！</span>'
+            }
+            
+        }, function(err){
+            //console.log('post : ', err);
+            document.getElementById('showMsg').innerHTML = '<span style="color: red">wifi连接失败！</span>'
+        }, function(msg){
+            console.log('加载中...');
+        });
+    }
+    window.onload = myfun();//可不加括号
+    
+    </script>
+</html>

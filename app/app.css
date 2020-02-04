@@ -1,0 +1,42 @@
+/* app css stylesheet */
+
+.flex-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.card {
+    width: 100px;
+    border: 1px solid transparent;
+    border: 1px solid white;
+    border-radius: 15%;
+    background-color: transparent;
+    padding: 8px 15px;
+    margin: 10px;
+}
+
+.card-img-top {}
+
+.card-body {
+    padding: 2px;
+    text-align: center;
+}
+
+.card-body span {
+    color: white;
+    font-size: 14px;
+}
+
+.left a {
+    color: white;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+p {
+    color: aliceblue;
+}

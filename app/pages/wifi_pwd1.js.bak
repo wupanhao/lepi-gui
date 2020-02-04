@@ -1,0 +1,42 @@
+import React from 'react';
+import {Component} from 'react';
+import Header from './header';
+import Footer from './foot';
+import $ from 'jquery';
+import KEYBOARD from './keyboard';
+
+class WIFIPWD extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            str: sessionStorage.getItem('keyBoardValue') || '',
+            isOpen: true
+        }
+
+    }
+    componentDidMount() {
+        $('#str').focus();
+    }
+    render() {
+        const name = this.props.match.params.name ? this.props.match.params.name: '';
+        const {str, setKeyBoardValue} = this.props;
+        console.log('str : ', str);
+        return (
+            <div>
+                <Header />
+                <div className="s-body">
+                    <div className="pwd_label"><p>{name}的密码</p></div>
+                    <div className="input">
+                        <input type="text" placeholder="密码" value={str} className="pwd_input"/>
+                       <KEYBOARD isOpen={this.state.isOpen} setValue={setKeyBoardValue} strV={str}/>
+                    </div>
+                </div>
+               <Footer/>
+            </div>
+        )
+    }
+}
+
+export default WIFIPWD
+
+

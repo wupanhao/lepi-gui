@@ -1,0 +1,23 @@
+{
+  "name": "scrach-runner",
+  "version": "1.0.0",
+  "description": "scratch-vm engine to run scratch3.0 projects",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "scratch",
+    "lepi",
+    "electron"
+  ],
+  "author": "Panhao Wu",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "jszip-utils": "^0.1.0",
+    "multer": "^1.4.2",
+    "scratch-audio": "^0.1.0-prerelease.20190925183642"
+  }
+}

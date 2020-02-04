@@ -1,0 +1,26 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": ".\\node_modules\\electron\\dist\\electron.exe app.js",
+    "start2": "node app.js"
+  },
+  "author": "Panhao Wu",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "jszip-utils": "^0.1.0",
+    "lowdb": "^1.0.0",
+    "multer": "^1.4.2",
+    "multicast-dns": "^7.2.0",
+    "recursive-readdir": "^2.2.2",
+    "roslib": "^1.0.1",
+    "rpi-wifi-connection": "^1.0.14",
+    "scratch-audio": "^0.1.0-prerelease.20190925183642"
+  }
+}

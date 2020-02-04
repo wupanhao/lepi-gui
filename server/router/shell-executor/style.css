@@ -1,0 +1,79 @@
+body{
+  overflow:hidden;
+  margin: 0px;
+  padding: 0px;
+}
+span{
+  margin: 0px;
+  padding: 0px;
+  font-size: 12px;
+}
+
+.console {
+ background-color: #000;
+ font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
+ font-size: 13px;
+ color: #fff;
+ width: 240px;
+ height: 320px;
+ padding: 0px;
+ -ms-word-break: break-all;
+ word-break: keep-all;
+ cursor: none;
+}
+ 
+.console p {
+ white-space: pre-line;
+ margin: 0;
+}
+ 
+.keyin {
+ background-color: inherit;
+ border: 0;
+ color: transparent;
+ text-shadow: 0 0 0 #fff;
+ font: inherit;
+ width: 0;
+}
+ 
+.keyin:focus {
+  outline: none;
+ }
+ 
+.pointer {
+ background-color: #fff;
+ -moz-animation: flash 1s infinite;
+ -o-animation: flash 1s infinite;
+ -webkit-animation: flash 1s infinite;
+ animation: flash 1s infinite;
+}
+ 
+.pointer:after {
+  content: '_';
+ }
+ 
+@keyframes flash {
+ 0% {
+  opacity: 0;
+ }
+ 
+ 20% {
+  opacity: 1;
+ }
+ 
+ 40% {
+  opacity: 1;
+ }
+ 
+ 60% {
+  opacity: 1;
+ }
+ 
+ 80% {
+  opacity: 0;
+ }
+ 
+ 100% {
+  opacity: 0;
+ }
+}

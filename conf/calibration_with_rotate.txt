@@ -1,0 +1,30 @@
+#Normal 0
+    xinput set-prop [Dev Name] "Evdev Axis Inversion" 0, 0
+    xinput set-prop [Dev Name] "Evdev Axes Swap" 0
+
+#Right 270
+    xinput set-prop [Dev Name] "Evdev Axis Inversion" 1, 0
+    xinput set-prop [Dev Name] "Evdev Axes Swap" 1
+
+# Inverted 180
+    xinput set-prop [Dev Name] "Evdev Axis Inversion" 1, 1
+    xinput set-prop [Dev Name] "Evdev Axes Swap" 0
+
+# Right 90
+    xinput set-prop [Dev Name] "Evdev Axis Inversion" 0, 1
+    xinput set-prop [Dev Name] "Evdev Axes Swap" 1
+
+Section "InputClass"
+       Identifier "axis inversion"
+       MatchProduct "device name substring"
+       # swap x/y axes on the device. i.e. rotate by 90 degrees
+       Option "SwapAxes" "on"
+       # Invert the respective axis.
+       Option "InvertX" "on" #
+       Option "InvertY" "on"
+EndSection
+
+xinput set-prop [Dev Name] "Evdev Axis Inversion" 0, 1 
+=>
+       Option "InvertX" "off" 
+       Option "InvertY" "on"

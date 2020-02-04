@@ -1,0 +1,16 @@
+# dependencies
+node_modules
+
+# production
+/build
+
+/app/lib
+
+# misc
+env.local.js
+
+temp
+*.lock
+*.log*
+
+package-lock.json

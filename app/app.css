@@ -1,31 +1,68 @@
 /* app css stylesheet */
 
+#content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#header {
+    height: 25px;
+}
+
+#footer {
+    height: 25px;
+}
+
 .flex-container {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    height: 270px;
 }
 
 .card {
-    width: 100px;
+    width: 90px;
     border: 1px solid transparent;
     border: 1px solid white;
     border-radius: 15%;
     background-color: transparent;
     padding: 8px 15px;
-    margin: 10px;
+    margin: 20px 15px;
+    font-size: 12px;
+}
+
+.card-small {
+    width: 80px;
+    border: 1px solid transparent;
+    border: 1px solid white;
+    border-radius: 15%;
+    background-color: transparent;
+    padding: 0px;
+    margin: 5px 20px;
+    font-size: 10px;
+}
+
+.card-small .card-img-top {
+    padding: 3px 12px 0px;
+}
+
+.active {
+    background-color: rgb(200, 198, 202);
 }
 
 .card-img-top {}
 
 .card-body {
-    padding: 2px;
+    padding: 0 2px;
     text-align: center;
 }
 
 .card-body span {
     color: white;
-    font-size: 14px;
 }
 
 .left a {
@@ -39,4 +76,10 @@ a:hover {
 
 p {
     color: aliceblue;
+}
+
+#chart {
+    width: 240px;
+    height: 270px;
+    border: none;
 }

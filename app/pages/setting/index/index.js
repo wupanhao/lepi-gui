@@ -1,15 +1,15 @@
 'use strict';
 
-angular.module('myApp.index', ['ngRoute'])
+angular.module('myApp.setting', ['ngRoute'])
 
   .config(['$routeProvider', function ($routeProvider) {
-    $routeProvider.when('/index', {
-      templateUrl: 'pages/index/index.html',
+    $routeProvider.when('/setting', {
+      templateUrl: 'pages/setting/setting.html',
       controller: 'IndexCtrl'
     });
   }])
 
-  .controller('IndexCtrl', function ($scope, $location, $rootScope) {
+  .controller('SettingCtrl', function ($scope, $routeParams, $rootScope) {
 
     const items = [
       {
@@ -18,8 +18,8 @@ angular.module('myApp.index', ['ngRoute'])
         name: '文件管理'
       },
       {
-        link: '#!testing',
-        src: "assets/images/testing.png",
+        link: '#!test',
+        src: "assets/images/test.png",
         name: '内置测试'
       },
       {
@@ -35,13 +35,13 @@ angular.module('myApp.index', ['ngRoute'])
     ]
 
     $scope.items = items
-    const pageIndex = $location.search().page | 0
     $scope.pageInfo = {
       itemIndex: 0,
-      pageIndex: pageIndex,
+      pageIndex: $routeParams.page | 0,
       pageNum: Math.ceil(items.length / 4)
     }
-    $scope.show = items.slice($scope.pageInfo.pageIndex * 4, 4).map((item,id) => {
+    var start = $scope.pageInfo.pageIndex * 4
+    $scope.show = items.slice(start,start + 4).map((item,id) => {
       item.id = id
       return item
     })

@@ -10,6 +10,11 @@
         "echarts": "^4.6.0",
         "roslib": "^1.0.1"
     },
-    "scripts": {},
-    "devDependencies": {}
+    "scripts": {
+        "postinstall": "npm run copy-libs",
+        "copy-libs": "cpx \"node_modules/{angular,angular-*,axios/dist,bootstrap/dist,echarts/dist,roslib/build}/**/*\" app/lib -C"
+    },
+    "devDependencies": {
+        "cpx": "^1.5.0"
+    }
 }

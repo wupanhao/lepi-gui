@@ -9,12 +9,15 @@ angular.module('myApp.view2', ['ngRoute'])
     });
 }])
 
-.controller('View2Ctrl', [function() {
+.controller('View2Ctrl', function($scope,$rootScope) {
     function update() {
         setTimeout(() => {
             console.log(window.location);
             update()
         }, 1000)
     }
-    update()
-}]);
+    $scope.$on('keyEvent/view2',(e) => {
+        console.log('view2',e)
+    })
+
+});

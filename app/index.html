@@ -8,11 +8,11 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="assets/css/index.css">
-    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="app.css">
 </head>
 
-<body id="root" ng-controller="MyApp">
+<body id="root" ng-controller="App">
     <ul class="menu" ng-if='debug==true'>
         <li><a href="#!/view1">view1</a></li>
         <li><a href="#!/view2">view2</a></li>
@@ -21,7 +21,7 @@
     </ul>
     <ng-include src="'pages/header/header.html'"></ng-include>
     <!-- <div ng-include="'pages/header/header.html'"></div> -->
-    <div ng-view></div>
+    <div id="content" ng-view></div>
     <ng-include src="'pages/footer/footer.html'"></ng-include>
     <!-- <div ng-include="'pages/footer/footer.html'"></div> -->
 
@@ -30,10 +30,16 @@
   -->
     <script src="lib/angular/angular.js"></script>
     <script src="lib/angular-route/angular-route.js"></script>
+    <script src="lib/roslib/build/roslib.js"></script>
+    <script src="lib/echarts/dist/echarts.js"></script>
+    <script src="lib/axios/dist/axios.js"></script>
+    <script src="assets/js/ros.js"></script>
     <script src="app.js"></script>
     <script src="pages/view1/view1.js"></script>
     <script src="pages/view2/view2.js"></script>
     <script src="pages/index/index.js"></script>
+    <script src="pages/testing/testing.js"></script>
+    <script src="pages/testing/9_axis/9_axis.js"></script>
 </body>
 
 </html>

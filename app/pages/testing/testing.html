@@ -1,5 +1,5 @@
 <div id="index" class="flex-container">
-    <div ng-repeat="item in show" ng-click="click($index)" ng-class="{ active: item.id == pageInfo.itemIndex}" class="card">
+    <div ng-repeat="item in show" ng-click="click($index)" ng-class="{ active: item.id == pageInfo.itemIndex}" class="card card-small">
         <a href="{{item.link}}" >
             <img class="card-img-top" src="{{item.src}}" alt="{{item.src}}">
             <div class="card-body">

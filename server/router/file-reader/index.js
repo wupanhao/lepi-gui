@@ -2,19 +2,31 @@ const express = require('express');
 
 const router = express.Router();
 
-const recursive = require("recursive-readdir");
+const fs = require('fs')
+const path = require('path')
 
-const dir = require('../scratch-runner/index').getProgramDir()
-console.log(dir)
-router.get('/', function(req, res) {
-	recursive(dir, function(err, files) {
+const os = require('os')
+
+const homedir = os.homedir()
+console.log(homedir)
+router.get('/', function (req, res) {
+	var dir = homedir
+	console.log(req.query)
+	if (req.query['dir'])
+		dir = path.join(homedir, req.query['dir'])
+	fs.readdir(dir, function (err, files) {
 		if (err) {
-			console.log(err)
-			res.jsonp([])
-			return
+			console.warn(err)
+		} else {
+			res.json(files.map(file => {
+				if (fs.statSync(path.join(dir, file)).isFile()) {
+					return { file: file }
+				} else {
+					return { dir: file }
+				}
+			}))
 		}
-		res.jsonp(files);
-	});
+	})
 })
 
 module.exports = router

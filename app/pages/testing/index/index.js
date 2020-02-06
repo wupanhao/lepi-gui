@@ -9,7 +9,7 @@ angular.module('myApp.testing', ['ngRoute'])
     })
   }])
 
-  .controller('TestingCtrl', function ($scope, $routeParams, $rootScope,$location) {
+  .controller('TestingCtrl', function ($rootScope) {
 
     const items = [
       {
@@ -54,56 +54,9 @@ angular.module('myApp.testing', ['ngRoute'])
       },
     ]
 
-    $scope.items = items
-    const pageIndex = $location.search().page | 0
-    $scope.pageInfo = {
-      itemIndex: 0,
-      pageIndex: pageIndex,
-      pageNum: Math.ceil(items.length / 6)
-    }
-    var start = $scope.pageInfo.pageIndex * 6
-    $scope.show = items.slice(start,start+ 6).map((item,id) => {
-      item.id = id
-      return item
-    })
-
-    console.log($scope)
-    $scope.click = (id) => {
-      console.log(id)
-      $scope.pageInfo.itemIndex = id
-      console.log($scope.pageInfo)
-    }
-    $scope.$on('keyEvent/testing', (name, e) => {
-      console.log('testing', e)
-      switch (e.keyCode) {
-        case KEY.ArrowLeft:
-          if ($scope.pageInfo.itemIndex > 0) {
-            $scope.pageInfo.itemIndex--
-          }
-          break;
-        case KEY.ArrowRight:
-          if ($scope.pageInfo.itemIndex < $scope.show.length - 1) {
-            $scope.pageInfo.itemIndex++
-          }
-          break;
-        case KEY.ArrowUp:
-          break;
-        case KEY.ArrowDown:
-          break;
-        case KEY.Enter:
-          break;
-        case KEY.M:
-          break;
-        case KEY.B:
-          break;
-        case KEY.R:
-          break;
-        case KEY.S:
-          break;
-      }
-      var i = $scope.pageInfo.itemIndex
-      document.getElementsByClassName('card')[i].click(i)
-      console.log($scope.pageInfo)
-    })
+    $rootScope.items = items
+    $rootScope.rowNum = 3
+    $rootScope.colNum = 2  
+    $rootScope.updatePageInfo()
 
   });

@@ -1,16 +1,14 @@
 'use strict';
 
-angular.module('myApp.index', ['ngRoute'])
+angular.module('myApp.header', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/index', {
-    templateUrl: 'pages/index/index.html',
-    controller: 'IndexCtrl'
+  $routeProvider.when('/header', {
+    templateUrl: 'pages/header/header.html',
+    controller: 'HeaderCtrl'
   });
 }])
 
-.controller('IndexCtrl', function($scope,$routeParams,$rootScope) {
-  $scope.test = $routeParams.test
-  $rootScope.test = $routeParams.test + 1
-  console.log($routeParams)
+.controller('HeaderCtrl', function($scope,$rootScope) {
+  $rootScope.title = 'Lepi'
 });

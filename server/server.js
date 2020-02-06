@@ -2,6 +2,11 @@ const express = require('express')
 const path = require('path');
 const axios = require('axios');
 const fs = require('fs')
+
+const {
+  createServer
+} = require('http');
+
 const wifiRouter = require('./router/wifi')
 const uploadRouter = require('./router/upload')
 const fileRouter = require('./router/file-reader')
@@ -9,7 +14,7 @@ const {
   systemRouter,
 } = require('./router/system')
 
-const data_dir = require('./router/scratch-runner/index').getProgramDir()
+// const data_dir = require('./router/scratch-runner/index').getProgramDir()
 const exec = require('child_process').exec;
 /*
 const wss = new WebSocket.Server({
@@ -76,4 +81,8 @@ app.get('/clearData', (req, res) => {
   });
 })
 
-module.exports = app
+const server = createServer(app)
+
+server.listen(8000, () => {
+  console.log('Listening on http://localhost:8000');
+});

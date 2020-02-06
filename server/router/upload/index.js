@@ -5,9 +5,6 @@ const path = require('path');
 const multer = require('multer')
 const os = require('os')
 
-const {
-	runScratch
-} = require('../scratch-runner/index')
 
 const wifi = new Wifi();
 
@@ -15,7 +12,7 @@ const router = express.Router();
 const platform = os.platform()
 
 var temp_dir = path.join(__dirname, '../../temp')
-const save_dir = require('../scratch-runner/index').getProgramDir()
+const save_dir = temp_dir
 
 function mkdirIfNotExists(target_dir) {
 	if (!fs.existsSync(target_dir)) {
@@ -54,7 +51,7 @@ router.post('/debug', temp.single('upload_file'), function(req, res, next) {
 	res.send({
 		ret_code: '0'
 	});
-	runScratch(file.path)
+	// runScratch(file.path)
 	// mainWindow.webContents.send('loadFile', {
 	//   path: file.path
 	// });

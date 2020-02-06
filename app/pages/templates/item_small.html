@@ -1,7 +1,6 @@
-<div id="index" class="flex-container">
-    <div ng-repeat="item in show" ng-click="click($index)" ng-class="{ active: $index == itemIndex}"
-        class="card">
-        <a href="{{item.link}}">
+<div id="index" class="flex-container" >
+    <div ng-repeat="item in show" ng-click="click($index)" ng-class="{ active: $index == itemIndex}" class="card card-small">
+        <a href="{{item.link}}" >
             <div class="img-holder">
                 <img class="card-img-top" src="{{item.src}}">
             </div>

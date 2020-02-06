@@ -10,6 +10,7 @@ angular.module('myApp.9_axis', ['ngRoute'])
     }])
 
     .controller('9_axisCtrl', function ($scope, $rootScope, $location) {
+        $rootScope.title = '九轴传感器'
         const items = [{
             title: '加速度',
             sensorId: 1
@@ -21,51 +22,10 @@ angular.module('myApp.9_axis', ['ngRoute'])
             sensorId: 3
         },
         ]
-        $scope.items = items
-        const pageIndex = $location.search().page | 0
-        $scope.pageInfo = {
-            itemIndex: 0,
-            pageIndex: pageIndex,
-            pageNum: items.length
-        }
-
-        $scope.click = (id) => {
-            console.log(id)
-            $scope.pageInfo.itemIndex = id
-            console.log($scope.pageInfo)
-        }
-        $scope.$on('keyEvent/9_axis', (name, e) => {
-            console.log('9_axis', e)
-            switch (e.keyCode) {
-                case KEY.ArrowLeft:
-                    if ($scope.pageInfo.itemIndex > 0) {
-                        $scope.pageInfo.itemIndex--
-                    }
-                    break;
-                case KEY.ArrowRight:
-                    if ($scope.pageInfo.itemIndex < $scope.pageInfo.pageNum - 1) {
-                        $scope.pageInfo.itemIndex++
-                    }
-                    break;
-                case KEY.ArrowUp:
-                    break;
-                case KEY.ArrowDown:
-                    break;
-                case KEY.Enter:
-                    break;
-                case KEY.M:
-                    break;
-                case KEY.B:
-                    break;
-                case KEY.R:
-                    break;
-                case KEY.S:
-                    break;
-            }
-            var i = $scope.pageInfo.itemIndex
-            // document.getElementsByClassName('card')[i].click(i)
-            console.log($scope.pageInfo)
-        })
+        $rootScope.items = items
+        $rootScope.rowNum = 1
+        $rootScope.colNum = 1
+        $rootScope.updatePageInfo($location.search().page | 0)
 
         const container = document.getElementById('chart');
         // 初始化echarts对象
@@ -88,7 +48,7 @@ angular.module('myApp.9_axis', ['ngRoute'])
 
         const option = {
             title: {
-                text: items[pageIndex].title,
+                text: items[$rootScope.pageIndex].title,
                 left: 'center'
 
             },
@@ -127,8 +87,8 @@ angular.module('myApp.9_axis', ['ngRoute'])
         };
 
         var updateData = () => {
-            ros.get3AxesData(items[$scope.pageInfo.itemIndex].sensorId).then(res => {
-                option.title.text = items[$scope.pageInfo.itemIndex].title
+            ros.get3AxesData(items[$rootScope.pageIndex].sensorId).then(res => {
+                option.title.text = items[$rootScope.pageIndex].title
                 option.series[0].data.shift()
                 option.series[1].data.shift()
                 option.series[2].data.shift()
@@ -139,8 +99,8 @@ angular.module('myApp.9_axis', ['ngRoute'])
                 option.series[1].data.push(res.data.y > 32768 ? res.data.y - 65536 : res.data.y)
                 option.series[2].data.push(res.data.z > 32768 ? res.data.z - 65536 : res.data.z)
                 // console.log(option.series[0].data)
-                updateData()
                 myChart.setOption(option);
+                updateData()
             })
         }
 

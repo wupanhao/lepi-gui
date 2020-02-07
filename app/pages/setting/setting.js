@@ -42,7 +42,6 @@ angular.module('myApp.setting', ['ngRoute'])
         name: '设备信息'
       },
     ]
-    const url = '/setting'
     $rootScope.title = '系统设置'
     $rootScope.items = items
     // $scope.show = items

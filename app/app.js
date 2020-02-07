@@ -12,12 +12,20 @@ const KEY = {
     S: 83 // KeyS (Stop or Home)
 }
 
+function ngRefresh() {
+    const header = document.getElementById('root')
+    header.click()
+}
+
 // Declare app level module which depends on views, and core components
 angular.module('myApp', [
     'ngRoute',
     'myApp.view1',
     'myApp.view2',
     'myApp.index',
+    'myApp.explore',
+    'myApp.player',
+    'myApp.scratchRunner',
     'myApp.testing',
     'myApp.setting',
     'myApp.9_axis',
@@ -29,8 +37,8 @@ angular.module('myApp', [
     .controller('App', function ($rootScope, $location) {
 
         $rootScope.debug = false
-        $rootScope.show_header = true
-        $rootScope.show_footer = true
+
+        $rootScope.ngRefresh = ngRefresh
 
         $rootScope.go_back = function () {
             //此处使用js原生方式回退  
@@ -39,10 +47,19 @@ angular.module('myApp', [
         console.log('call only once')
 
         const updatePageInfo = (pageIndex = 0) => {
+            if($rootScope.loading == true){
+                console.log('page loading, return')
+                return 
+            }else{
+                $rootScope.loading == true
+            }
             $rootScope.maxItemsOnPage = $rootScope.rowNum * $rootScope.colNum
             $rootScope.maxPageIndex = Math.ceil($rootScope.items.length / $rootScope.maxItemsOnPage) - 1
             if (pageIndex >= 0 && pageIndex <= $rootScope.maxPageIndex) {
                 console.log($location.path(), `page index ${pageIndex} entered`)
+                console.log($rootScope)
+                $rootScope.show_header = true
+                $rootScope.show_footer = true                
                 var start = pageIndex * $rootScope.maxItemsOnPage
                 $rootScope.show = $rootScope.items.slice(start, start + $rootScope.maxItemsOnPage)
                 $rootScope.itemIndex = 0
@@ -54,9 +71,17 @@ angular.module('myApp', [
                 } else {
                     $rootScope.pageInfo = " "
                 }
+                ngRefresh()
+            } else if ($rootScope.maxPageIndex == -1) {
+                $rootScope.show = []
+                $rootScope.pageInfo = " "
+                console.log('blank page')
+                ngRefresh()
             } else {
-                console.log('page index:', pageIndex)
+                console.log('page index error : ', pageIndex)
             }
+            $rootScope.loading == false
+
         }
 
         $rootScope.items = []
@@ -66,19 +91,17 @@ angular.module('myApp', [
 
         $rootScope.updatePageInfo = updatePageInfo
         // console.log($rootScope)
+
         $rootScope.click = (id) => {
             $rootScope.itemIndex = id
-            console.log(`url:${$location.path()},page:${$rootScope.pageIndex}/${$rootScope.maxPageIndex},item:${$rootScope.itemIndex}/${$rootScope.maxItemIndex}`)
         }
         document.addEventListener('keyup', (e) => {
-            if ($rootScope.maxItemIndex >= 0) {
+            if ($rootScope.maxItemIndex >= 0 && [KEY.ArrowLeft, KEY.ArrowRight, KEY.ArrowUp, KEY.ArrowDown, KEY.Enter].indexOf(e.keyCode) >= 0) {
                 var i = $rootScope.itemIndex
                 switch (e.keyCode) {
                     case KEY.ArrowLeft:
                         if (i % $rootScope.colNum == 0 && $rootScope.pageIndex > 0) { //翻页
                             updatePageInfo($rootScope.pageIndex - 1)
-                            var cards = document.getElementsByClassName('card')
-                            cards[0] && cards[0].click(0)
                             return
                         } else {
                             i = i > 0 ? i - 1 : i
@@ -87,8 +110,6 @@ angular.module('myApp', [
                     case KEY.ArrowRight:
                         if ((i % $rootScope.colNum == $rootScope.colNum - 1 || i == $rootScope.maxItemIndex) && $rootScope.pageIndex < $rootScope.maxPageIndex) {//翻页
                             updatePageInfo($rootScope.pageIndex + 1)
-                            var cards = document.getElementsByClassName('card')
-                            cards[0] && cards[0].click(0)
                             return
                         } else {
                             i = i < $rootScope.maxItemIndex ? i + 1 : i
@@ -107,20 +128,33 @@ angular.module('myApp', [
                         i = Math.min(rowi * $rootScope.colNum + col, $rootScope.maxItemIndex)
                         break;
                     case KEY.Enter:
-                        var link = $rootScope.show[i].link
-                        window.location.assign(link)
+                        if (i < $rootScope.show.length) {
+                            var link = $rootScope.show[i].link
+                            if (link) {
+                                window.location.assign(link)
+                                return
+                            }
+                        }
                         break;
                 }
                 if ($rootScope.itemIndex != i) {
-                    var cards = document.getElementsByClassName('card')
-                    cards[i] && cards[i].click(i)
+                    $rootScope.itemIndex = i
+                    console.log(`url:${$location.path()},page:${$rootScope.pageIndex}/${$rootScope.maxPageIndex},item:${$rootScope.itemIndex}/${$rootScope.maxItemIndex}`)
+                    ngRefresh()
                 }
             }
             switch (e.keyCode) {
                 case KEY.M:
                     break;
                 case KEY.B:
-                    history.back();
+                    // console.log($location.path())
+                    if (['/player', '/scratchRunner'].indexOf($location.path()) >= 0) {
+                        console.log('go back 2 pages')
+                        history.go(-2);
+                    } else {
+                        console.log('go back')
+                        history.back();
+                    }
                     break;
                 case KEY.R:
                     break;
@@ -134,41 +168,8 @@ angular.module('myApp', [
 
             var path = $location.path()
             var name = 'keyEvent' + path
-            // console.log(name, $location.search())
+            // console.log(name, $rootScope)
             $rootScope.$broadcast(name, e)
 
         })
-
-        /*
-                document.addEventListener('keyup', (e) => {
-                    switch (e.keyCode) {
-                        case KEY.ArrowLeft:
-                            break;
-                        case KEY.ArrowRight:
-                            break;
-                        case KEY.ArrowUp:
-                            break;
-                        case KEY.ArrowDown:
-                            break;
-                        case KEY.Enter:
-                            break;
-                        case KEY.M:
-                            break;
-                        case KEY.B:
-                            history.back();
-                            break;
-                        case KEY.R:
-                            break;
-                        case KEY.S:
-                            break;
-                        default:
-                            // console.log(e.keyCode, 'ignore keyup event', e)
-                            break;
-                    }
-                    var path = $location.path()
-                    var name = 'keyEvent' + path
-                    console.log(name, $location.search())
-                    $rootScope.$broadcast(name, e)
-                })
-        */
     })

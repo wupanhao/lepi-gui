@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="app.css">
 </head>
 
-<body id="root" ng-controller="App">
+<body id="root" ng-controller="App" ng-click>
     <ul class="menu" hidden='true'>
         <li><a href="#!/view1">view1</a></li>
         <li><a href="#!/view2">view2</a></li>
@@ -32,15 +32,31 @@
     <script src="lib/angular-route/angular-route.js"></script>
     <script src="lib/roslib/build/roslib.js"></script>
     <script src="lib/echarts/dist/echarts.js"></script>
-    <script src="lib/axios/dist/axios.js"></script>
+    <!-- <script src="lib/axios/dist/axios.js"></script> -->
+
+    <!-- ScratchRunner Libs -->
+    <script src="lib/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="lib/jszip-utils/dist/jszip-utils.js"></script>
+    <script src="lib/scratch-audio/dist/web/scratch-audio.js"></script>
+    <script src="lib/scratch-render/dist/web/scratch-render.js"></script>
+    <script src="lib/scratch-svg-renderer/dist/web/scratch-svg-renderer.js"></script>
+    <script src="lib/scratch-storage/dist/web/scratch-storage.js"></script>
+    <script src="lib/scratch-vm/dist/web/scratch-vm.js"></script>
+
     <script src="assets/js/ros.js"></script>
     <script src="app.js"></script>
     <script src="pages/view1/view1.js"></script>
     <script src="pages/view2/view2.js"></script>
     <script src="pages/index/index.js"></script>
+    <script src="pages/explore/explore.js"></script>
+    <script src="pages/explore/player/player.js"></script>
+    <script src="pages/explore/scratch-runner/scratch-runner.js"></script>
     <script src="pages/testing/testing.js"></script>
     <script src="pages/setting/setting.js"></script>
     <script src="pages/testing/9_axis/9_axis.js"></script>
+
+
+
 </body>
 
 </html>

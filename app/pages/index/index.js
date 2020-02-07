@@ -33,10 +33,11 @@ angular.module('myApp.index', ['ngRoute'])
         name: '系统设置'
       }
     ]
-    
+    $rootScope.title = '乐派'
     $rootScope.items = items
     $rootScope.rowNum = 3
     $rootScope.colNum = 2  
+    console.log('index entered')
     $rootScope.updatePageInfo()
 
   });

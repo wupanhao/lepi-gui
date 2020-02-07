@@ -1,149 +1,96 @@
 'use strict';
 
-angular.module('myApp.testing', ['ngRoute'])
+angular.module('myApp.explore', ['ngRoute'])
 
   .config(['$routeProvider', function ($routeProvider) {
-    $routeProvider.when('/testing', {
-      templateUrl: 'pages/templates/item_small.html',
-      controller: 'TestingCtrl'
+    $routeProvider.when('/explore', {
+      templateUrl: 'pages/explore/explore.html',
+      controller: 'ExploreCtrl'
     })
   }])
 
-  .controller('TestingCtrl', function ($scope, $routeParams, $rootScope, $location) {
+  .controller('ExploreCtrl', function ($rootScope, $http, $location) {
     $rootScope.show_header = true
-    $rootScope.title = '内置测试'
+    $rootScope.title = '文件管理'
+    $rootScope.rowNum = 3
+    $rootScope.colNum = 2
+    console.log('/explore page entered')
 
-    const items = [
-      {
-        id: 0,
-        link: '#!/9_axis',
-        src: "assets/images/9_axis.png",
-        name: '九轴传感器'
-      },
-      {
-        id: 1,
-        link: '#!/camera',
-        src: "assets/images/camera.png",
-        name: '摄像头'
-      },
-      {
-        id: 2,
-        link: '#!/microphone',
-        src: "assets/images/microphone.png",
-        name: '麦克风'
-      },
-      {
-        id: 3,
-        link: '#!/speaker',
-        src: "assets/images/volume.png",
-        name: '扬声器'
-      },
-      {
-        id: 4,
-        link: '#!/motor',
-        src: "assets/images/motor.png",
-        name: '电机'
-      },
-      {
-        id: 5,
-        link: '#!/servo',
-        src: "assets/images/servo.png",
-        name: '舵机'
-      },
-      {
-        id: 6,
-        link: '#!/sservo',
-        src: "assets/images/servo.png",
-        name: '智能舵机'
-      },
-      {
-        id: 7,
-        link: '#!/sensor',
-        src: "assets/images/sensor.png",
-        name: '智能传感器'
-      },
-    ]
-
-    const url = '/testing'
-    const rowNum = 3
-    const colNum = 2
-    const maxItemsOnPage = rowNum * colNum
-    console.log(url, ' entered')
-    $scope.url = url
-    $scope.items = items
-    $scope.maxPageIndex = Math.ceil(items.length / maxItemsOnPage) - 1
-    const updatePageInfo = (pageIndex) => {
-      if (pageIndex >= 0 && pageIndex <= $scope.maxPageIndex) {
-        var start = pageIndex * maxItemsOnPage
-        $scope.show = items.slice(start, start + maxItemsOnPage)
-        $scope.itemIndex = 0
-        $scope.maxItemIndex = $scope.show.length - 1
-        $scope.pageIndex = pageIndex
-        $scope.maxRowIndex =  Math.ceil($scope.show.length / colNum) - 1
-        if($scope.maxPageIndex > 0){
-          $rootScope.pageInfo = `第${pageIndex+1}/${$scope.maxPageIndex+1}页`
-        }else{
-          $rootScope.pageInfo = " "
+    var explorePages = []
+    var dir = $location.search().dir || ''
+    $http.get('/explore?dir=' + dir).then(res => {
+      var data = res.data
+      data && data.dirs && data.dirs.map(item => {
+        if (item[0] == '.') {
+          return
+        } else {
+          if (data.current && data.current.includes(":")) {
+            var path = data.current + '\\' + item
+          } else {
+            var path = data.current + '/' + item
+          }
+          explorePages.push({ link: `#!/explore?dir=${encodeURI(path)}`, src: 'assets/images/explore/folder.png', name: item })
         }
-      } else {
-        console.log('page index:', pageIndex)
-      }
-    }
-    updatePageInfo($location.search().page | 0)
+      })
+      data && data.files && data.files.map(item => {
+        var imageUrl = null
+        var url = '#!' + $location.path()
+        var splitNames = item.split('.')
+        var len = splitNames.length
+        if (len > 1) {
 
-    // console.log($scope)
-    $scope.click = (id) => {
-      $scope.itemIndex = id
-      console.log(`url:${url},page:${$scope.pageIndex}/${$scope.maxPageIndex},item:${$scope.itemIndex}/${$scope.maxItemIndex}`)
-    }
-    $scope.$on('keyEvent' + url, (name, e) => {
-      var i = $scope.itemIndex
-      console.log(url, e)
-      switch (e.keyCode) {
-        case KEY.ArrowLeft:
-          if (i % colNum == 0 && $scope.pageIndex > 0) { //翻页
-            updatePageInfo($scope.pageIndex - 1)
-            document.getElementsByClassName('card')[0].click(0)
-            return
+          if (data.current && data.current.includes(":")) {
+            var path = data.current + '\\' + item
           } else {
-            i = i > 0 ? i - 1 : i
+            var path = data.current + '/' + item
           }
-          break;
-        case KEY.ArrowRight:
-          if ((i % colNum == colNum - 1 || i == $scope.maxItemIndex) && $scope.pageIndex < $scope.maxPageIndex ) {//翻页
-            updatePageInfo($scope.pageIndex + 1)
-            document.getElementsByClassName('card')[0].click(0)
-            return
-          } else {
-            i = i < $scope.maxItemIndex ? i + 1 : i
+
+          path = path.slice(data.homedir.length,path.length)
+          path = path.replace('\\','/')
+
+          var extName = splitNames[len - 1]
+          switch (extName) {
+            case 'mp3':
+            case 'ogg':
+            case 'wav':
+            case 'm4a':
+              imageUrl = 'assets/images/explore/music.png'
+              url = encodeURI(`#!/player?src=/explore${path}`)
+              break
+            case 'mp4':
+            case 'webm':
+              imageUrl = 'assets/images/explore/video.png'
+              url = encodeURI(`#!/player?src=/explore${path}`)
+              break
+            case 'sb3':
+              imageUrl = 'assets/images/explore/file.png'
+              url = encodeURI(`#!/scratchRunner?src=/explore${path}`)
+              break
+            case 'py':
+              imageUrl = 'assets/images/explore/file.png'
+              break
+            case 'sh':
+              imageUrl = 'assets/images/explore/file.png'
+              break
           }
-          break;
-        case KEY.ArrowUp:
-          var row =  Math.floor(i/colNum)
-          var col = i%colNum
-          var rowi = row > 0 ? row -1 : $scope.maxRowIndex
-          i = Math.min(rowi*colNum + col,$scope.maxItemIndex)
-          break;
-        case KEY.ArrowDown:
-          var row =  Math.floor(i/colNum)
-          var col = i%colNum
-          var rowi = row < $scope.maxRowIndex ? row + 1 : 0
-          i = Math.min(rowi*colNum + col,$scope.maxItemIndex)          
-          break;
-        case KEY.Enter:
-          var link = $scope.show[i].link
-          window.location.assign(link)
-          break;
-        case KEY.M:
-          break;
-        case KEY.R:
-          break;
-        case KEY.S:
-          break;
+
+        }
+        if (imageUrl) {
+          explorePages.push({ link: url, src: imageUrl, name: item })
+        }
+      })
+      if($location.path() == '/explore'){
+        $rootScope.items = explorePages
+        $rootScope.updatePageInfo()
+      }else{
+        console.log('/explore page exit')
       }
-      if ($scope.itemIndex != i) {
-        document.getElementsByClassName('card')[i].click(i)
-      }
+
+
+    }, (err) => {
+      console.log(err)
     })
+
+
 
   });

@@ -48,7 +48,8 @@ app.use('/', (req, res, next) => {
 app.use('/static', express.static(path.join(__dirname, 'router/static')))
 app.use('/wifi', wifiRouter)
 app.use('/upload', uploadRouter)
-app.use('/getUrlList', fileRouter)
+app.use('/explore', fileRouter)
+app.use('/explore', express.static(fileRouter.homedir))
 app.use('/system', systemRouter)
 app.get('/stream_list', (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -64,9 +65,9 @@ app.get('/stream_list', (req, res) => {
   })
 })
 
-app.use('/static', express.static(path.join(__dirname, '/../build/static')));
-app.get('/index', (req, res) => {
-  var data = fs.readFileSync(path.join(__dirname, '/../build/index.html'), {
+app.use('/app', express.static(path.join(__dirname, '../app')));
+app.get('/app', (req, res) => {
+  var data = fs.readFileSync(path.join(__dirname, '../app/index.html'), {
     encoding: 'utf8'
   });
   res.send(data);

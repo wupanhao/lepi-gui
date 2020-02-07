@@ -1,0 +1,42 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Scratch VM Runner</title>
+  <style type="text/css">
+    #scratch-stage {
+      width: 320px;
+      height: 240px;
+      transform: rotate(-90deg);
+      position: absolute;
+      left: -40px;
+      top: 40px;
+    }
+
+    body {
+      overflow: hidden;
+      margin: 0px;
+      padding: 0px;
+      cursor: none;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="scratch-stage"></canvas>
+  <!-- <div id="blocks"></div> -->
+  <!-- Playground -->
+  <script src="../../../lib/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="../../../lib/jszip-utils/dist/jszip-utils.js"></script>
+  <script src="../../../lib/scratch-audio/dist.js"></script>
+  <script src="../../../lib/scratch-render/dist/web/scratch-render.js"></script>
+  <script src="../../../lib/scratch-svg-renderer/dist/web/scratch-svg-renderer.js"></script>
+  <script src="../../../lib/scratch-storage/dist/web/scratch-storage.js"></script>
+  <script src="../../../lib/scratch-vm/dist/web/scratch-vm.js"></script>
+
+  <script src="./runner.js"></script>
+</body>
+
+</html>

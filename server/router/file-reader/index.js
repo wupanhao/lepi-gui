@@ -8,23 +8,36 @@ const path = require('path')
 const os = require('os')
 
 const homedir = os.homedir()
+router.homedir = homedir
 console.log(homedir)
 router.get('/', function (req, res) {
-	var dir = homedir
 	console.log(req.query)
-	if (req.query['dir'])
-		dir = path.join(homedir, req.query['dir'])
+	var dir = req.query['dir'] || homedir
+
+	if (!fs.existsSync(dir) || fs.statSync(dir).isFile()) {
+		dir = homedir
+	}
+
 	fs.readdir(dir, function (err, files) {
+		var result = { files: [], dirs: [], current: dir, homedir: homedir }
 		if (err) {
 			console.warn(err)
+			res.json(result)
 		} else {
-			res.json(files.map(file => {
-				if (fs.statSync(path.join(dir, file)).isFile()) {
-					return { file: file }
-				} else {
-					return { dir: file }
-				}
-			}))
+			try {
+				files.map(file => {
+					full_path = path.join(dir, file)
+					if (fs.statSync(full_path).isFile()) {
+						result.files.push(file)
+					} else {
+						result.dirs.push(file)
+					}
+				})
+			} catch (error) {
+				console.log(err)
+			}
+			res.json(result)
+
 		}
 	})
 })

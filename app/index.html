@@ -1,27 +1,31 @@
 <!DOCTYPE html>
 <html ng-app="myApp">
 
-<head>
+<head id="head" ng-click>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Lepi GUI</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="assets/css/index.css">
-    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="lib/material-design-lite/material.css">
+    <script src="lib/material-design-lite/material.js"></script>
+    <!-- <link rel="stylesheet" href="assets/css/index.css"> -->
     <link rel="stylesheet" href="app.css">
 </head>
 
-<body id="root" ng-controller="App" ng-click>
+<body id="root" ng-controller="App">
     <ul class="menu" hidden='true'>
         <li><a href="#!/view1">view1</a></li>
         <li><a href="#!/view2">view2</a></li>
         <li><a href="#!/index">index</a></li>
         {{test}}
     </ul>
+
     <ng-include src="'pages/header/header.html'"></ng-include>
     <!-- <div ng-include="'pages/header/header.html'"></div> -->
     <div id="content" ng-view></div>
+
     <ng-include src="'pages/footer/footer.html'"></ng-include>
     <!-- <div ng-include="'pages/footer/footer.html'"></div> -->
 
@@ -54,8 +58,6 @@
     <script src="pages/testing/testing.js"></script>
     <script src="pages/setting/setting.js"></script>
     <script src="pages/testing/9_axis/9_axis.js"></script>
-
-
 
 </body>
 

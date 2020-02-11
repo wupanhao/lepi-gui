@@ -13,9 +13,47 @@ const KEY = {
 }
 
 function ngRefresh() {
-    const header = document.getElementById('root')
+    // $scope.apply()
+    const header = document.getElementById('head')
     header.click()
 }
+function menuShown() {
+    // $scope.apply()
+    const menu = document.getElementById('demo-menu-list')
+    // console.log('menuShown ', menu.dataset.show, typeof menu.dataset.show, menu.dataset.show == true)
+    if (menu && menu.MaterialMenu.container_.classList.contains('is-visible')) {
+        return true
+    } else {
+        return false
+    }
+}
+
+function showMenu() {
+    const menu = document.getElementById('demo-menu-top-left')
+    if (!menuShown()) {
+        menu.click()
+        changeMenuActive(0)
+    }
+}
+function closeMenu() {
+    const menu = document.getElementById('demo-menu-top-left')
+    if (menuShown()) {
+        menu.click()
+    }
+}
+function changeMenuActive(j) {
+    const items = document.querySelectorAll('.mdl-menu__item')
+    // console.log(`changeMenuActive ${j}`)
+    items.forEach((item, index) => {
+        // console.log(item, index, j)
+        if (j == index) {
+            item.classList.add('active')
+        } else {
+            item.classList.remove('active')
+        }
+    })
+}
+
 
 // Declare app level module which depends on views, and core components
 angular.module('myApp', [
@@ -38,6 +76,85 @@ angular.module('myApp', [
 
         $rootScope.debug = false
 
+
+        function clickHandlerForContent(e) {
+            var i = $rootScope.itemIndex || 0
+            switch (e.keyCode) {
+                case KEY.ArrowLeft:
+                    if (i % $rootScope.colNum == 0 && $rootScope.pageIndex > 0) { //翻页
+                        updatePageInfo($rootScope.pageIndex - 1)
+                        return
+                    } else {
+                        i = i > 0 ? i - 1 : i
+                    }
+                    break;
+                case KEY.ArrowRight:
+                    if ((i % $rootScope.colNum == $rootScope.colNum - 1 || i == $rootScope.maxItemIndex) && $rootScope.pageIndex < $rootScope.maxPageIndex) {//翻页
+                        updatePageInfo($rootScope.pageIndex + 1)
+                        return
+                    } else {
+                        i = i < $rootScope.maxItemIndex ? i + 1 : i
+                    }
+                    break;
+                case KEY.ArrowUp:
+                    var row = Math.floor(i / $rootScope.colNum)
+                    var col = i % $rootScope.colNum
+                    var rowi = row > 0 ? row - 1 : $rootScope.maxRowIndex
+                    i = Math.min(rowi * $rootScope.colNum + col, $rootScope.maxItemIndex)
+                    break;
+                case KEY.ArrowDown:
+                    var row = Math.floor(i / $rootScope.colNum)
+                    var col = i % $rootScope.colNum
+                    var rowi = row < $rootScope.maxRowIndex ? row + 1 : 0
+                    i = Math.min(rowi * $rootScope.colNum + col, $rootScope.maxItemIndex)
+                    break;
+                case KEY.Enter:
+                    if (i < $rootScope.show.length) {
+                        var link = $rootScope.show[i].link
+                        if (link) {
+                            window.location.assign(link)
+                            return
+                        }
+                    }
+                    break;
+            }
+            if ($rootScope.itemIndex != i) {
+                $rootScope.itemIndex = i
+                console.log(`url:${$location.path()},page:${$rootScope.pageIndex}/${$rootScope.maxPageIndex},item:${$rootScope.itemIndex}/${$rootScope.maxItemIndex}`)
+                ngRefresh()
+            }
+        }
+
+
+
+        function clickHandlerForMenu(e) {
+            var j = $rootScope.menuIndex || 0
+            const menus = $rootScope.menus || []
+            const maxMenuIndex = menus.length - 1
+            if (maxMenuIndex < 0) {
+                console.log('no menu items found')
+                return
+            }
+            switch (e.keyCode) {
+                case KEY.ArrowUp:
+                    j = j > 0 ? j - 1 : maxMenuIndex
+                    break;
+                case KEY.ArrowDown:
+                    j = j < maxMenuIndex ? j + 1 : 0
+                    break;
+                case KEY.Enter:
+                    var item = $rootScope.menus[j]
+                    if (item && item.callback) {
+                        item.callback()
+                    }
+                    break;
+            }
+            if (j != $rootScope.menuIndex) {
+                $rootScope.menuIndex = j
+                changeMenuActive(j)
+            }
+        }
+
         $rootScope.ngRefresh = ngRefresh
 
         $rootScope.go_back = function () {
@@ -46,11 +163,20 @@ angular.module('myApp', [
         }
         console.log('call only once')
 
+        $rootScope.$on("$includeContentLoaded", function (event, templateName) {
+            console.log(`${templateName} loaded`)
+            if (templateName == 'pages/footer/footer.html') {
+                // window.componentHandler.upgradeDom('MaterialMenu')
+                window.componentHandler.upgradeAllRegistered()
+            }
+        });
+
+
         const updatePageInfo = (pageIndex = 0) => {
-            if($rootScope.loading == true){
+            if ($rootScope.loading == true) {
                 console.log('page loading, return')
-                return 
-            }else{
+                return
+            } else {
                 $rootScope.loading == true
             }
             $rootScope.maxItemsOnPage = $rootScope.rowNum * $rootScope.colNum
@@ -59,7 +185,7 @@ angular.module('myApp', [
                 console.log($location.path(), `page index ${pageIndex} entered`)
                 console.log($rootScope)
                 $rootScope.show_header = true
-                $rootScope.show_footer = true                
+                $rootScope.show_footer = true
                 var start = pageIndex * $rootScope.maxItemsOnPage
                 $rootScope.show = $rootScope.items.slice(start, start + $rootScope.maxItemsOnPage)
                 $rootScope.itemIndex = 0
@@ -67,7 +193,7 @@ angular.module('myApp', [
                 $rootScope.pageIndex = pageIndex
                 $rootScope.maxRowIndex = Math.ceil($rootScope.show.length / $rootScope.colNum) - 1
                 if ($rootScope.maxPageIndex > 0) {
-                    $rootScope.pageInfo = `第${pageIndex + 1}/${$rootScope.maxPageIndex + 1}页`
+                    $rootScope.pageInfo = `${pageIndex + 1}/${$rootScope.maxPageIndex + 1}页`
                 } else {
                     $rootScope.pageInfo = " "
                 }
@@ -97,58 +223,27 @@ angular.module('myApp', [
         }
         document.addEventListener('keyup', (e) => {
             if ($rootScope.maxItemIndex >= 0 && [KEY.ArrowLeft, KEY.ArrowRight, KEY.ArrowUp, KEY.ArrowDown, KEY.Enter].indexOf(e.keyCode) >= 0) {
-                var i = $rootScope.itemIndex
-                switch (e.keyCode) {
-                    case KEY.ArrowLeft:
-                        if (i % $rootScope.colNum == 0 && $rootScope.pageIndex > 0) { //翻页
-                            updatePageInfo($rootScope.pageIndex - 1)
-                            return
-                        } else {
-                            i = i > 0 ? i - 1 : i
-                        }
-                        break;
-                    case KEY.ArrowRight:
-                        if ((i % $rootScope.colNum == $rootScope.colNum - 1 || i == $rootScope.maxItemIndex) && $rootScope.pageIndex < $rootScope.maxPageIndex) {//翻页
-                            updatePageInfo($rootScope.pageIndex + 1)
-                            return
-                        } else {
-                            i = i < $rootScope.maxItemIndex ? i + 1 : i
-                        }
-                        break;
-                    case KEY.ArrowUp:
-                        var row = Math.floor(i / $rootScope.colNum)
-                        var col = i % $rootScope.colNum
-                        var rowi = row > 0 ? row - 1 : $rootScope.maxRowIndex
-                        i = Math.min(rowi * $rootScope.colNum + col, $rootScope.maxItemIndex)
-                        break;
-                    case KEY.ArrowDown:
-                        var row = Math.floor(i / $rootScope.colNum)
-                        var col = i % $rootScope.colNum
-                        var rowi = row < $rootScope.maxRowIndex ? row + 1 : 0
-                        i = Math.min(rowi * $rootScope.colNum + col, $rootScope.maxItemIndex)
-                        break;
-                    case KEY.Enter:
-                        if (i < $rootScope.show.length) {
-                            var link = $rootScope.show[i].link
-                            if (link) {
-                                window.location.assign(link)
-                                return
-                            }
-                        }
-                        break;
-                }
-                if ($rootScope.itemIndex != i) {
-                    $rootScope.itemIndex = i
-                    console.log(`url:${$location.path()},page:${$rootScope.pageIndex}/${$rootScope.maxPageIndex},item:${$rootScope.itemIndex}/${$rootScope.maxItemIndex}`)
-                    ngRefresh()
+                if (menuShown()) {
+                    clickHandlerForMenu(e)
+                } else {
+                    clickHandlerForContent(e)
                 }
             }
             switch (e.keyCode) {
                 case KEY.M:
+                    if (menuShown()) {
+                        console.log('closeMenu')
+                        closeMenu()
+                    } else {
+                        console.log('showMenu')
+                        showMenu()
+                    }
                     break;
                 case KEY.B:
                     // console.log($location.path())
-                    if (['/player', '/scratchRunner'].indexOf($location.path()) >= 0) {
+                    if (menuShown()) {
+                        closeMenu()
+                    } else if (['/player', '/scratchRunner'].indexOf($location.path()) >= 0) {
                         console.log('go back 2 pages')
                         history.go(-2);
                     } else {

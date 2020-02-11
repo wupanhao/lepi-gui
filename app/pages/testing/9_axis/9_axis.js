@@ -35,7 +35,7 @@ angular.module('myApp.9_axis', ['ngRoute'])
 
         const NUM = 80
 
-        const series = ['x','y','z'].map( item => {
+        const series = ['x', 'y', 'z'].map(item => {
             return {
                 name: item,
                 type: 'line',

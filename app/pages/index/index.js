@@ -10,7 +10,7 @@ angular.module('myApp.index', ['ngRoute'])
   }])
 
   .controller('IndexCtrl', function ($scope, $location, $rootScope) {
-    
+
     const items = [
       {
         link: '#!/explore',
@@ -36,8 +36,17 @@ angular.module('myApp.index', ['ngRoute'])
     $rootScope.title = '乐派'
     $rootScope.items = items
     $rootScope.rowNum = 3
-    $rootScope.colNum = 2  
+    $rootScope.colNum = 2
+    $rootScope.menus = ['菜单', '菜单', '菜单', '菜单', '菜单', '菜单',].map((item, index) => {
+      return {
+        text: item + index,
+        callback: () => {
+          var k = index
+          console.log(`menu item-${k} clicked`)
+        }
+      }
+    })
+
     console.log('index entered')
     $rootScope.updatePageInfo()
-
   });

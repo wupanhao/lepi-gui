@@ -12,31 +12,31 @@ angular.module('myApp.setting', ['ngRoute'])
   .controller('SettingCtrl', function ($scope, $routeParams, $rootScope, $location) {
     const items = [
       {
-        id:0,
+        id: 0,
         link: '#!/setting/wifi',
         src: "assets/images/wifi_m.png",
         name: 'WiFi'
       },
       {
-        id:1,
+        id: 1,
         link: '#!/setting/bluetooth',
         src: "assets/images/bluetooth_m.png",
         name: '蓝牙'
       },
       {
-        id:2,
+        id: 2,
         link: '#!/setting/microphone',
         src: "assets/images/microphone.png",
         name: '麦克风'
       },
       {
-        id:3,
+        id: 3,
         link: '#!/setting/speaker',
         src: "assets/images/volume.png",
         name: '扬声器'
       },
       {
-        id:4,
+        id: 4,
         link: '#!/setting/device',
         src: "assets/images/info.png",
         name: '设备信息'

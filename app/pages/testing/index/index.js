@@ -56,7 +56,7 @@ angular.module('myApp.testing', ['ngRoute'])
 
     $rootScope.items = items
     $rootScope.rowNum = 3
-    $rootScope.colNum = 2  
+    $rootScope.colNum = 2
     $rootScope.updatePageInfo()
 
   });

@@ -65,7 +65,7 @@ angular.module('myApp.testing', ['ngRoute'])
     $rootScope.title = '内置测试'
     $rootScope.items = testingPages
     $rootScope.rowNum = 3
-    $rootScope.colNum = 2  
+    $rootScope.colNum = 2
     $rootScope.updatePageInfo()
 
   });

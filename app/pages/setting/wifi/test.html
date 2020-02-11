@@ -1,0 +1,55 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <style>
+        body {
+            height: 320px;
+            margin: 0px;
+        }
+
+        #soft-keyboard {
+            background-color: rgba(0, 0, 0, 0.1);
+            width: 240px;
+            height: 160px;
+            position: fixed;
+            bottom: 0px;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            /* justify-content: space-between; */
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 0px 2px;
+        }
+
+        .skb-key {
+            border-radius: 5px;
+            min-width: 22px;
+            /* padding: 1px; */
+            margin: 2px;
+            background-color: #FFF;
+            text-align: center;
+        }
+
+        .active {
+            background-color: rosybrown;
+        }
+    </style>
+    <script src="../../../assets/js/soft-keyboard.js"></script>
+
+</head>
+
+<body>
+    <input id="passwd" class="input" placeholder="Tap on the virtual keyboard to start" />
+    <div id="soft-keyboard" for="passwd" ok_text="连接" oncomplete="test"></div>
+    <script>
+        function test(value) {
+            console.log(value)
+        }
+        const kb = new SoftKeyboard('#soft-keyboard')
+    </script>
+</body>
+
+</html>

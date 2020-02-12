@@ -1,5 +1,5 @@
 const express = require('express');
-const Wifi = require('rpi-wifi-connection');
+const Wifi = require('./wifi-connection');
 const bodyParser = require('body-parser')
 const fs = require('fs');
 const path = require('path');
@@ -36,15 +36,15 @@ router.get('/', (req, res) => {
 	res.send(form);
 })
 
-router.get('/info', function(req, res) {
+router.get('/info', function (req, res) {
 	wifi.getStatus().then(info => res.json(info))
 })
 
-router.get('/ips', function(req, res) {
+router.get('/ips', function (req, res) {
 	res.json(getLocalIps())
 })
 
-router.post('/connect', jsonParser, function(req, res) {
+router.post('/connect', jsonParser, function (req, res) {
 	// console.log(req.headers)
 	const request = req.body
 	request.timeout = 20000
@@ -72,4 +72,11 @@ router.post('/connect', jsonParser, function(req, res) {
 		})
 	}
 })
+
+router.get('/scan', function (req, res) {
+	wifi.scan().then(result => {
+		res.json(result)
+	})
+})
+
 module.exports = router;

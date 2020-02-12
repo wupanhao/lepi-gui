@@ -7,11 +7,11 @@ var localSettings = null;
 try {
 	localSettings = require('./env.local');
 	Object.assign(env, localSettings);
-	console.log('use local setting')
+	console.log('use local setting', localSettings)
 } catch (e) {
 	console.log('no local setting found')
+	console.log(env)
 }
 
-console.log(env)
 
 module.exports = env

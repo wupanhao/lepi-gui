@@ -3,7 +3,7 @@
 angular.module('myApp.9_axis', ['ngRoute'])
 
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/9_axis', {
+        $routeProvider.when('/testing/9_axis', {
             templateUrl: 'pages/testing/9_axis/9_axis.html',
             controller: '9_axisCtrl'
         });
@@ -31,7 +31,6 @@ angular.module('myApp.9_axis', ['ngRoute'])
         // 初始化echarts对象
         const myChart = echarts.init(container);
 
-        var ros = new ros_client('ws://192.168.50.234:9090')
 
         const NUM = 80
 
@@ -49,6 +48,7 @@ angular.module('myApp.9_axis', ['ngRoute'])
         const option = {
             title: {
                 text: items[$rootScope.pageIndex].title,
+                color: 'white',
                 left: 'center'
 
             },
@@ -85,9 +85,9 @@ angular.module('myApp.9_axis', ['ngRoute'])
             }],
             series: series
         };
-
+        const ros_client = $rootScope.ros
         var updateData = () => {
-            ros.get3AxesData(items[$rootScope.pageIndex].sensorId).then(res => {
+            ros_client.get3AxesData(items[$rootScope.pageIndex].sensorId).then(res => {
                 option.title.text = items[$rootScope.pageIndex].title
                 option.series[0].data.shift()
                 option.series[1].data.shift()
@@ -103,10 +103,9 @@ angular.module('myApp.9_axis', ['ngRoute'])
                 updateData()
             })
         }
-
-        ros.conectToRos(() => {
+        if (ros_client && ros_client.ros && ros_client.ros.isConnected) {
             updateData()
-        })
+        }
 
     });
 

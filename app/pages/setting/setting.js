@@ -44,6 +44,8 @@ angular.module('myApp.setting', ['ngRoute'])
     ]
     $rootScope.title = '系统设置'
     $rootScope.items = items
+    $rootScope.rowNum = 3
+    $rootScope.colNum = 2
     // $scope.show = items
     $rootScope.updatePageInfo()
     console.log($rootScope)

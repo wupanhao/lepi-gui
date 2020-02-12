@@ -3,49 +3,49 @@
 const testingPages = [
   {
     id: 0,
-    link: '#!/9_axis',
+    link: '#!/testing/9_axis',
     src: "assets/images/9_axis.png",
     name: '九轴传感器'
   },
   {
     id: 1,
-    link: '#!/camera',
+    link: '#!/testing/camera',
     src: "assets/images/camera.png",
     name: '摄像头'
   },
   {
     id: 2,
-    link: '#!/microphone',
+    link: '#!/testing/microphone',
     src: "assets/images/microphone.png",
     name: '麦克风'
   },
   {
     id: 3,
-    link: '#!/speaker',
+    link: '#!/testing/speaker',
     src: "assets/images/volume.png",
     name: '扬声器'
   },
   {
     id: 4,
-    link: '#!/motor',
+    link: '#!/testing/motor',
     src: "assets/images/motor.png",
     name: '电机'
   },
   {
     id: 5,
-    link: '#!/servo',
+    link: '#!/testing/servo',
     src: "assets/images/servo.png",
     name: '舵机'
   },
   {
     id: 6,
-    link: '#!/sservo',
+    link: '#!/testing/sservo',
     src: "assets/images/servo.png",
     name: '智能舵机'
   },
   {
     id: 7,
-    link: '#!/sensor',
+    link: '#!/testing/sensor',
     src: "assets/images/sensor.png",
     name: '智能传感器'
   },

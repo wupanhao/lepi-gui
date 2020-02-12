@@ -54,6 +54,68 @@ function changeMenuActive(j) {
     })
 }
 
+window.rotate90 = false
+const rotateMap = {
+    // 上下左右 横屏重映射，
+    37: 38,
+    38: 39,
+    39: 40,
+    40: 37,
+    13: 32, //回车=> 空格
+    72: 84 //H => T
+}
+function btnHandler(message) {
+    console.log(message)
+    // console.log(message.value, rotateMap.hasOwnProperty(message.value))
+
+    if (window.rotate90 && rotateMap.hasOwnProperty(message.value)) {
+        message.value = rotateMap[message.value]
+    }
+    var code = keyCodeMap[message.value]
+    if (48 <= message.value && message.value <= 57) {
+        code = 'Digit' + code
+    } else if (65 <= message.value && message.value <= 90) {
+        code = 'Key' + code
+    }
+
+    // console.log(message.value)
+    // console.log(event, '-', message)
+    if (message.type == 1) {
+        var keydown = new KeyboardEvent('keydown', {
+            bubbles: true,
+            cancelable: true,
+            key: keyCodeMap[message.value],
+            code: code,
+            // keyCode: message.value, //已弃用
+            // shiftKey: true
+        });
+        document.dispatchEvent(keydown);
+        /*
+        var keypress = new KeyboardEvent('keypress', {
+          bubbles: true,
+          cancelable: true,
+          key: message.value,
+          keyCode: message.value,
+          // code: "KeyQ",
+          // shiftKey: true
+        });
+        document.dispatchEvent(keypress);
+         */
+    }
+    if (message.type == 3 || message.type == 2) {
+        var keyup = new KeyboardEvent('keyup', {
+            bubbles: true,
+            cancelable: true,
+            key: keyCodeMap[message.value],
+            code: code,
+            // keyCode: message.value, //已弃用
+            // shiftKey: true
+        });
+        // console.log(keyup, message.value, keyCodeMap[message.value])
+        document.dispatchEvent(keyup);
+    }
+}
+
 
 // Declare app level module which depends on views, and core components
 angular.module('myApp', [
@@ -65,22 +127,32 @@ angular.module('myApp', [
     'myApp.player',
     'myApp.scratchRunner',
     'myApp.testing',
-    'myApp.setting',
     'myApp.9_axis',
+    'myApp.motor',
+    'myApp.setting',
+    'myApp.wifi',
 ])
     .config(['$locationProvider', '$routeProvider', function ($locationProvider, $routeProvider) {
         $locationProvider.hashPrefix('!');
         $routeProvider.otherwise({ redirectTo: '/index' });
     }])
     .controller('App', function ($rootScope, $location) {
-
+        console.log('call only once')
+        $rootScope.localHandler = {}
         $rootScope.debug = false
 
+        $rootScope.ros = new ros_client('ws://' + $location.host() + ':9090', btnHandler)
+
+        $rootScope.ros.conectToRos(() => {
+            // updateData()
+            console.log('connected to ros ', $rootScope.ros)
+        })
 
         function clickHandlerForContent(e) {
+            console.log('clickHandlerForContent', e)
             var i = $rootScope.itemIndex || 0
-            switch (e.keyCode) {
-                case KEY.ArrowLeft:
+            switch (e.code) {
+                case "ArrowLeft":
                     if (i % $rootScope.colNum == 0 && $rootScope.pageIndex > 0) { //翻页
                         updatePageInfo($rootScope.pageIndex - 1)
                         return
@@ -88,7 +160,7 @@ angular.module('myApp', [
                         i = i > 0 ? i - 1 : i
                     }
                     break;
-                case KEY.ArrowRight:
+                case "ArrowRight":
                     if ((i % $rootScope.colNum == $rootScope.colNum - 1 || i == $rootScope.maxItemIndex) && $rootScope.pageIndex < $rootScope.maxPageIndex) {//翻页
                         updatePageInfo($rootScope.pageIndex + 1)
                         return
@@ -96,19 +168,19 @@ angular.module('myApp', [
                         i = i < $rootScope.maxItemIndex ? i + 1 : i
                     }
                     break;
-                case KEY.ArrowUp:
+                case "ArrowUp":
                     var row = Math.floor(i / $rootScope.colNum)
                     var col = i % $rootScope.colNum
                     var rowi = row > 0 ? row - 1 : $rootScope.maxRowIndex
                     i = Math.min(rowi * $rootScope.colNum + col, $rootScope.maxItemIndex)
                     break;
-                case KEY.ArrowDown:
+                case "ArrowDown":
                     var row = Math.floor(i / $rootScope.colNum)
                     var col = i % $rootScope.colNum
                     var rowi = row < $rootScope.maxRowIndex ? row + 1 : 0
                     i = Math.min(rowi * $rootScope.colNum + col, $rootScope.maxItemIndex)
                     break;
-                case KEY.Enter:
+                case "Enter":
                     if (i < $rootScope.show.length) {
                         var link = $rootScope.show[i].link
                         if (link) {
@@ -125,8 +197,6 @@ angular.module('myApp', [
             }
         }
 
-
-
         function clickHandlerForMenu(e) {
             var j = $rootScope.menuIndex || 0
             const menus = $rootScope.menus || []
@@ -135,14 +205,14 @@ angular.module('myApp', [
                 console.log('no menu items found')
                 return
             }
-            switch (e.keyCode) {
-                case KEY.ArrowUp:
+            switch (e.code) {
+                case "ArrowUp":
                     j = j > 0 ? j - 1 : maxMenuIndex
                     break;
-                case KEY.ArrowDown:
+                case "ArrowDown":
                     j = j < maxMenuIndex ? j + 1 : 0
                     break;
-                case KEY.Enter:
+                case "Enter":
                     var item = $rootScope.menus[j]
                     if (item && item.callback) {
                         item.callback()
@@ -161,7 +231,6 @@ angular.module('myApp', [
             //此处使用js原生方式回退  
             history.back();
         }
-        console.log('call only once')
 
         $rootScope.$on("$includeContentLoaded", function (event, templateName) {
             console.log(`${templateName} loaded`)
@@ -169,6 +238,12 @@ angular.module('myApp', [
                 // window.componentHandler.upgradeDom('MaterialMenu')
                 window.componentHandler.upgradeAllRegistered()
             }
+        });
+
+        $rootScope.$on('$viewContentLoaded', function (e) {
+            //Here your view content is fully loaded !!
+            console.log('viewContentLoaded', e)
+            // window.componentHandler.upgradeAllRegistered()
         });
 
 
@@ -222,15 +297,16 @@ angular.module('myApp', [
             $rootScope.itemIndex = id
         }
         document.addEventListener('keyup', (e) => {
-            if ($rootScope.maxItemIndex >= 0 && [KEY.ArrowLeft, KEY.ArrowRight, KEY.ArrowUp, KEY.ArrowDown, KEY.Enter].indexOf(e.keyCode) >= 0) {
+            console.log(e)
+            if ($rootScope.maxItemIndex >= 0) {
                 if (menuShown()) {
                     clickHandlerForMenu(e)
                 } else {
                     clickHandlerForContent(e)
                 }
             }
-            switch (e.keyCode) {
-                case KEY.M:
+            switch (e.code) {
+                case "KeyM":
                     if (menuShown()) {
                         console.log('closeMenu')
                         closeMenu()
@@ -239,7 +315,7 @@ angular.module('myApp', [
                         showMenu()
                     }
                     break;
-                case KEY.B:
+                case "KeyB":
                     // console.log($location.path())
                     if (menuShown()) {
                         closeMenu()
@@ -251,20 +327,22 @@ angular.module('myApp', [
                         history.back();
                     }
                     break;
-                case KEY.R:
+                case "KeyR":
                     break;
-                case KEY.S:
+                case "KeyS":
                     break;
                 default:
-                    // console.log(e.keyCode, 'ignore keyup event', e)
+                    // console.log(e.codeCode, 'ignore keyup event', e)
                     break;
             }
 
-
             var path = $location.path()
-            var name = 'keyEvent' + path
-            // console.log(name, $rootScope)
-            $rootScope.$broadcast(name, e)
+            // 不采用事件方式，改用回调函数
+            // var name = 'keyEvent' + path
+            // $rootScope.$broadcast(name, e)
+            if ($rootScope.localHandler[path]) {
+                $rootScope.localHandler[path](e)
+            }
 
         })
     })

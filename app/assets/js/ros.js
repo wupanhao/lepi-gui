@@ -51,7 +51,7 @@ class ros_client {
       }
     });
 
-    ros.on('error', function(error) {
+    ros.on('error', function (error) {
       console.log('Error connecting to websocket server: ', error);
     });
 
@@ -188,7 +188,7 @@ class ros_client {
       var request = new ROSLIB.ServiceRequest();
 
       client.callService(request, (result) => {
-        console.log(result)
+        // console.log(result)
         resolve(result.motors)
       });
     })

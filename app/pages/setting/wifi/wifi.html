@@ -1,0 +1,64 @@
+<style>
+    .wifi-info {
+        color: white;
+        width: 100%;
+        padding-left: 20px;
+    }
+
+    .table-container {
+        background-color: transparent;
+        color: white;
+        width: 100%;
+        /* height: 270px; */
+        padding: 30px 20px 20px 0px;
+        text-align: left;
+        table-layout: fixed;
+        border: none;
+    }
+
+    .table-container td {
+        padding-left: 15px;
+        /* padding-right: 15px; */
+    }
+
+    .table-container th.wifi-name {
+        padding-left: 15px;
+    }
+
+    .table-container th.wifi-signal {
+        width: 60px;
+    }
+
+    .wifi-info span {
+        min-width: 50px;
+    }
+</style>
+
+<div class="wifi-info">
+    <table>
+        <tr>
+            <td>wlan0:</td>
+            <td>{{info.ssid || '未连接'}}</td>
+        </tr>
+        <tr>
+            <td>IP地址:</td>
+            <td>{{info.ip_address}}</td>
+        </tr>
+    </table>
+</div>
+
+<table class="table-container" rules="none">
+    <thead>
+        <tr>
+            <th class="wifi-name">名称</th>
+            <th class="wifi-signal">信号强度</th class="wifi-name">
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="wifi in show" ng-init="$last && $emit('repeatFinished')"
+            ng-class="{ active: $index == itemIndex}">
+            <td class="wifi-name">{{wifi.ssid}}</td>
+            <td class="wifi-signal">{{wifi.signalLevel}}</td">
+        </tr>
+    </tbody>
+</table>

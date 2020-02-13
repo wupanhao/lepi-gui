@@ -145,7 +145,7 @@ module.exports = class WiFiConnection {
 
     connect(options) {
 
-        options = Object.assign({ timeout: 60000, removePreviousNetworks: false }, options);
+        options = Object.assign({ timeout: 25000, removePreviousNetworks: false }, options);
 
         var self = this;
         var ssid = options.ssid;
@@ -210,7 +210,7 @@ module.exports = class WiFiConnection {
 
                     console.log('Connection status:', status);
 
-                    if (isString(status.ip_address) && status.ssid == ssid) {
+                    if (isString(status.ip_address) && status.ssid) {
                         return Promise.resolve();
                     }
                     else {
@@ -347,3 +347,5 @@ module.exports = class WiFiConnection {
         });
     }
 }
+
+

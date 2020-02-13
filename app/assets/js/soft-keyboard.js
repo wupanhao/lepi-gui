@@ -25,7 +25,7 @@ const layouts = {
     ],
     'shift2': [
         ['！', '@', '#'], ['Caps', 'Shift', 'Back', 'OK'],
-        ['￥', '%', '……'], ['）', '《', '》', '？', '：', '“'],
+        ['￥', '%', '…'], ['）', '《', '》', '？', '：', '“'],
         ['&', '*', '（'], ['~', '—', '+', '{', '}', '”'],
         ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',],
         ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
@@ -46,9 +46,7 @@ class SoftKeyboard {
         this.input_ = null
         this.onComplete = null
         this.resetKeyboard('default')
-        this.bindKeys()
         this.bindInput()
-        this.bindComplete()
     }
 
     resetKeyboard(layout) {
@@ -88,59 +86,48 @@ class SoftKeyboard {
         this.setActive(this.selectedId)
     }
 
-    bindKeys() {
-        const KEY = {
-            ArrowLeft: 37,
-            ArrowUp: 38,
-            ArrowRight: 39,
-            ArrowDown: 40,
-            Enter: 13,
-            M: 77, // KeyM (Menu)
-            B: 66, // KeyB (Back)
-            R: 82, // KeyR (Run)
-            S: 83 // KeyS (Stop or Home)
+    keyHandler(e) {
+        console.log(e.code)
+        var i = this.selectedId
+        var step = 9
+        // console.log(i, this.selectedId)
+        switch (e.code) {
+            case "ArrowUp":
+                if (i >= 4 && i <= 12) {
+                    i = i - step + 2 - (i >= 11)
+                } else {
+                    i = i - step
+                }
+                if (i < 0) {
+                    i = i + this.keys.length
+                }
+                break;
+            case "ArrowDown":
+                if (i <= 3 || i >= 47) {
+                    i = i + step - 2 + (i <= 48 && i >= 47)
+                } else {
+                    i = i + step
+                }
+                if (i > this.maxId) {
+                    i = i - this.keys.length
+                }
+                break;
+            case "ArrowLeft":
+                i = i > 0 ? i - 1 : this.maxId
+                break;
+            case "ArrowRight":
+                i = i < this.maxId ? i + 1 : 0
+                break;
+            case "Enter":
+                this.click(i)
+                break
+            default:
+                return false
         }
-        document.addEventListener('keyup', (e) => {
-            var i = this.selectedId
-            var step = 9
-            // console.log(i, this.selectedId)
-            switch (e.keyCode) {
-                case KEY.ArrowUp:
-                    if (i >= 4 && i <= 12) {
-                        i = i - step + 2 - (i >= 11)
-                    } else {
-                        i = i - step
-                    }
-                    if (i < 0) {
-                        i = i + this.keys.length
-                    }
-                    break;
-                case KEY.ArrowDown:
-                    if (i <= 3 || i >= 47) {
-                        i = i + step - 2 + (i <= 48 && i >= 47)
-                    } else {
-                        i = i + step
-                    }
-                    if (i > this.maxId) {
-                        i = i - this.keys.length
-                    }
-                    break;
-                case KEY.ArrowLeft:
-                    i = i > 0 ? i - 1 : this.maxId
-                    break;
-                case KEY.ArrowRight:
-                    i = i < this.maxId ? i + 1 : 0
-                    break;
-                case KEY.Enter:
-                    this.click(i)
-                default:
-                    // console.log(e.keyCode, 'ignore keyup event', e)
-                    break;
-            }
-            if (i != this.selectedId) {
-                this.setActive(i)
-            }
-        })
+        if (i != this.selectedId) {
+            this.setActive(i)
+        }
+        return true
     }
 
     setActive(i) {
@@ -162,17 +149,13 @@ class SoftKeyboard {
         if (targetId)
             this.input_ = document.querySelector('#' + targetId)
     }
-    bindComplete() {
-        const targetFun = this.element_.getAttribute('oncomplete')
-        if (targetFun)
-            this.onComplete = eval(targetFun)
-    }
+
     click(i) {
         const k = this.keys[i]
         if (this.input_ && k) {
             switch (k.dataset.value) {
                 case 'OK':
-                    console.log('compulete')
+                    console.log('compulete', this.input_.value)
                     if (this.onComplete) {
                         this.onComplete(this.input_.value)
                     }
@@ -207,4 +190,5 @@ class SoftKeyboard {
             }
         }
     }
+
 }

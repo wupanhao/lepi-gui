@@ -136,7 +136,7 @@ angular.module('myApp', [
         $locationProvider.hashPrefix('!');
         $routeProvider.otherwise({ redirectTo: '/index' });
     }])
-    .controller('App', function ($rootScope, $location) {
+    .controller('App', function ($rootScope, $location, $route) {
         console.log('call only once')
         $rootScope.localHandler = {}
         $rootScope.debug = false
@@ -149,7 +149,7 @@ angular.module('myApp', [
         })
 
         function clickHandlerForContent(e) {
-            console.log('clickHandlerForContent', e)
+            console.log('clickHandlerForContent', e.code)
             var i = $rootScope.itemIndex || 0
             switch (e.code) {
                 case "ArrowLeft":
@@ -182,9 +182,11 @@ angular.module('myApp', [
                     break;
                 case "Enter":
                     if (i < $rootScope.show.length) {
-                        var link = $rootScope.show[i].link
+                        var link = document.querySelector('div.active a')
                         if (link) {
-                            window.location.assign(link)
+                            // history.go()
+                            console.log(link)
+                            link.click()
                             return
                         }
                     }
@@ -198,6 +200,7 @@ angular.module('myApp', [
         }
 
         function clickHandlerForMenu(e) {
+            console.log('clickHandlerForMenu', e.code)
             var j = $rootScope.menuIndex || 0
             const menus = $rootScope.menus || []
             const maxMenuIndex = menus.length - 1
@@ -243,7 +246,10 @@ angular.module('myApp', [
         $rootScope.$on('$viewContentLoaded', function (e) {
             //Here your view content is fully loaded !!
             console.log('viewContentLoaded', e)
-            // window.componentHandler.upgradeAllRegistered()
+            return
+            if ($location.path() == '/setting/wifi/') {
+                window.componentHandler.upgradeAllRegistered()
+            }
         });
 
 
@@ -297,7 +303,17 @@ angular.module('myApp', [
             $rootScope.itemIndex = id
         }
         document.addEventListener('keyup', (e) => {
-            console.log(e)
+            console.log(e.code)
+            var path = $location.path()
+            // 不采用事件方式，改用回调函数
+            // var name = 'keyEvent' + path
+            // $rootScope.$broadcast(name, e)
+            if ($rootScope.localHandler[path]) {
+                if ($rootScope.localHandler[path](e)) {
+                    console.log('handled by page')
+                    return
+                }
+            }
             if ($rootScope.maxItemIndex >= 0) {
                 if (menuShown()) {
                     clickHandlerForMenu(e)
@@ -324,7 +340,8 @@ angular.module('myApp', [
                         history.go(-2);
                     } else {
                         console.log('go back')
-                        history.back();
+                        history.go(-1);
+                        // history.back();
                     }
                     break;
                 case "KeyR":
@@ -336,13 +353,7 @@ angular.module('myApp', [
                     break;
             }
 
-            var path = $location.path()
-            // 不采用事件方式，改用回调函数
-            // var name = 'keyEvent' + path
-            // $rootScope.$broadcast(name, e)
-            if ($rootScope.localHandler[path]) {
-                $rootScope.localHandler[path](e)
-            }
+
 
         })
     })

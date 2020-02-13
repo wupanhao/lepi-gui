@@ -15,19 +15,113 @@ angular.module('myApp.wifi', ['ngRoute'])
         $rootScope.title = 'WiFi'
         console.log($location.path(), ' entered')
 
-        $http.get('/wifi/scan').then(res => {
-            // $scope.wifiList = res.data
-            $rootScope.items = res.data
-            $rootScope.rowNum = 6
-            $rootScope.colNum = 1
-            $rootScope.updatePageInfo()
-        }, (err) => {
-            console.log(err)
-        })
-        $http.get('/wifi/info').then(res => {
-            $scope.info = res.data
-            ngRefresh()
-        }, (err) => {
-            console.log(err)
-        })
+
+
+        const updateWiFiList = () => {
+            $http.get('/wifi/scan').then(res => {
+                // $scope.wifiList = res.data
+                $rootScope.items = res.data.map(item => {
+                    item.ssid = decodeURI(item.ssid.split('\\x').join('%'))
+                    return item
+                })
+                $rootScope.rowNum = 6
+                $rootScope.colNum = 1
+                $rootScope.updatePageInfo()
+            }, (err) => {
+                console.log(err)
+            })
+        }
+        const updateWiFiInfo = () => {
+            $http.get('/wifi/info').then(res => {
+                if (res.data && res.data.ssid) {
+                    res.data.ssid = decodeURI(res.data.ssid.split('\\x').join('%'))
+                }
+                $scope.info = res.data
+                ngRefresh()
+            }, (err) => {
+                console.log(err)
+            })
+        }
+
+        const kb = new SoftKeyboard('#soft-keyboard')
+
+        kb.onComplete = (passwd) => {
+            const wifi = $rootScope.show[$rootScope.itemIndex]
+            console.log(wifi, passwd)
+            swal({
+                title: "正在连接",
+                text: "请稍等",
+                // icon: "/images/loading.gif",
+                button: false,
+                closeOnClickOutside: false,
+                closeOnEsc: false
+            });
+            const ele = document.querySelector('#input')
+            ele.classList.add('hide')
+            $http.post('/wifi/connect', { ssid: wifi.ssid, psk: passwd }).then(res => {
+                console.log(res.data)
+                if (res.data && res.data.ssid) {
+                    swal({
+                        title: "连接成功",
+                        text: "",
+                        button: false,
+                        timer: 1000,
+                    });
+                } else {
+                    swal({
+                        title: "连接失败",
+                        text: "",
+                        button: false,
+                        timer: 1000,
+                    });
+                }
+                setTimeout(updateWiFiInfo, 1000)
+
+            }, err => {
+                console.log(err)
+                swal({
+                    title: "连接出错",
+                    // text: "",
+                    timer: 1000,
+                    button: false,
+                });
+                // swal.stopLoading();
+                // swal.close();
+            })
+        }
+        $rootScope.localHandler[$location.path()] = (e) => {
+            console.log(e.code)
+            if ($rootScope.show.length == 0) {
+                return false
+            }
+            const ele = document.querySelector('#input')
+            if (ele && !(ele.classList.contains('hide'))) {
+                if (kb.keyHandler(e)) {
+                    return true
+                }
+            }
+            switch (e.code) {
+                case "Enter":
+                    if (ele && ele.classList.contains('hide')) {
+                        const wifi = $rootScope.show[$rootScope.itemIndex]
+                        const title = document.querySelector('#input .title')
+                        title.textContent = '连接到' + wifi.ssid
+                        ele.classList.remove('hide')
+                    }
+                    break;
+                case "KeyB":
+                    if (ele && !(ele.classList.contains('hide'))) {
+                        ele.classList.add('hide')
+                    } else {
+                        return false
+                    }
+                    break;
+                default:
+                    return false
+            }
+            return true
+        }
+        updateWiFiList()
+        updateWiFiInfo()
     });
+

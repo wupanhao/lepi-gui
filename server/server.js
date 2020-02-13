@@ -84,6 +84,54 @@ app.get('/clearData', (req, res) => {
 
 const server = createServer(app)
 
-server.listen(8000, () => {
-  console.log('Listening on http://localhost:8000');
-});
+try {
+  const electron = require('electron')
+  const BrowserWindow = electron.BrowserWindow
+  const globalShortcut = electron.globalShortcut
+  function createWindow() {
+    globalShortcut.register('ESC', () => {
+      mainWindow.setFullScreen(false);
+    })
+
+    mainWindow = new BrowserWindow({
+      width: 240,
+      height: 320,
+      // autoHideMenuBar: true, //remove menubar but save minimize maxmize controls
+      // frame: false, //remove menubar and control
+      webPreferences: {
+        nodeIntegration: true
+      }
+    })
+
+    mainWindow.on('blur', () => {
+      console.log('mainWindow blured')
+      mainWindow.focused = false
+    })
+
+    mainWindow.on('focus', () => {
+      console.log('mainWindow focused')
+      mainWindow.focused = true
+    })
+    mainWindow.on('show', () => {
+      console.log('mainWindow showed')
+    })
+
+    mainWindow.loadURL("http://localhost:8000/app")
+    //mainWindow.loadURL('http://localhost:3000')
+    mainWindow.setFullScreen(true);
+    console.log(mainWindow)
+  }
+
+  electron.app.on('ready', () => {
+    server.listen(8000, () => {
+      console.log('Listening on http://localhost:8000 with electron');
+      createWindow()
+    })
+  })
+}
+catch (error) {
+  console.log(error)
+  server.listen(8000, () => {
+    console.log('Listening on http://localhost:8000');
+  })
+}

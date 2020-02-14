@@ -43,7 +43,7 @@ function resetAll() {
 	file_name = path.join(__dirname, 'stopMotors.py')
 	ChildProcess.exec(`sudo killall lxterminal;python ${file_name}`)
 }
-router.get('/camera_connected', function(req, res) {
+router.get('/camera_connected', function (req, res) {
 	checkCameraConnection().then(connected => {
 		if (connected) {
 			console.log('connected')
@@ -56,23 +56,30 @@ router.get('/camera_connected', function(req, res) {
 	})
 })
 
-router.get('/halt', function(req, res) {
+router.get('/halt', function (req, res) {
 	res.json({
 		status: 'ok'
 	})
-	ChildProcess.exec("docker stop demo_duck", () => {
+	ChildProcess.exec("rosnode kill -a", () => {
 		ChildProcess.exec("sudo halt")
 	})
 })
-
-router.get('/start_pi_driver', function(req, res) {
+router.get('/reboot', function (req, res) {
+	res.json({
+		status: 'ok'
+	})
+	ChildProcess.exec("rosnode kill -a", () => {
+		ChildProcess.exec("sudo reboot")
+	})
+})
+router.get('/start_pi_driver', function (req, res) {
 	res.json({
 		status: 'ok'
 	})
 	startPiDriver()
 })
 
-router.get('/start_duck_service', function(req, res) {
+router.get('/start_duck_service', function (req, res) {
 	res.json({
 		status: 'ok'
 	})
@@ -84,5 +91,5 @@ module.exports = {
 	checkCameraConnection: checkCameraConnection,
 	startPiDriver: startPiDriver,
 	startDuckService: startDuckService,
-	resetAll:resetAll
+	resetAll: resetAll
 }

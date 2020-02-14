@@ -19,36 +19,38 @@ angular.module('myApp.player', ['ngRoute'])
     $rootScope.items = []
     $rootScope.updatePageInfo()
 
-    $scope.$on('keyEvent' + $location.path(), (name, e) => {
-      console.log(e)
-      switch (e.keyCode) {
-        case KEY.ArrowLeft:
+    $rootScope.localHandler[$location.path()] = (e) => {
+      console.log(e.code)
+      switch (e.code) {
+        case "ArrowLeft":
           player.currentTime -= 10
           break
-        case KEY.ArrowRight:
+        case "ArrowRight":
           player.currentTime += 10
           break
-        case KEY.ArrowUp:
+        case "ArrowUp":
           player.volume = Math.min(player.volume + 0.1, 1)
           break
-        case KEY.ArrowDown:
+        case "ArrowDown":
           player.volume = Math.max(player.volume - 0.1, 0)
           break
-        case KEY.Enter:
+        case "Enter":
           if (player.paused) {
             player.play()
           } else {
             player.pause()
           }
-        case KEY.M:
-        case KEY.B:
-        case KEY.R:
-        case KEY.S:
-          break;
+          break
+        case "KeyM":
+        case "KeyB":
+        case "KeyR":
+        case "KeyS":
         default:
+          return false
           // console.log(e.keyCode, 'ignore keyup event', e)
           break;
       }
-    })
+      return true
+    }
 
   });

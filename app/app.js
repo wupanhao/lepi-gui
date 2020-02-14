@@ -12,6 +12,16 @@ const KEY = {
     S: 83 // KeyS (Stop or Home)
 }
 
+const rotateMap = {
+    // 上下左右 横屏重映射，
+    37: 38,
+    38: 39,
+    39: 40,
+    40: 37,
+    13: 32, //回车=> 空格
+    77: 84 //M => T
+}
+
 function ngRefresh() {
     // $scope.apply()
     const header = document.getElementById('head')
@@ -32,7 +42,6 @@ function showMenu() {
     const menu = document.getElementById('demo-menu-top-left')
     if (!menuShown()) {
         menu.click()
-        changeMenuActive(0)
     }
 }
 function closeMenu() {
@@ -54,21 +63,12 @@ function changeMenuActive(j) {
     })
 }
 
-window.rotate90 = false
-const rotateMap = {
-    // 上下左右 横屏重映射，
-    37: 38,
-    38: 39,
-    39: 40,
-    40: 37,
-    13: 32, //回车=> 空格
-    72: 84 //H => T
-}
+
 function btnHandler(message) {
     console.log(message)
     // console.log(message.value, rotateMap.hasOwnProperty(message.value))
 
-    if (window.rotate90 && rotateMap.hasOwnProperty(message.value)) {
+    if (window.location.hash.split('?')[0] == '#!/scratchRunner' && rotateMap.hasOwnProperty(message.value)) {
         message.value = rotateMap[message.value]
     }
     var code = keyCodeMap[message.value]
@@ -120,8 +120,8 @@ function btnHandler(message) {
 // Declare app level module which depends on views, and core components
 angular.module('myApp', [
     'ngRoute',
-    'myApp.view1',
-    'myApp.view2',
+    // 'myApp.view1',
+    // 'myApp.view2',
     'myApp.index',
     'myApp.explore',
     'myApp.player',
@@ -136,7 +136,7 @@ angular.module('myApp', [
         $locationProvider.hashPrefix('!');
         $routeProvider.otherwise({ redirectTo: '/index' });
     }])
-    .controller('App', function ($rootScope, $location, $route) {
+    .controller('App', function ($rootScope, $location, $window) {
         console.log('call only once')
         $rootScope.localHandler = {}
         $rootScope.debug = false
@@ -146,6 +146,13 @@ angular.module('myApp', [
         $rootScope.ros.conectToRos(() => {
             // updateData()
             console.log('connected to ros ', $rootScope.ros)
+            swal({
+                title: "启动完毕",
+                text: "可以开始你的创作了",
+                button: false,
+                timer: 1000,
+            });
+            setTimeout(swal.close, 1000)
         })
 
         function clickHandlerForContent(e) {
@@ -182,10 +189,13 @@ angular.module('myApp', [
                     break;
                 case "Enter":
                     if (i < $rootScope.show.length) {
+                        // var link = $rootScope.show[i].link
                         var link = document.querySelector('div.active a')
                         if (link) {
-                            // history.go()
                             console.log(link)
+                            // $window.location.href = link
+                            // $window.location.assign(link)
+                            // history.go()
                             link.click()
                             return
                         }
@@ -220,6 +230,8 @@ angular.module('myApp', [
                     if (item && item.callback) {
                         item.callback()
                     }
+                    closeMenu()
+                    return
                     break;
             }
             if (j != $rootScope.menuIndex) {
@@ -308,19 +320,20 @@ angular.module('myApp', [
             // 不采用事件方式，改用回调函数
             // var name = 'keyEvent' + path
             // $rootScope.$broadcast(name, e)
-            if ($rootScope.localHandler[path]) {
-                if ($rootScope.localHandler[path](e)) {
-                    console.log('handled by page')
-                    return
+            if (menuShown()) {
+                clickHandlerForMenu(e)
+            } else {
+                if ($rootScope.localHandler[path]) {
+                    if ($rootScope.localHandler[path](e)) {
+                        console.log('handled by page')
+                        return
+                    }
                 }
-            }
-            if ($rootScope.maxItemIndex >= 0) {
-                if (menuShown()) {
-                    clickHandlerForMenu(e)
-                } else {
+                if ($rootScope.maxItemIndex >= 0) {
                     clickHandlerForContent(e)
                 }
             }
+
             switch (e.code) {
                 case "KeyM":
                     if (menuShown()) {
@@ -328,6 +341,8 @@ angular.module('myApp', [
                         closeMenu()
                     } else {
                         console.log('showMenu')
+                        $rootScope.menuIndex = 0
+                        changeMenuActive(0)
                         showMenu()
                     }
                     break;
@@ -335,14 +350,24 @@ angular.module('myApp', [
                     // console.log($location.path())
                     if (menuShown()) {
                         closeMenu()
-                    } else if (['/player', '/scratchRunner'].indexOf($location.path()) >= 0) {
-                        console.log('go back 2 pages')
-                        history.go(-2);
                     } else {
+                        // console.log($location)
+                        // var pre = history.length
                         console.log('go back')
+                        // $window.history.back()
                         history.go(-1);
-                        // history.back();
+                        // if (history.length == pre) {
+                        //     console.log('go back -2')
+                        //     history.go(-2);
+                        // }
+                        // console.log(pre, history.length)
+                        // history.back(); // pi 上貌似不正常工作
+                        // if (['/player', '/scratchRunner'].indexOf($location.path()) >= 0) {
+                        //     console.log('go back 2 pages')
+                        //     history.go(-2);
+                        // } 
                     }
+
                     break;
                 case "KeyR":
                     break;
@@ -352,8 +377,5 @@ angular.module('myApp', [
                     // console.log(e.codeCode, 'ignore keyup event', e)
                     break;
             }
-
-
-
         })
     })

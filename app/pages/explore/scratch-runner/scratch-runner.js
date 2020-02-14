@@ -10,7 +10,10 @@ class Runner {
     this.vm = vm
     this.running = false
     vm.setTurboMode(true);
-    var canvas = document.getElementById(canvasId);
+    // var canvas = document.getElementById(canvasId);
+    const canvas = document.createElement('canvas')
+    canvas.setAttribute('id', canvasId)
+    this.canvas = canvas
     const storage = new ScratchStorage();
     vm.attachStorage(storage);
     vm.on('workspaceUpdate', function () {
@@ -33,7 +36,7 @@ class Runner {
       this.running = false
     })
 
-    var renderer = new ScratchRender(canvas);
+    var renderer = new ScratchRender(this.canvas);
     Scratch.renderer = renderer;
     vm.attachRenderer(renderer);
     var audioEngine = new AudioEngine();
@@ -83,15 +86,18 @@ class Runner {
       if (e.target !== document && e.target !== document.body) {
         return;
       }
-      console.log(e)
-      if (e.keyCode == KEY.S) { // S Stop
+      if (window.location.hash.split('?')[0] != '#!/scratchRunner') {
+        return
+      }
+      if (e.code == "KeyS") { // S Stop
         this.vm.stopAll()
         this.running = false
-      } else if (e.keyCode == KEY.R) { // R Run
+      } else if (e.code == "KeyR") { // R Run
         this.vm.greenFlag()
         this.running = true
       }
 
+      console.log(e)
       Scratch.vm.postIOData('keyboard', {
         key: e.key,
         isDown: true
@@ -99,6 +105,9 @@ class Runner {
 
     });
     document.addEventListener('keyup', e => {
+      if (window.location.hash.split('?')[0] != '#!/scratchRunner') {
+        return
+      }
       // Always capture up events,
       // even those that have switched to other targets.
       Scratch.vm.postIOData('keyboard', {
@@ -150,27 +159,22 @@ angular.module('myApp.scratchRunner', ['ngRoute'])
     var src = $location.search().src || ''
     $rootScope.items = []
     $rootScope.updatePageInfo()
-
+    console.log(Scratch)
     const runner = Scratch.runner || new Runner()
+    console.log(runner)
+    document.getElementById('scratch').appendChild(runner.canvas)
     runner.loadProjectFromUrl(src)
 
-    $scope.$on('keyEvent' + $location.path(), (name, e) => {
-      console.log(e)
-      switch (e.keyCode) {
-        case KEY.ArrowLeft:
-        case KEY.ArrowRight:
-        case KEY.ArrowUp:
-        case KEY.ArrowDown:
-        case KEY.Enter:
-        case KEY.M:
-        case KEY.B:
-        case KEY.R:
-        case KEY.S:
-          break;
-        default:
-          // console.log(e.keyCode, 'ignore keyup event', e)
-          break;
+    $rootScope.localHandler[$location.path()] = (e) => {
+      switch (e.code) {
+        case "KeyB":
+          if (runner.running) {
+            runner.vm.stopAll()
+            runner.running = false
+            return true
+          }
       }
-    })
+      return false
+    }
 
   });

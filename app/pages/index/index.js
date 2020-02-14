@@ -9,7 +9,7 @@ angular.module('myApp.index', ['ngRoute'])
     });
   }])
 
-  .controller('IndexCtrl', function ($scope, $location, $rootScope) {
+  .controller('IndexCtrl', function ($http, $rootScope) {
 
     const items = [
       {
@@ -37,15 +37,46 @@ angular.module('myApp.index', ['ngRoute'])
     $rootScope.items = items
     $rootScope.rowNum = 3
     $rootScope.colNum = 2
-    $rootScope.menus = ['菜单', '菜单', '菜单', '菜单', '菜单', '菜单',].map((item, index) => {
-      return {
-        text: item + index,
-        callback: () => {
-          var k = index
-          console.log(`menu item-${k} clicked`)
+    $rootScope.menus = [
+      {
+        text: '前进',
+        callback: (index) => {
+          console.log(`menu item-${index} clicked`)
+          history.go(1)
         }
-      }
-    })
+      }, {
+        text: '返回',
+        callback: (index) => {
+          console.log(`menu item-${index} clicked`)
+          history.go(-1)
+        }
+      }, {
+        text: '关机',
+        callback: (index) => {
+          console.log(`menu item-${index} clicked`)
+          swal("正在关机", {
+            button: false,
+          });
+          $http.get('/system/halt')
+        }
+      }, {
+        text: '重启',
+        callback: (index) => {
+          console.log(`menu item-${index} clicked`)
+          swal("正在准备重启", {
+            button: false,
+          });
+          $http.get('/system/reboot')
+        }
+      }, {
+        text: '回到首页',
+        callback: (index) => {
+          console.log(`menu item-${index} clicked`)
+          window.location.assign('#!/index')
+        }
+      },
+
+    ]
 
     console.log('index entered')
     $rootScope.updatePageInfo()

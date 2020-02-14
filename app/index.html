@@ -12,15 +12,27 @@
     <script src="lib/material-design-lite/material.js"></script>
     <!-- <link rel="stylesheet" href="assets/css/index.css"> -->
     <link rel="stylesheet" href="app.css">
+    <script src="lib/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        swal({
+            title: "服务正在启动",
+            text: "请稍等",
+            // icon: "/images/loading.gif",
+            button: false,
+            // closeOnClickOutside: false,
+            // closeOnEsc: false
+        });
+    </script>
 </head>
 
 <body id="root" ng-controller="App">
-    <ul class="menu" hidden='true'>
+
+    <!-- <ul class="menu" hidden='true'>
         <li><a href="#!/view1">view1</a></li>
         <li><a href="#!/view2">view2</a></li>
         <li><a href="#!/index">index</a></li>
         {{test}}
-    </ul>
+    </ul> -->
 
     <ng-include src="'pages/header/header.html'"></ng-include>
     <!-- <div ng-include="'pages/header/header.html'"></div> -->
@@ -38,21 +50,12 @@
     <script src="lib/echarts/dist/echarts.js"></script>
     <!-- <script src="lib/axios/dist/axios.js"></script> -->
 
-    <!-- ScratchRunner Libs -->
-    <script src="lib/sweetalert/dist/sweetalert.min.js"></script>
-    <script src="lib/jszip-utils/dist/jszip-utils.js"></script>
-    <script src="lib/scratch-audio/dist/web/scratch-audio.js"></script>
-    <script src="lib/scratch-render/dist/web/scratch-render.js"></script>
-    <script src="lib/scratch-svg-renderer/dist/web/scratch-svg-renderer.js"></script>
-    <script src="lib/scratch-storage/dist/web/scratch-storage.js"></script>
-    <script src="lib/scratch-vm/dist/web/scratch-vm.js"></script>
-
     <script src="assets/js/ros.js"></script>
     <script src="assets/js/keyCodeMap.js"></script>
     <script src="assets/js/soft-keyboard.js"></script>
     <script src="app.js"></script>
-    <script src="pages/view1/view1.js"></script>
-    <script src="pages/view2/view2.js"></script>
+    <!-- <script src="pages/view1/view1.js"></script> -->
+    <!-- <script src="pages/view2/view2.js"></script> -->
     <script src="pages/index/index.js"></script>
     <script src="pages/explore/explore.js"></script>
     <script src="pages/explore/player/player.js"></script>
@@ -62,6 +65,14 @@
     <script src="pages/testing/motor/motor.js"></script>
     <script src="pages/setting/setting.js"></script>
     <script src="pages/setting/wifi/wifi.js"></script>
+
+    <!-- ScratchRunner Libs -->
+    <script src="lib/jszip-utils/dist/jszip-utils.js"></script>
+    <script src="lib/scratch-audio/dist/web/scratch-audio.js"></script>
+    <script src="lib/scratch-render/dist/web/scratch-render.js"></script>
+    <script src="lib/scratch-svg-renderer/dist/web/scratch-svg-renderer.js"></script>
+    <script src="lib/scratch-storage/dist/web/scratch-storage.js"></script>
+    <script src="lib/scratch-vm/dist/web/scratch-vm.js"></script>
 
 </body>
 

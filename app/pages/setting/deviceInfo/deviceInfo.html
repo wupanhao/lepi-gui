@@ -1,0 +1,40 @@
+<style>
+    table {
+        width: 220px;
+        text-align: right;
+        max-height: 150px;
+        overflow: hidden;
+    }
+
+    tr td:first-child {
+        text-align: left;
+    }
+</style>
+<table rules="none">
+    <tbody>
+        <tr>
+            <td>设备名称</td>
+            <td>乐派</td>
+        </tr>
+        <tr>
+            <td>系统平台</td>
+            <td>{{info.platform}}-{{info.arch}}</td>
+        </tr>
+        <tr>
+            <td>版本</td>
+            <td>{{info.release}}</td>
+        </tr>
+        <tr>
+            <td>内存</td>
+            <td>{{info.memory.total - info.memory.free}}M/{{info.memory.total}}M</td>
+        </tr>
+        <tr>
+            <td>硬盘</td>
+            <td>{{info.disk.used}}/{{info.disk.total}}M</td>
+        </tr>
+        <tr ng-repeat="ip in info.ips">
+            <td>网络{{ip.interface | limitTo: 10}}</td>
+            <td>{{ip.ip}}</td>
+        </tr>
+    </tbody>
+</table>

@@ -7,7 +7,7 @@ body {
     width: 240px;
     height: 320px;
     background: url("assets/images/bg.png") no-repeat;
-    /* background: url("assets/images/bg.png") no-repeat; */
+    color: white;
 }
 
 #content {

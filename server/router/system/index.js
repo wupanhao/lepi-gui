@@ -1,31 +1,50 @@
 const express = require('express');
 const path = require('path');
-
-const router = express.Router();
-
+const os = require('os');
 const ChildProcess = require('child_process');
+const router = express.Router();
+const {
+	getLocalIps
+} = require('../mdns')
 
-function checkCameraConnection() {
-	return new Promise((resolve, reject) => {
-		ChildProcess.exec("vcgencmd get_camera", (error, stdout, stderr) => {
-			if (error || stderr) {
-				console.error(`error: ${error}`);
-				console.error(`stderr: ${stderr}`);
-				error && reject(error)
-				stderr && reject(stderr)
-				return;
-			}
-			var pattern = /detected=(\d{1})/
-			var match = stdout.match(pattern);
-			// console.log(match)
-			if (match && match[1] == '1') {
-				resolve(true)
-			} else {
-				resolve(true)
-			}
-		})
+function getDeviceInfo() {
+	const info = {
+		memory: {
+			free: Math.floor(os.freemem() / 1024 / 1024),
+			total: Math.floor(os.totalmem() / 1024 / 1024)
+		},
+		release: os.release(),
+		arch: os.arch(),
+		uptime: os.uptime(),
+		platform: os.platform(),
+		ips: getLocalIps(),
+		loadavg: os.loadavg(),
+		disk: {
+			used: 0,
+			total: 0
+		}
+	}
+
+	return new Promise(resolve => {
+		if (os.platform() == 'linux') {
+			ChildProcess.exec(`df -h / | tail -n +2 | awk '{ print $3 " " $2 }'`, (error, stdout, stderr) => {
+				if (error || stderr) {
+					console.log(error)
+				}
+				const disk = stdout.trim().split(' ')
+				if (disk[0] && disk[1]) {
+					info.disk.used = disk[0]
+					info.disk.total = disk[1]
+				}
+				resolve(info)
+			})
+		} else {
+			resolve(info)
+		}
 	})
 }
+
+// getDeviceInfo().then(console.log)
 
 function startPiDriver() {
 	// ChildProcess.exec(`source /home/pi/workspace/lepi_gui/ros_env.sh && roslaunch pi_driver pi_master_node.launch > /tmp/pi_master_node.log `)
@@ -43,19 +62,11 @@ function resetAll() {
 	file_name = path.join(__dirname, 'stopMotors.py')
 	ChildProcess.exec(`sudo killall lxterminal;python ${file_name}`)
 }
-router.get('/camera_connected', function (req, res) {
-	checkCameraConnection().then(connected => {
-		if (connected) {
-			console.log('connected')
-		} else {
-			console.log('not connected')
-		}
-		res.json({
-			connected: connected
-		})
+router.get('/deviceInfo', function (req, res) {
+	getDeviceInfo().then(info => {
+		res.json(info)
 	})
 })
-
 router.get('/halt', function (req, res) {
 	res.json({
 		status: 'ok'
@@ -88,7 +99,6 @@ router.get('/start_duck_service', function (req, res) {
 
 module.exports = {
 	systemRouter: router,
-	checkCameraConnection: checkCameraConnection,
 	startPiDriver: startPiDriver,
 	startDuckService: startDuckService,
 	resetAll: resetAll

@@ -37,7 +37,7 @@ angular.module('myApp.setting', ['ngRoute'])
       },
       {
         id: 4,
-        link: '#!/setting/device',
+        link: '#!/setting/deviceInfo',
         src: "assets/images/info.png",
         name: '设备信息'
       },

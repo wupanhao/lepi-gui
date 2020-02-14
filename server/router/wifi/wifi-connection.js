@@ -1,7 +1,7 @@
 
-var sprintf = require('sprintf-js').sprintf;
-var Events = require('events');
-var ChildProcess = require('child_process');
+const sprintf = require('sprintf-js').sprintf;
+// const Events = require('events');
+const ChildProcess = require('child_process');
 
 function debug() {
 };

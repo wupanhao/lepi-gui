@@ -1,4 +1,3 @@
-const mdns = require('multicast-dns')()
 const os = require('os');
 
 const HOSTNAME = 'lepi.local'
@@ -24,7 +23,7 @@ function getLocalIps() {
 };
 
 function start_mdns_server() {
-
+  const mdns = require('multicast-dns')()
   // console.log('local ip address:', getLocalIps());
   mdns.on('query', query => {
     if (query.questions[0] && query.questions[0].name === HOSTNAME) {

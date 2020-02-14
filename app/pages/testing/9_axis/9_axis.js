@@ -100,7 +100,9 @@ angular.module('myApp.9_axis', ['ngRoute'])
                 option.series[2].data.push(res.data.z > 32768 ? res.data.z - 65536 : res.data.z)
                 // console.log(option.series[0].data)
                 myChart.setOption(option);
-                updateData()
+                if ($location.path() == '/testing/9_axis') {
+                    updateData()
+                }
             })
         }
         if (ros_client && ros_client.ros && ros_client.ros.isConnected) {

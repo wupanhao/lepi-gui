@@ -131,6 +131,7 @@ angular.module('myApp', [
     'myApp.motor',
     'myApp.setting',
     'myApp.wifi',
+    'myApp.deviceInfo',
 ])
     .config(['$locationProvider', '$routeProvider', function ($locationProvider, $routeProvider) {
         $locationProvider.hashPrefix('!');
@@ -143,17 +144,28 @@ angular.module('myApp', [
 
         $rootScope.ros = new ros_client('ws://' + $location.host() + ':9090', btnHandler)
 
-        $rootScope.ros.conectToRos(() => {
-            // updateData()
-            console.log('connected to ros ', $rootScope.ros)
+        if (navigator.platform.includes('arm')) {
+            // navigator.platform: "Linux armv7l"
             swal({
-                title: "启动完毕",
-                text: "可以开始你的创作了",
+                title: "服务正在启动",
+                text: "请稍等",
+                // icon: "/images/loading.gif",
                 button: false,
-                timer: 1000,
+                // closeOnClickOutside: false,
+                // closeOnEsc: false
             });
-            setTimeout(swal.close, 1000)
-        })
+            $rootScope.ros.conectToRos(() => {
+                // updateData()
+                console.log('connected to ros ', $rootScope.ros)
+                swal({
+                    title: "启动完毕",
+                    text: "可以开始你的创作了",
+                    button: false,
+                    timer: 1000,
+                });
+                setTimeout(swal.close, 1000)
+            })
+        }
 
         function clickHandlerForContent(e) {
             console.log('clickHandlerForContent', e.code)

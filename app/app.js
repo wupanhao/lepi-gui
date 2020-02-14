@@ -129,6 +129,7 @@ angular.module('myApp', [
     'myApp.testing',
     'myApp.9_axis',
     'myApp.motor',
+    'myApp.camera',
     'myApp.setting',
     'myApp.wifi',
     'myApp.deviceInfo',
@@ -258,7 +259,15 @@ angular.module('myApp', [
             //此处使用js原生方式回退  
             history.back();
         }
-
+        $rootScope.setStatusBar = (enable) => {
+            if (enable) {
+                $rootScope.show_header = true
+                $rootScope.show_footer = true
+            } else {
+                $rootScope.show_header = false
+                $rootScope.show_footer = false
+            }
+        }
         $rootScope.$on("$includeContentLoaded", function (event, templateName) {
             console.log(`${templateName} loaded`)
             if (templateName == 'pages/footer/footer.html') {

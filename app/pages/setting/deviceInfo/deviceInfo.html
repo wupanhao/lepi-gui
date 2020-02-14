@@ -21,16 +21,24 @@
             <td>{{info.platform}}-{{info.arch}}</td>
         </tr>
         <tr>
-            <td>版本</td>
+            <td>系统版本</td>
             <td>{{info.release}}</td>
         </tr>
         <tr>
+            <td>运行时间</td>
+            <td>{{info.uptime}}</td>
+        </tr>
+        <tr>
+            <td>系统负载</td>
+            <td>{{info.loadavg}}</td>
+        </tr>
+        <tr>
             <td>内存</td>
-            <td>{{info.memory.total - info.memory.free}}M/{{info.memory.total}}M</td>
+            <td>{{info.memory.used}}M/{{info.memory.total}}M</td>
         </tr>
         <tr>
             <td>硬盘</td>
-            <td>{{info.disk.used}}/{{info.disk.total}}M</td>
+            <td>{{info.disk.used}}/{{info.disk.total}}</td>
         </tr>
         <tr ng-repeat="ip in info.ips">
             <td>网络{{ip.interface | limitTo: 10}}</td>

@@ -10,8 +10,8 @@ const {
 function getDeviceInfo() {
 	const info = {
 		memory: {
-			free: Math.floor(os.freemem() / 1024 / 1024),
-			total: Math.floor(os.totalmem() / 1024 / 1024)
+			used: 0,
+			total: 0
 		},
 		release: os.release(),
 		arch: os.arch(),
@@ -36,7 +36,17 @@ function getDeviceInfo() {
 					info.disk.used = disk[0]
 					info.disk.total = disk[1]
 				}
-				resolve(info)
+				ChildProcess.exec(`free -m | head -n +2 | tail -n +2 | awk '{print $2 " " $3}'`, (error, stdout, stderr) => {
+					if (error || stderr) {
+						console.log(error)
+					}
+					const memory = stdout.trim().split(' ')
+					if (memory[0] && memory[1]) {
+						info.memory.used = memory[1]
+						info.memory.total = memory[0]
+					}
+					resolve(info)
+				})
 			})
 		} else {
 			resolve(info)

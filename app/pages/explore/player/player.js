@@ -17,6 +17,22 @@ angular.module('myApp.player', ['ngRoute'])
     const player = document.getElementById('player')
     player.src = src
     $rootScope.items = []
+
+    $rootScope.menus = [
+      {
+        text: '全屏',
+        callback: (index) => {
+          console.log(`menu item-${index} clicked`)
+          const video = document.querySelector('video')
+          if (video.classList.contains('horizontal')) {
+            video.classList.remove('horizontal')
+          } else {
+            video.classList.add('horizontal')
+          }
+        }
+      },
+    ]
+
     $rootScope.updatePageInfo()
 
     $rootScope.localHandler[$location.path()] = (e) => {

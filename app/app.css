@@ -137,10 +137,6 @@ p {
     text-align: center;
 }
 
-#player {
-    width: 100%;
-}
-
 .mdl-menu__item {
     height: 30px;
     line-height: 30px;
@@ -148,4 +144,18 @@ p {
 
 .mdl-switch__label {
     color: black;
+}
+
+video {
+    width: 240px;
+}
+
+video.horizontal {
+    width: 320px;
+    height: 240px;
+    transform: rotate(-90deg);
+    position: absolute;
+    left: -40px;
+    top: 40px;
+    background-color: black;
 }

@@ -9,7 +9,7 @@ angular.module('myApp.index', ['ngRoute'])
     });
   }])
 
-  .controller('IndexCtrl', function ($http, $rootScope) {
+  .controller('IndexCtrl', function ($http, $rootScope, $scope) {
 
     const items = [
       {
@@ -39,18 +39,6 @@ angular.module('myApp.index', ['ngRoute'])
     $rootScope.colNum = 2
     $rootScope.menus = [
       {
-        text: '前进',
-        callback: (index) => {
-          console.log(`menu item-${index} clicked`)
-          history.go(1)
-        }
-      }, {
-        text: '返回',
-        callback: (index) => {
-          console.log(`menu item-${index} clicked`)
-          history.go(-1)
-        }
-      }, {
         text: '关机',
         callback: (index) => {
           console.log(`menu item-${index} clicked`)
@@ -75,7 +63,6 @@ angular.module('myApp.index', ['ngRoute'])
           window.location.assign('#!/index')
         }
       },
-
     ]
 
     console.log('index entered')

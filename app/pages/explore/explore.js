@@ -9,7 +9,7 @@ angular.module('myApp.explore', ['ngRoute'])
         })
     }])
 
-    .controller('ExploreCtrl', function ($rootScope, $http, $location) {
+    .controller('ExploreCtrl', function ($rootScope, $http, $location, $scope) {
         $rootScope.show_header = true
         $rootScope.show_footer = true
         $rootScope.title = '文件管理'

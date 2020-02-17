@@ -138,7 +138,7 @@ angular.module('myApp', [
         $locationProvider.hashPrefix('!');
         $routeProvider.otherwise({ redirectTo: '/index' });
     }])
-    .controller('App', function ($rootScope, $location, $window) {
+    .controller('App', function ($rootScope, $location, $scope) {
         console.log('call only once')
         $rootScope.localHandler = {}
         $rootScope.debug = false
@@ -284,6 +284,7 @@ angular.module('myApp', [
                 window.componentHandler.upgradeAllRegistered()
             }
         });
+
 
 
         const updatePageInfo = (pageIndex = 0) => {

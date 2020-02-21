@@ -22,6 +22,16 @@ const rotateMap = {
     77: 84 //M => T
 }
 
+function setPowerState(i) {
+    if (i >= 0 && i <= 100) {
+        const powerBar = document.querySelector('#power-bar-power')
+        const powerNumber = document.querySelector('#power-bar-number')
+        powerBar.style.width = `${i}%`
+        powerBar.style.background = `${i <= 10 ? 'red' : i <= 20 ? '#e4b827' : '#37c337'}`
+        powerNumber.textContent = `${i}%`
+    }
+}
+
 function ngRefresh() {
     // $scope.apply()
     const header = document.getElementById('head')
@@ -131,6 +141,7 @@ angular.module('myApp', [
     'myApp.motor',
     'myApp.camera',
     'myApp.speaker',
+    'myApp.microphone',
     'myApp.setting',
     'myApp.wifi',
     'myApp.deviceInfo',
@@ -143,8 +154,7 @@ angular.module('myApp', [
         console.log('call only once')
         $rootScope.localHandler = {}
         $rootScope.debug = false
-
-        $rootScope.ros = new ros_client('ws://' + $location.host() + ':9090', btnHandler)
+        $rootScope.ros = null
 
         if (navigator.platform.includes('arm')) {
             // navigator.platform: "Linux armv7l"
@@ -156,6 +166,7 @@ angular.module('myApp', [
                 // closeOnClickOutside: false,
                 // closeOnEsc: false
             });
+            $rootScope.ros = new ros_client('ws://' + $location.host() + ':9090', btnHandler)
             $rootScope.ros.conectToRos(() => {
                 // updateData()
                 console.log('connected to ros ', $rootScope.ros)
@@ -166,6 +177,20 @@ angular.module('myApp', [
                     timer: 1000,
                 });
                 setTimeout(swal.close, 1000)
+            })
+        } else {
+            $rootScope.ros = new ros_client('ws://192.168.50.234:9090', btnHandler)
+            $rootScope.ros.conectToRos(() => {
+                // updateData()
+                console.log('connected to ros ', $rootScope.ros)
+                swal({
+                    title: "启动完毕",
+                    text: "可以开始你的创作了",
+                    button: false,
+                    timer: 1000,
+                });
+                setTimeout(swal.close, 1000)
+                $rootScope.updatePowerInfo()
             })
         }
 
@@ -269,6 +294,25 @@ angular.module('myApp', [
                 $rootScope.show_footer = false
             }
         }
+
+
+
+        $rootScope.updatePowerInfo = () => {
+            try {
+                $rootScope.ros.getPowerState().then(data => {
+                    // console.log(data)
+                    if (data.est_power > 0 && data.est_power <= 100) {
+                        console.log(data)
+                        setPowerState(data.est_power)
+                        // $rootScope.est_power = data.est_power
+                    }
+                    setTimeout($rootScope.updatePowerInfo, 5000)
+                })
+            } catch (e) {
+                console.log(e)
+            }
+        }
+
         $rootScope.$on("$includeContentLoaded", function (event, templateName) {
             console.log(`${templateName} loaded`)
             if (templateName == 'pages/footer/footer.html') {

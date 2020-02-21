@@ -1,16 +1,59 @@
+<style>
+    #header {
+        height: 25px;
+    }
+
+    .header-title {
+        width: 50%;
+    }
+
+    #header img {
+        height: 15px;
+        /*margin-top: 5px;*/
+        float: right;
+        margin-right: 5px;
+    }
+
+    #power-bar-container {
+        height: 13px;
+        width: 35px;
+        border: 1px solid #FFF;
+        float: right;
+        border-radius: 7px;
+        margin-top: 0px;
+        margin-right: 2px
+    }
+
+    #power-bar-power {
+        float: left;
+        height: 100%;
+        width: 0%;
+        border-radius: 7px;
+        background: #e4b827;
+        text-align: center;
+        color: #fff;
+        font-size: 10px;
+    }
+
+    #power-number {
+        margin-right: 5px;
+    }
+</style>
+
 <div id="header" ng-show='show_header == true'>
     <div class="flex-row">
         <span class="header-title">{{title}}</span>
 
-        <div
-            style="height: 13px; width: 45px; border:1px solid #FFF; float: right; border-radius: 7px; margin-top: 0px; margin-right: 10px">
-            <div
-                style="float:left;height:100%;width: 40%;border-radius: 7px; background:#e4b827; text-align:center; color: #fff; font-size: 10px;">
-                50%</div>
-        </div>
 
         <img src="assets/images/wifi_s.png" alt="" />
         <img src="assets/images/bluetooth_s.png" alt="" />
+        <span id="power-bar-container">
+            <span id="power-bar-power">
+            </span>
+        </span>
 
+        <span id="power-bar-number">
+            --%
+        </span>
     </div>
 </div>

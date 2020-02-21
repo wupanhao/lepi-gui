@@ -1,9 +1,5 @@
 'use strict';
-function stopMediaTracks(stream) {
-    stream.getTracks().forEach(track => {
-        track.stop();
-    });
-}
+
 angular.module('myApp.camera', ['ngRoute'])
 
     .config(['$routeProvider', function ($routeProvider) {
@@ -42,7 +38,9 @@ angular.module('myApp.camera', ['ngRoute'])
                     text: device.label || '摄像头 ' + index,
                     callback: () => {
                         if ($scope.currentStream) {
-                            stopMediaTracks($scope.currentStream);
+                            $scope.currentStream.getTracks().forEach(track => {
+                                track.stop();
+                            });
                         }
                         const constraints = { video: { width: 640, height: 480, deviceId: { exact: device.deviceId } }, };
                         console.log(constraints)
@@ -66,13 +64,16 @@ angular.module('myApp.camera', ['ngRoute'])
         $scope.$on('$routeChangeStart', function ($event, next, current) {
             // console.log('$routeChangeStart', $event, next, current)
             if ($scope.currentStream) {
-                stopMediaTracks($scope.currentStream);
+                $scope.currentStream.getTracks().forEach(track => {
+                    track.stop();
+                });
             }
         });
-        return
+        // return
         const constraints = { video: { width: 640, height: 480 } };
         navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
             console.log('getUserMedia:', mediaStream)
+            $scope.currentStream = mediaStream
             const video = document.querySelector('video');
             video.srcObject = mediaStream;
             video.onloadedmetadata = function (e) {

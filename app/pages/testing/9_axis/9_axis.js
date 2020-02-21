@@ -48,7 +48,9 @@ angular.module('myApp.9_axis', ['ngRoute'])
         const option = {
             title: {
                 text: items[$rootScope.pageIndex].title,
-                color: 'white',
+                textStyle: {
+                    color: '#FFF',
+                },
                 left: 'center'
 
             },
@@ -61,6 +63,9 @@ angular.module('myApp.9_axis', ['ngRoute'])
                 orient: 'vertical',
                 left: 'right',
                 // aline: 'right'
+                textStyle: {
+                    color: '#FFF',
+                },
             },
             grid: {
                 left: 'left',

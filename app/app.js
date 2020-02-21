@@ -130,6 +130,7 @@ angular.module('myApp', [
     'myApp.9_axis',
     'myApp.motor',
     'myApp.camera',
+    'myApp.speaker',
     'myApp.setting',
     'myApp.wifi',
     'myApp.deviceInfo',

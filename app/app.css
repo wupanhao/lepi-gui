@@ -146,7 +146,7 @@ p {
     color: black;
 }
 
-video {
+video, audio {
     width: 240px;
 }
 

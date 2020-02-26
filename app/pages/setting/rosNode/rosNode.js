@@ -43,6 +43,7 @@ angular.module('myApp.rosNode', ['ngRoute'])
                         setTimeout(swal.close, 500)
                     }
                 }
+                setTimeout(swal.close, 1000)
 
                 if ($location.path() == '/setting/rosNode/') {
                     // setTimeout(updateNodeStatus, 3000)

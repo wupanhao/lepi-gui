@@ -46,6 +46,9 @@ sudo apt install -y python-rospy python-rosnode python-roslaunch ros-core
 # Compile ROS Workspace
 sudo docker run --rm -t -v /home/pi:/home/pi wupanhao/lepi_server:melodic bash -c "source /ros_entrypoint.sh && cd catkin_ws/ && catkin_make_isolated"
 
+# Install Other
+pip install --user PyUserInput
+
 # Install Node.js Environment
 node -v
 if [ $? -ne 0 ]; then

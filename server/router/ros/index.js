@@ -1,318 +1,134 @@
-const ROSLIB = require('roslib');
-const ROS_NAMESPACE = '/ubiquityrobot/'
+const express = require('express');
+const path = require('path');
+const os = require('os');
+const ChildProcess = require('child_process');
+const router = express.Router();
 
-class ros_client {
-  constructor(ros_base_url, btnHandler) {
-    this.url = ros_base_url
-    this.btnListener = null
-    this.sensorStatusListener = null
-    this.btnHandler = btnHandler
-    this.sensorStatusHandler = null
-    this.ros = null
-    this.setSensorStatusHandler = this.setSensorStatusHandler.bind(this)
-    // this.conectToRos()
+
+const prefix = 'docker exec -it lepi_server bash -c '
+
+const launchCMD = {
+  '/ubiquityrobot/camera_node': `${prefix} "source env.sh && roslaunch pi_cam camera_node.launch"`,
+  '/ubiquityrobot/apriltag_detector_node': `${prefix} "source env.sh && roslaunch pi_cam apriltag_detector_node.launch"`,
+  '/ubiquityrobot/transfer_learning_node': `${prefix} "source env.sh && roslaunch pi_cam transfer_learning_node.launch"`,
+  '/ubiquityrobot/line_detector_node': `${prefix} "source env.sh && roslaunch pi_cam line_detector_node.launch"`,
+  '/ubiquityrobot/face_recognizer_node': `${prefix} "source env.sh && roslaunch pi_cam face_recognizer_node.launch"`,
+  '/ubiquityrobot/joystick_node': `${prefix} "source env.sh && roslaunch pi_driver joystick_node.launch"`,
+}
+const availableNode = Object.keys(launchCMD)
+
+const nodeInfo = {}
+availableNode.map((nodeName, id) => {
+  nodeInfo[nodeName] = {
+    id: id,
+    name: nodeName,
+    status: '已停止',
+    process: null
   }
+})
 
-  conectToRos(callback) {
-    console.log('trying to conect to ros server:')
-    try {
-      var ros = new ROSLIB.Ros({
-        url: this.url
-      });
-    } catch (e) {
-      console.log('ros client init error:', e)
-      console.log('trying to reconect after 3 seconds')
-      // return
-      setTimeout(() => {
-        this.conectToRos(callback)
-      }, 3000)
-      return
-    }
-    if (this.btnListener != null) {
-      this.btnListener.unsubscribe();
-    }
-    var btnListener = new ROSLIB.Topic({
-      ros: ros,
-      name: '/ubiquityrobot/pi_driver_node/button_event',
-      messageType: 'pi_driver/ButtonEvent'
-    });
-
-    ros.on('connection', () => {
-      console.log('Connected to websocket server.');
-      if (this.btnHandler) {
-        btnListener.subscribe(this.btnHandler);
+function PromisifyExec(cmd) {
+  return new Promise(resolve => {
+    ChildProcess.exec(cmd, (error, stdout, stderr) => {
+      if (error || stderr) {
+        console.log(error, stderr)
       }
-      if (callback) {
-        callback()
+      if (stdout) {
+        resolve(stdout.trim())
+      } else {
+        resolve()
       }
-    });
-
-    ros.on('error', function(error) {
-      console.log('Error connecting to websocket server: ', error);
-    });
-
-    ros.on('close', () => {
-      console.log('Connection to websocket server closed. retrying after 3 seconds');
-      setTimeout(() => {
-        this.conectToRos(callback)
-      }, 3000)
-    });
-
-    this.ros = ros
-    this.btnListener = btnListener
-  }
-  isConnected() {
-    return this.ros && this.ros.isConnected
-  }
-
-  setSensorStatusHandler(handler) {
-    console.log('set sensorStatusHandler', handler)
-    this.sensorStatusHandler = handler
-  }
-
-  subSensorStatusChange(callback) {
-    if (this.sensorStatusListener != null) {
-      this.sensorStatusListener.unsubscribe();
-    }
-    var sensorStatusListener = new ROSLIB.Topic({
-      ros: this.ros,
-      name: '/ubiquityrobot/pi_driver_node/sensor_status_change',
-      messageType: 'pi_driver/SensorStatusChange'
-    });
-    if (callback) {
-      sensorStatusListener.subscribe(callback);
-    }
-    this.sensorStatusListener = sensorStatusListener
-  }
-
-  defaultSensorStatusHandler(message) {
-    console.log(message, this.sensorStatusHandler)
-    if (this.sensorStatusHandler) {
-      console.log('this.sensorStatusHandler')
-      this.sensorStatusHandler(message)
-    }
-  }
-
-  setMotorEnable(port, value) {
-    return new Promise((resolve) => {
-      var apriltagDetectClient = new ROSLIB.Service({
-        ros: this.ros,
-        name: ROS_NAMESPACE + 'pi_driver_node/motor_set_enable',
-        serviceType: 'pi_driver/SetInt32'
-      });
-
-      var request = new ROSLIB.ServiceRequest({
-        port: port,
-        value: value
-      });
-
-      apriltagDetectClient.callService(request, (result) => {
-        console.log(result)
-        resolve()
-      });
     })
-  }
-  getMotorEncoder(port) {
-    return new Promise((resolve) => {
-      var client = new ROSLIB.Service({
-        ros: this.ros,
-        name: ROS_NAMESPACE + 'pi_driver_node/motor_get_position',
-        serviceType: 'pi_driver/GetInt32'
-      });
-
-      var request = new ROSLIB.ServiceRequest({
-        port: port
-      });
-
-      client.callService(request, (result) => {
-        console.log(result)
-        resolve(result.position)
-      });
-    })
-  }
-  getMotorsInfo(port) {
-    return new Promise((resolve) => {
-      var client = new ROSLIB.Service({
-        ros: this.ros,
-        name: ROS_NAMESPACE + 'pi_driver_node/motors_get_info',
-        serviceType: 'pi_driver/GetMotorsInfo'
-      });
-
-      var request = new ROSLIB.ServiceRequest();
-
-      client.callService(request, (result) => {
-        console.log(result)
-        resolve(result.motors)
-      });
-    })
-  }
-  setMotorSpeed(port, speed) {
-    return new Promise((resolve) => {
-      var client = new ROSLIB.Service({
-        ros: this.ros,
-        name: ROS_NAMESPACE + 'pi_driver_node/motor_set_speed',
-        serviceType: 'pi_driver/SetInt32'
-      });
-
-      var request = new ROSLIB.ServiceRequest({
-        port: port,
-        value: speed
-      });
-
-      client.callService(request, (result) => {
-        console.log(result)
-        resolve()
-      });
-    })
-  }
-
-  getAccData() {
-    return new Promise((resolve) => {
-      var client = new ROSLIB.Service({
-        ros: this.ros,
-        name: ROS_NAMESPACE + 'pi_driver_node/sensor_get_3axes',
-        serviceType: 'pi_driver/SensorGet3Axes'
-      });
-
-      var request = new ROSLIB.ServiceRequest({
-        id: 1
-      });
-
-      client.callService(request, (result) => {
-        console.log(result)
-        resolve(result.data)
-      });
-    })
-  }
-  getGyroData() {
-    return new Promise((resolve) => {
-      var client = new ROSLIB.Service({
-        ros: this.ros,
-        name: ROS_NAMESPACE + 'pi_driver_node/sensor_get_3axes',
-        serviceType: 'pi_driver/SensorGet3Axes'
-      });
-
-      var request = new ROSLIB.ServiceRequest({
-        id: 2
-      });
-
-      client.callService(request, (result) => {
-        console.log(result)
-        resolve(result.data)
-      });
-    })
-  }
-  getMagnData() {
-    return new Promise((resolve) => {
-      var client = new ROSLIB.Service({
-        ros: this.ros,
-        name: ROS_NAMESPACE + 'pi_driver_node/sensor_get_3axes',
-        serviceType: 'pi_driver/SensorGet3Axes'
-      });
-
-      var request = new ROSLIB.ServiceRequest({
-        id: 3
-      });
-
-      client.callService(request, (result) => {
-        console.log(result)
-        resolve(result.data)
-      });
-    })
-  }
-  get3AxesData(id) {
-    return new Promise((resolve) => {
-      var client = new ROSLIB.Service({
-        ros: this.ros,
-        name: ROS_NAMESPACE + 'pi_driver_node/sensor_get_3axes',
-        serviceType: 'pi_driver/SensorGet3Axes'
-      });
-
-      var request = new ROSLIB.ServiceRequest({
-        id: id
-      });
-
-      client.callService(request, (result) => {
-        console.log(result)
-        resolve(result.data)
-      });
-    })
-  }
-
-  getSensorType(port) {
-    return new Promise((resolve) => {
-      var client = new ROSLIB.Service({
-        ros: this.ros,
-        name: ROS_NAMESPACE + 'pi_driver_node/sensor_get_type',
-        serviceType: 'pi_driver/GetInt32'
-      });
-
-      var request = new ROSLIB.ServiceRequest({
-        port: port
-      });
-
-      client.callService(request, (result) => {
-        // console.log(result)
-        resolve(result.value)
-      });
-    })
-  }
-
-  getSensorValue(port) {
-    return new Promise((resolve) => {
-      var client = new ROSLIB.Service({
-        ros: this.ros,
-        name: ROS_NAMESPACE + 'pi_driver_node/sensor_get_value',
-        serviceType: 'pi_driver/GetInt32'
-      });
-
-      var request = new ROSLIB.ServiceRequest({
-        port: port
-      });
-
-      client.callService(request, (result) => {
-        // console.log(result)
-        resolve(result.value)
-      });
-    })
-  }
-
-  getSensorInfo(port) {
-    return new Promise((resolve) => {
-      var client = new ROSLIB.Service({
-        ros: this.ros,
-        name: ROS_NAMESPACE + 'pi_driver_node/sensor_get_info',
-        serviceType: 'pi_driver/GetSensorInfo'
-      });
-
-      var request = new ROSLIB.ServiceRequest({
-        port: port
-      });
-
-      client.callService(request, (result) => {
-        // console.log(result)
-        resolve(result)
-      });
-    })
-  }
-
-  getPowerState() {
-    return new Promise((resolve) => {
-      var client = new ROSLIB.Service({
-        ros: this.ros,
-        name: ROS_NAMESPACE + 'pi_driver_node/get_power_state',
-        serviceType: 'pi_driver/GetPowerState'
-      });
-
-      var request = new ROSLIB.ServiceRequest();
-
-      client.callService(request, (result) => {
-        // console.log(result)
-        resolve(result)
-      });
-    })
-  }
-
+  })
 }
 
-module.exports = ros_client
+router.get('/status', function (req, res) {
+  PromisifyExec('rosnode list').then(output => {
+    var nodeList = []
+    if (output) {
+      nodeList = output.split('\n')
+    }
+    nodeList.map(nodeName => {
+      if (nodeInfo[nodeName]) {
+        nodeInfo[nodeName].status = '已启动'
+      }
+    })
+    res.json(Object.keys(nodeInfo).map(nodeName => {
+      const item = nodeInfo[nodeName]
+      return { name: item.name, status: item.status, id: item.id }
+    }))
+  })
+})
+
+router.get('/kill', function (req, res) {
+  const nodeName = req.query['name']
+  if (!nodeName) {
+    res.json({ msg: '参数未提供:name', code: -1 })
+    return
+  }
+
+  try {
+    var buf = ChildProcess.execSync('rosnode list')
+    const nodeList = String(buf).trim().split('\n')
+    if (nodeList.indexOf(nodeName) == -1) {
+      res.json({ msg: '节点已停止:' + nodeName, code: -2 })
+      return
+    }
+    PromisifyExec(`rosnode kill ${nodeName}`).then(output => {
+      if (output && output.search('killed') >= 0) {
+        nodeInfo[nodeName].status = '已停止'
+        nodeInfo[nodeName].process = null
+        res.json({ msg: '已关闭节点:' + nodeName, code: 0 })
+      } else {
+        res.json({ msg: '关闭节点失败:' + nodeName, code: -3 })
+      }
+    })
+
+  } catch (error) {
+    console.log(error)
+    res.json({ msg: 'Error', code: -4 })
+  }
+})
+
+router.get('/launch', function (req, res) {
+  const nodeName = req.query['name']
+  if (!nodeName) {
+    res.json({ msg: '参数未提供:name', code: -1 })
+    return
+  }
+  if (nodeInfo[nodeName]) {
+    if (nodeInfo[nodeName].status != '已停止') {
+      res.json({ msg: '节点已启动:' + nodeName, code: -22 })
+      return
+    }
+  } else {
+    res.json({ msg: '不支持的节点:' + nodeName, code: -33 })
+    return
+  }
+  try {
+    /*
+    var buf = ChildProcess.execSync('rosnode list')
+    const nodeList = String(buf).trim().split('\n')
+    if (nodeList.indexOf(nodeName) >= 0) {
+      res.json({ msg: '节点已启动', code: -2 })
+      return
+    }
+    */
+    console.log('trying to launch node ' + nodeName)
+    nodeInfo[nodeName].status = '启动中'
+    nodeInfo[nodeName].process = ChildProcess.spawn(launchCMD[nodeName], {
+      stdio: 'inherit',
+      shell: true
+    })
+    nodeInfo[nodeName].process.on('exit', (code, signal) => {
+      console.log(`child node [${nodeName}] exit with: code ${code}, signal: ${signal}`);
+      nodeInfo[nodeName].status = '已停止'
+    });
+    res.json({ msg: '正在启动节点:' + nodeName, code: 0 })
+  } catch (error) {
+    console.log(error)
+    res.json({ msg: 'Error', code: -4 })
+  }
+})
+
+module.exports = router

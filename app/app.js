@@ -145,6 +145,7 @@ angular.module('myApp', [
     'myApp.setting',
     'myApp.wifi',
     'myApp.deviceInfo',
+    'myApp.rosNode',
 ])
     .config(['$locationProvider', '$routeProvider', function ($locationProvider, $routeProvider) {
         $locationProvider.hashPrefix('!');
@@ -155,7 +156,13 @@ angular.module('myApp', [
         $rootScope.localHandler = {}
         $rootScope.debug = false
         $rootScope.ros = null
-
+        $rootScope.globalMenus = [{
+            text: '回到首页',
+            callback: (index) => {
+                console.log(`menu item-${index} clicked`)
+                window.location.assign('#!/index')
+            }
+        }]
         if (navigator.platform.includes('arm')) {
             // navigator.platform: "Linux armv7l"
             swal({
@@ -176,6 +183,7 @@ angular.module('myApp', [
                     button: false,
                     timer: 1000,
                 });
+                $rootScope.updatePowerInfo()
                 setTimeout(swal.close, 1000)
             })
         } else {
@@ -189,8 +197,8 @@ angular.module('myApp', [
                     button: false,
                     timer: 1000,
                 });
-                setTimeout(swal.close, 1000)
                 $rootScope.updatePowerInfo()
+                setTimeout(swal.close, 1000)
             })
         }
 
@@ -300,9 +308,8 @@ angular.module('myApp', [
         $rootScope.updatePowerInfo = () => {
             try {
                 $rootScope.ros.getPowerState().then(data => {
-                    // console.log(data)
+                    console.log(data)
                     if (data.est_power > 0 && data.est_power <= 100) {
-                        console.log(data)
                         setPowerState(data.est_power)
                         // $rootScope.est_power = data.est_power
                     }

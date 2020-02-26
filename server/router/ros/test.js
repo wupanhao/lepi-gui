@@ -1,15 +1,23 @@
-const ros_client = require('./')
+const ChildProcess = require('child_process');
 
-var ros = new ros_client('ws://192.168.50.150:9090')
-ros.conectToRos(() => {
-	ros.getAccData().then(data => console.log(data))
-	ros.getGyroData().then(data => console.log(data))
-	ros.getMagnData().then(data => console.log(data))
-	ros.getPowerState().then(data => console.log(data))
-	ros.getMotorsInfo().then(data => console.log(data))
-	ros.getSensorType(3).then(data => console.log(data))
-	ros.getSensorValue(3).then(data => console.log(data))
-	ros.getSensorType(4).then(data => console.log(data))
-	ros.getSensorValue(4).then(data => console.log(data))
-	ros.getSensorInfo(4).then(data => console.log(data))
+function PromisifyExec(cmd) {
+	return new Promise(resolve => {
+		ChildProcess.exec(cmd, (error, stdout, stderr) => {
+			if (error || stderr) {
+				console.log(error, stderr)
+			}
+			if (stdout) {
+				resolve(stdout)
+			} else {
+				resolve()
+			}
+		})
+	})
+}
+
+PromisifyExec('rosnode list').then(output => {
+	console.log(output)
+	if (output) {
+		console.log(output.trim().split('\n'))
+	}
 })

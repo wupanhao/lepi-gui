@@ -1,0 +1,40 @@
+<style>
+    .table-container {
+        background-color: transparent;
+        color: white;
+        width: 100%;
+        /* height: 270px; */
+        padding: 30px 0px 20px 0px;
+        text-align: left;
+        table-layout: fixed;
+        border: none;
+    }
+
+    .table-container td {
+        padding-left: 15px;
+        /* padding-right: 15px; */
+    }
+
+    .table-container th.node-name {
+        padding-left: 15px;
+    }
+
+    .table-container th.node-status {
+        width: 60px;
+    }
+</style>
+<table class="table-container" rules="none">
+    <thead>
+        <tr>
+            <th class="node-name">节点名称</th>
+            <th class="node-status">运行状态</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="node in show" ng-init="$last && $emit('repeatFinished')"
+            ng-class="{ active: $index == itemIndex}">
+            <td class="node-name">{{nodeNameMap[node.name]}}</td>
+            <td class="node-status">{{node.status}}</td">
+        </tr>
+    </tbody>
+</table>

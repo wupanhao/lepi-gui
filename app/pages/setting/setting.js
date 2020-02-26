@@ -37,6 +37,12 @@ angular.module('myApp.setting', ['ngRoute'])
       },
       {
         id: 4,
+        link: '#!/setting/rosNode',
+        src: "assets/images/node.png",
+        name: '节点管理'
+      },
+      {
+        id: 5,
         link: '#!/setting/deviceInfo',
         src: "assets/images/info.png",
         name: '设备信息'

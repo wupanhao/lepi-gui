@@ -24,16 +24,10 @@ angular.module('myApp.setting', ['ngRoute'])
         name: '蓝牙'
       },
       {
-        id: 2,
-        link: '#!/setting/microphone',
-        src: "assets/images/microphone.png",
-        name: '麦克风'
-      },
-      {
         id: 3,
-        link: '#!/setting/speaker',
+        link: '#!/setting/audio',
         src: "assets/images/volume.png",
-        name: '扬声器'
+        name: '音频'
       },
       {
         id: 4,

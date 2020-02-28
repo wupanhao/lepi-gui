@@ -7,6 +7,18 @@ const {
 	getLocalIps
 } = require('../mdns')
 
+const AudioControl = require('./audio-control')
+
+const audio = new AudioControl()
+
+const info = {
+	speaker: 50,
+	headphone: 50,
+	microphone: 50
+}
+audio.getAll(data => {
+	Object.assign(info, data)
+})
 function getDeviceInfo() {
 	const info = {
 		memory: {
@@ -57,16 +69,11 @@ function getDeviceInfo() {
 // getDeviceInfo().then(console.log)
 
 function startPiDriver() {
-	// ChildProcess.exec(`source /home/pi/workspace/lepi_gui/ros_env.sh && roslaunch pi_driver pi_master_node.launch > /tmp/pi_master_node.log `)
-	// ChildProcess.exec(`docker restart demo_duck && docker exec -t  demo_duck bash -c "source /demo_duck/env.sh && roslaunch pi_driver pi_driver_node.launch"  > /tmp/duckie.log &`)
-	// ChildProcess.exec(`docker run -t -v /home/pi:/home/pi --net host --privileged --rm --name lepi_server wupanhao/lepi_server:melodic bash -c "source env.sh && roslaunch pi_driver lepi_server.launch" > /tmp/lepi_server.log &`)
 	// ChildProcess.exec(`source /home/pi/workspace/lepi_gui/ros_env.sh ; roslaunch pi_driver pi_master_node.launch > /tmp/pi_master_node.log`)
 }
 
 function startDuckService() {
-	// ChildProcess.exec(`source /home/pi/workspace/lepi_gui/ros_env.sh && roslaunch pi_driver pi_master_node.launch > /tmp/pi_master_node.log `)
 	// ChildProcess.exec(`docker run -t -v /home/pi:/home/pi --net host --privileged --rm --name lepi_server wupanhao/lepi_server:melodic bash -c "source env.sh && roslaunch pi_driver lepi_server.launch" > /tmp/lepi_server.log &`)
-	// ChildProcess.exec(`source /home/pi/workspace/lepi_gui/ros_env.sh ; roslaunch pi_driver pi_master_node.launch > /tmp/pi_master_node.log`)
 }
 function resetAll() {
 	file_name = path.join(__dirname, 'stopMotors.py')
@@ -105,6 +112,30 @@ router.get('/start_duck_service', function (req, res) {
 		status: 'ok'
 	})
 	startDuckService()
+})
+
+router.get('/audio', function (req, res) {
+	console.log(req.query)
+	const dev = req.query['dev']
+	const value = req.query['value']
+	if (dev) {
+		if (value) {
+			audio.set(dev, value).then(volume => {
+				info[dev] = volume
+				res.json(info)
+			})
+		} else {
+			audio.get(dev).then(volume => {
+				info[dev] = volume
+				res.json(info)
+			})
+		}
+	} else {
+		audio.getAll().then(data => {
+			Object.assign(info, data)
+			res.json(info)
+		})
+	}
 })
 
 module.exports = {

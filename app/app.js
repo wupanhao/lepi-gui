@@ -146,6 +146,7 @@ angular.module('myApp', [
     'myApp.wifi',
     'myApp.deviceInfo',
     'myApp.rosNode',
+    'myApp.audio',
 ])
     .config(['$locationProvider', '$routeProvider', function ($locationProvider, $routeProvider) {
         $locationProvider.hashPrefix('!');
@@ -195,7 +196,7 @@ angular.module('myApp', [
                     if (i % $rootScope.colNum == 0 && $rootScope.pageIndex > 0) { //翻页
                         updatePageInfo($rootScope.pageIndex - 1)
                         return
-                    } else {
+                    } else if ($rootScope.colNum >= 2) {
                         i = i > 0 ? i - 1 : i
                     }
                     break;
@@ -203,7 +204,7 @@ angular.module('myApp', [
                     if ((i % $rootScope.colNum == $rootScope.colNum - 1 || i == $rootScope.maxItemIndex) && $rootScope.pageIndex < $rootScope.maxPageIndex) {//翻页
                         updatePageInfo($rootScope.pageIndex + 1)
                         return
-                    } else {
+                    } else if ($rootScope.colNum >= 2) {
                         i = i < $rootScope.maxItemIndex ? i + 1 : i
                     }
                     break;

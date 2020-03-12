@@ -1,18 +1,13 @@
 const express = require('express');
-const Wifi = require('rpi-wifi-connection');
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer')
 const os = require('os')
 
-
-const wifi = new Wifi();
-
 const router = express.Router();
-const platform = os.platform()
 
-var temp_dir = path.join(__dirname, '../../temp')
-const save_dir = temp_dir
+const save_dir = path.join(os.homedir(), 'Lepi_Data')
+const temp_dir = os.tmpdir()
 
 function mkdirIfNotExists(target_dir) {
 	if (!fs.existsSync(target_dir)) {
@@ -25,15 +20,14 @@ mkdirIfNotExists(path.join(save_dir, 'Scratch'))
 mkdirIfNotExists(path.join(save_dir, 'Python'))
 mkdirIfNotExists(path.join(save_dir, 'Shell'))
 mkdirIfNotExists(path.join(save_dir, 'Music'))
-mkdirIfNotExists(temp_dir)
 
 // watchFile(temp_dir)
 
 const tempStorage = multer.diskStorage({
-	destination: function(req, file, cb) {
+	destination: function (req, file, cb) {
 		cb(null, temp_dir)
 	},
-	filename: function(req, file, cb) {
+	filename: function (req, file, cb) {
 		// console.log(file)
 		cb(null, file.originalname)
 		// cb(null, Date.now() + '-' + file.originalname)
@@ -45,7 +39,7 @@ const temp = multer({
 });
 
 // 单文件上传
-router.post('/debug', temp.single('upload_file'), function(req, res, next) {
+router.post('/debug', temp.single('upload_file'), function (req, res, next) {
 	var file = req.file;
 	console.log(file)
 	res.send({
@@ -58,20 +52,20 @@ router.post('/debug', temp.single('upload_file'), function(req, res, next) {
 });
 
 const saveStorage = multer.diskStorage({
-	destination: function(req, file, cb) {
+	destination: function (req, file, cb) {
 		if (path.extname(file.originalname) == '.sb3') {
-			cb(null, save_dir + '/Scratch')
+			cb(null, path.join(save_dir, 'Scratch'))
 		} else if (path.extname(file.originalname) == '.py') {
-			cb(null, save_dir + '/Python')
+			cb(null, path.join(save_dir, 'Python'))
 		} else if (path.extname(file.originalname) == '.sh') {
-			cb(null, save_dir + '/Shell')
+			cb(null, path.join(save_dir, 'Shell'))
 		} else if (path.extname(file.originalname) == '.mp3') {
-			cb(null, save_dir + '/Music')
+			cb(null, path.join(save_dir, 'Music'))
 		} else {
 			cb(null, temp_dir)
 		}
 	},
-	filename: function(req, file, cb) {
+	filename: function (req, file, cb) {
 		// console.log(file)
 		cb(null, file.originalname)
 		// cb(null, Date.now() + '-' + file.originalname)
@@ -83,7 +77,7 @@ const save = multer({
 });
 
 // 单文件上传
-router.post('/save', save.single('upload_file'), function(req, res, next) {
+router.post('/save', save.single('upload_file'), function (req, res, next) {
 	var file = req.file;
 	console.log(file)
 	res.send({
@@ -92,7 +86,7 @@ router.post('/save', save.single('upload_file'), function(req, res, next) {
 });
 
 // router.use('/program', express.static(path.join(__dirname, 'temp')));
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
 	var form = fs.readFileSync(path.join(__dirname, 'upload.html'), {
 		encoding: 'utf8'
 	});

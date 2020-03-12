@@ -926,7 +926,22 @@ class ros_client {
       });
     })
   }
+  variableList() {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'pi_driver_node/variable_list',
+        serviceType: 'pi_driver/GetString'
+      });
 
+      var request = new ROSLIB.ServiceRequest({
+      });
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve(result.data)
+      });
+    })
+  }
 
 }
 

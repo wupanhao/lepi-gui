@@ -10,26 +10,10 @@ angular.module('myApp.microphone', ['ngRoute'])
         });
     }])
 
-    .controller('MicrophoneCtrl', function ($rootScope, $scope) {
+    .controller('MicrophoneCtrl', function ($rootScope, $scope, $location) {
         $rootScope.setStatusBar(true)
         $rootScope.items = []
         $rootScope.title = '麦克风测试'
-
-        $rootScope.menus = [
-            /*{
-                text: '横屏',
-                callback: (index) => {
-                    console.log(`menu item-${index} clicked`)
-                    const myChart = document.querySelector('#myChart')
-                    if (myChart.classList.contains('horizontal')) {
-                        myChart.classList.remove('horizontal')
-                    } else {
-                        myChart.classList.add('horizontal')
-                    }
-                }
-            },*/
-        ]
-
 
         $scope.$on('$routeChangeStart', function ($event, next, current) {
             // console.log('$routeChangeStart', $event, next, current)
@@ -141,7 +125,7 @@ angular.module('myApp.microphone', ['ngRoute'])
         navigator.mediaDevices.enumerateDevices().then(devices => {
             const videoDevices = devices.filter(device => device.kind == 'audioinput')
             console.log(videoDevices)
-            $rootScope.menus = $rootScope.menus.concat(videoDevices.map((device, index) => {
+            $rootScope.localMenus[$location.path()] = videoDevices.map((device, index) => {
                 return {
                     text: device.label || '麦克风 ' + index,
                     callback: () => {
@@ -167,7 +151,7 @@ angular.module('myApp.microphone', ['ngRoute'])
                         });
                     }
                 }
-            }))
+            })
             $rootScope.updatePageInfo()
 
         });

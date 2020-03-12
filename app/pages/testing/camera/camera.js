@@ -10,12 +10,12 @@ angular.module('myApp.camera', ['ngRoute'])
         });
     }])
 
-    .controller('CameraCtrl', function ($rootScope, $scope) {
+    .controller('CameraCtrl', function ($rootScope, $scope, $location) {
         $rootScope.setStatusBar(true)
         $rootScope.items = []
         $rootScope.title = '摄像头测试'
 
-        $rootScope.menus = [
+        const localMenus = [
             {
                 text: '全屏',
                 callback: (index) => {
@@ -33,7 +33,7 @@ angular.module('myApp.camera', ['ngRoute'])
         navigator.mediaDevices.enumerateDevices().then(devices => {
             const videoDevices = devices.filter(device => device.kind == 'videoinput')
             console.log(videoDevices)
-            $rootScope.menus = $rootScope.menus.concat(videoDevices.map((device, index) => {
+            $rootScope.localMenus[$location.path()] = localMenus.concat(videoDevices.map((device, index) => {
                 return {
                     text: device.label || '摄像头 ' + index,
                     callback: () => {

@@ -9,7 +9,7 @@ angular.module('myApp.index', ['ngRoute'])
     });
   }])
 
-  .controller('IndexCtrl', function ($http, $rootScope, $scope) {
+  .controller('IndexCtrl', function ($http, $rootScope, $location) {
 
     const items = [
       {
@@ -37,7 +37,7 @@ angular.module('myApp.index', ['ngRoute'])
     $rootScope.items = items
     $rootScope.rowNum = 3
     $rootScope.colNum = 2
-    $rootScope.menus = [
+    $rootScope.localMenus[$location.path()] = [
       {
         text: '关机',
         callback: (index) => {
@@ -56,13 +56,7 @@ angular.module('myApp.index', ['ngRoute'])
           });
           $http.get('/system/reboot')
         }
-      }, {
-        text: '回到首页',
-        callback: (index) => {
-          console.log(`menu item-${index} clicked`)
-          window.location.assign('#!/index')
-        }
-      },
+      }
     ]
 
     console.log('index entered')

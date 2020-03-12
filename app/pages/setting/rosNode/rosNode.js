@@ -53,7 +53,7 @@ angular.module('myApp.rosNode', ['ngRoute'])
             })
         }
 
-        const localMenus = [
+        $rootScope.localMenus[$location.path()] = [
             {
                 text: '刷新',
                 callback: () => {
@@ -104,7 +104,7 @@ angular.module('myApp.rosNode', ['ngRoute'])
                 }
             }
         ]
-        $rootScope.menus = localMenus.concat($rootScope.globalMenus)
+
 
         updateNodeStatus()
     });

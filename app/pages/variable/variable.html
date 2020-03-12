@@ -1,0 +1,77 @@
+<style>
+    .card-small .card-variable-top {
+        width: 54px;
+        height: 54px;
+        border-color: rgb(180, 31, 31);
+        background-color: rgb(255, 140, 26);
+        border-width: 1px;
+        color: black;
+        word-wrap: break-word;
+    }
+
+    #soft-keyboard {
+        /* background-color: rgba(0, 0, 0, 0.1); */
+        /* height: 160px; */
+
+        padding: 0px 3px 0 3px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        /* justify-content: space-between; */
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+
+    .skb-key {
+        border-radius: 5px;
+        min-width: 18px;
+        padding: 0 2px;
+        margin: 2px;
+        background-color: #FFF;
+        text-align: center;
+    }
+
+    .skb-key.active {
+        background-color: rosybrown;
+    }
+
+    #input {
+        width: 240px;
+        background-color: #CCC;
+        position: fixed;
+        top: 100px;
+        color: black;
+    }
+
+    #input .title {
+        text-align: center;
+        width: 240px;
+    }
+
+    #passwd {
+        width: 200px;
+        margin: 5px 18px;
+    }
+
+    .hide {
+        display: none;
+    }
+</style>
+<div id="index" class="flex-container">
+    <div ng-repeat="item in show" ng-click="click($index)" ng-class="{ active: $index == itemIndex}"
+        class="card card-small">
+        <a>
+            <div class="img-holder">
+                <div class="card-variable-top">{{item.value}}</div>
+            </div>
+            <div class="card-body">
+                <span>{{item.name}}</span>
+            </div>
+        </a>
+    </div>
+</div>
+<div id="input" class="hide">
+    <div class="title"></div>
+    <input id="passwd" class="input" placeholder="数值" />
+    <div id="soft-keyboard" for="passwd" ok_text="完成"></div>
+</div>

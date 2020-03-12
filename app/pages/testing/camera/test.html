@@ -14,12 +14,22 @@
         }
 
         video {
-            width: 240px
+            width: 240px;
+            background-color: black;
         }
 
         button {
             width: 100px;
             height: 60px
+        }
+
+        .horizontal {
+            width: 320px;
+            height: 240px;
+            transform: rotate(-90deg);
+            position: absolute;
+            left: -40px;
+            top: 40px;
         }
     </style>
 </head>
@@ -27,7 +37,7 @@
 <body>
 
     <div class="box">
-        <video src=""></video>
+        <video src="" class="horizontal"></video>
         <!-- <button class='shot'>拍照</button>
         <canvas id='canvas'></canvas>
         <img src=''> -->

@@ -33,14 +33,10 @@ angular.module('myApp.speaker', ['ngRoute'])
         $rootScope.items = []
         $rootScope.title = '扬声器测试'
 
-        $rootScope.menus = [
-
-        ]
-
         navigator.mediaDevices.enumerateDevices().then(devices => {
             const speakerDevices = devices.filter(device => device.kind == 'audiooutput')
             console.log(speakerDevices)
-            $rootScope.menus = $rootScope.menus.concat(speakerDevices.map((device, index) => {
+            $rootScope.localMenus[$location.path()] = speakerDevices.map((device, index) => {
                 return {
                     text: device.label || '扬声器 ' + index,
                     callback: () => {
@@ -50,7 +46,7 @@ angular.module('myApp.speaker', ['ngRoute'])
                         setOutAudioDevices(audio, device.deviceId)
                     }
                 }
-            }))
+            })
             $rootScope.updatePageInfo()
 
         });

@@ -4,6 +4,7 @@ const os = require('os');
 const ChildProcess = require('child_process');
 const router = express.Router();
 
+const ns = '/variable'
 
 const prefix = 'docker exec -it lepi_server bash -c '
 
@@ -130,5 +131,7 @@ router.get('/launch', function (req, res) {
     res.json({ msg: 'Error', code: -4 })
   }
 })
+
+
 
 module.exports = router

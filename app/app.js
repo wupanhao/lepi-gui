@@ -147,6 +147,7 @@ angular.module('myApp', [
     'myApp.deviceInfo',
     'myApp.rosNode',
     'myApp.audio',
+    'myApp.variable',
 ])
     .config(['$locationProvider', '$routeProvider', function ($locationProvider, $routeProvider) {
         $locationProvider.hashPrefix('!');
@@ -154,7 +155,6 @@ angular.module('myApp', [
     }])
     .controller('App', function ($rootScope, $location, $scope) {
         console.log('call only once')
-        $rootScope.localHandler = {}
         $rootScope.debug = false
         $rootScope.ros = null
         $rootScope.globalMenus = [{
@@ -164,6 +164,8 @@ angular.module('myApp', [
                 window.location.assign('#!/index')
             }
         }]
+        $rootScope.localMenus = {}
+        $rootScope.localHandler = {}
         // if (navigator.platform.includes('arm')) {
         // navigator.platform: "Linux armv7l"
         swal({
@@ -175,6 +177,7 @@ angular.module('myApp', [
             // closeOnEsc: false
         });
         $rootScope.ros = new ros_client('ws://' + $location.host() + ':9090', btnHandler)
+        window.ros = $rootScope.ros
         $rootScope.ros.conectToRos(() => {
             // updateData()
             console.log('connected to ros ', $rootScope.ros)
@@ -294,7 +297,9 @@ angular.module('myApp', [
         $rootScope.updatePowerInfo = () => {
             try {
                 $rootScope.ros.getPowerState().then(data => {
-                    console.log(data)
+                    if (window.logPowerState) {
+                        console.log(data)
+                    }
                     if (data.est_power > 0 && data.est_power <= 100) {
                         setPowerState(data.est_power)
                         // $rootScope.est_power = data.est_power
@@ -332,6 +337,15 @@ angular.module('myApp', [
             } else {
                 $rootScope.loading == true
             }
+
+            const localMenus = $rootScope.localMenus[$location.path()]
+
+            if (localMenus) {
+                $rootScope.menus = localMenus.concat($rootScope.globalMenus)
+            } else {
+                $rootScope.menus = $rootScope.globalMenus
+            }
+
             $rootScope.maxItemsOnPage = $rootScope.rowNum * $rootScope.colNum
             $rootScope.maxPageIndex = Math.ceil($rootScope.items.length / $rootScope.maxItemsOnPage) - 1
             if (pageIndex >= 0 && pageIndex <= $rootScope.maxPageIndex) {

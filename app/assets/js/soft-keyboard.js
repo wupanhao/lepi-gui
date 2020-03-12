@@ -159,6 +159,7 @@ class SoftKeyboard {
                     if (this.onComplete) {
                         this.onComplete(this.input_.value)
                     }
+
                     break
                 case 'Caps':
                     if (this.layout != 'capsL') {

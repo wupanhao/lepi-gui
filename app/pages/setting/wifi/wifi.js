@@ -15,8 +15,6 @@ angular.module('myApp.wifi', ['ngRoute'])
         $rootScope.title = 'WiFi'
         console.log($location.path(), ' entered')
 
-
-
         const updateWiFiList = () => {
             $http.get('/wifi/scan').then(res => {
                 // $scope.wifiList = res.data

@@ -8,6 +8,7 @@ const {
 } = require('http');
 
 const wifiRouter = require('./router/wifi')
+const bluetoothRouter = require('./router/bluetooth')
 const uploadRouter = require('./router/upload')
 const fileRouter = require('./router/file-reader')
 const rosRouter = require('./router/ros')
@@ -49,6 +50,7 @@ app.use('/', (req, res, next) => {
 })
 app.use('/static', express.static(path.join(__dirname, 'router/static')))
 app.use('/wifi', wifiRouter)
+app.use('/bluetooth', bluetoothRouter)
 app.use('/upload', uploadRouter)
 app.use('/explore', fileRouter)
 app.use('/explore', express.static(fileRouter.homedir))

@@ -14,7 +14,7 @@ angular.module('myApp.audio', ['ngRoute'])
         $rootScope.show_footer = true
         $rootScope.title = '音频'
         console.log($location.path(), ' entered')
-
+        $scope.devices = []
         const updatePageInfo = () => {
             $http.get('/system/audio').then(res => {
                 $scope.devices = res.data

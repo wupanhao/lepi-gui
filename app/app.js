@@ -144,6 +144,7 @@ angular.module('myApp', [
     'myApp.microphone',
     'myApp.setting',
     'myApp.wifi',
+    'myApp.bluetooth',
     'myApp.deviceInfo',
     'myApp.rosNode',
     'myApp.audio',

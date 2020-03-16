@@ -1,0 +1,57 @@
+<style>
+    .table-container {
+        background-color: transparent;
+        color: white;
+        width: 100%;
+        /* height: 270px; */
+        padding: 30px 0px 20px 0px;
+        text-align: left;
+        table-layout: fixed;
+        border: none;
+    }
+
+    .table-container td {
+        padding-left: 15px;
+        /* padding-right: 15px; */
+    }
+
+    .table-container th.bluetooth-name {
+        padding-left: 15px;
+    }
+
+    .table-container th.bluetooth-signal {
+        padding-left: 15px;
+        width: 35px;
+    }
+
+    .bluetooth-info span {
+        min-width: 50px;
+    }
+
+    .hide {
+        display: none;
+    }
+</style>
+
+<div class="bluetooth-info">
+
+</div>
+<!-- <div class="mdl-spinner mdl-js-spinner is-active"></div> -->
+
+<table class="table-container" rules="none">
+    <thead>
+        <tr>
+            <th class="bluetooth-name">名称</th>
+            <th class="bluetooth-signal">配对</th>
+            <th class="bluetooth-signal">连接</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="bluetooth in show" ng-init="$last && $emit('repeatFinished')"
+            ng-class="{ active: $index == itemIndex}">
+            <td class="bluetooth-name">{{bluetooth.name}}</td>
+            <td class="bluetooth-signal">{{bluetooth.paired}}</td>
+            <td class="bluetooth-signal">{{bluetooth.connected}}</td>
+        </tr>
+    </tbody>
+</table>

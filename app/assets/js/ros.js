@@ -2,14 +2,13 @@
 const ROS_NAMESPACE = '/ubiquityrobot/'
 
 class ros_client {
-  constructor(ros_base_url, btnHandler = null, retry = true) {
+  constructor(ros_base_url, btnHandler = null) {
     this.url = ros_base_url
     this.btnListener = null
     this.sensorStatusListener = null
     this.btnHandler = btnHandler
     this.sensorStatusHandler = null
     this.ros = null
-    this.retry = retry
     this.setSensorStatusHandler = this.setSensorStatusHandler.bind(this)
     // this.conectToRos()
   }
@@ -45,7 +44,6 @@ class ros_client {
     ros.on('connection', () => {
       console.log('Connected to websocket server.');
       if (this.btnHandler) {
-        console.log('subscribe to btn topic');
         btnListener.subscribe(this.btnHandler);
       }
       if (callback) {
@@ -58,14 +56,12 @@ class ros_client {
     });
 
     ros.on('close', () => {
-      if (this.retry) {
-        console.log('Connection to websocket server closed. retrying after 3 seconds');
-        setTimeout(() => {
-          this.conectToRos(callback)
-        }, 3000)
-      } else {
-        console.log('Connection to websocket server closed.');
-      }
+      console.log('Connection to websocket server closed.');
+      // return
+      console.log('Connection to websocket server closed. retrying after 3 seconds');
+      setTimeout(() => {
+        this.conectToRos(callback)
+      }, 3000)
     });
 
     this.ros = ros
@@ -192,7 +188,7 @@ class ros_client {
       var request = new ROSLIB.ServiceRequest();
 
       client.callService(request, (result) => {
-        // console.log(result)
+        console.log(result)
         resolve(result.motors)
       });
     })
@@ -310,7 +306,7 @@ class ros_client {
       });
 
       client.callService(request, (result) => {
-        // console.log(result)
+        console.log(result)
         resolve(result)
       });
     })
@@ -926,6 +922,43 @@ class ros_client {
       });
     })
   }
+  launchTerminal(value) {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'pi_master_node/launch_terminal',
+        serviceType: 'pi_driver/SetInt32'
+      });
+
+      var request = new ROSLIB.ServiceRequest({
+        port: 0,
+        value: value
+      });
+      console.log(client, request)
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve(result.value)
+      });
+    })
+  }
+  inputString(input) {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'pi_driver_node/input_string',
+        serviceType: 'pi_driver/SetString'
+      });
+
+      var request = new ROSLIB.ServiceRequest({
+        data: input
+      });
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve(result.data)
+      });
+    })
+  }
+
   variableList() {
     return new Promise((resolve) => {
       var client = new ROSLIB.Service({

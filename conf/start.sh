@@ -6,10 +6,9 @@
 DISPLAY=:0.1 xset dpms 0 0 0
 DISPLAY=:0.1 xset s off
 DISPLAY=:0.1 bash -c "source /home/pi/nodejs.sh && electron  /home/pi/workspace/lepi-gui/server/server.js > /tmp/gui.log &"
-#docker run -t -v /home/pi:/home/pi --net host --privileged --rm --name lepi_server wupanhao/lepi_server:melodic bash -c "source env.sh && roslaunch pi_driver lepi_server.launch" > /tmp/lepi_server.log &
+docker run -t -v /home/pi:/home/pi --net host --privileged --rm --name lepi_server wupanhao/lepi_server:melodic bash -c "source env.sh && roslaunch pi_driver lepi_server.launch" > /tmp/lepi_server.log &
 #sleep 10
-bash -c "source /home/pi/workspace/lepi-gui/ros_env.sh && roslaunch pi_driver lepi_host.launch " > /tmp/lepi_host.log &
-#DISPLAY=:0.1 electron /home/pi/workspace/lepi_gui/server.js 
+#DISPLAY=:0.1 bash -c "source /home/pi/workspace/lepi-gui/ros_env.sh && roslaunch pi_driver lepi_host.launch " > /tmp/lepi_host.log &
 #dnsmasq --no-hosts --log-queries --no-resolv --address=/#/192.168.27.1 --dhcp-range=192.168.27.100,192.168.27.255,12h
 #/sbin/iw phy phy0 interface add uap0 type __ap
 #/sbin/iw dev uap0 del

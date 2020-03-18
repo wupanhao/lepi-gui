@@ -9,5 +9,10 @@ sudo bash -c "echo 'dtoverlay=tft9341-lcd:rotate=0' >> /boot/config.txt"
 #sudo echo "dtoverlay=tft9341:rotate=0" >> /boot/config.txt
 
 # print logs when boot
-sudo cp ./conf/cmdline.txt /boot/
+#sudo cp ./conf/cmdline.txt /boot/
+#quiet splash plymouth.ignore-serial-consoles
+sudo sed -i 's| quiet||' /boot/cmdline.txt
+sudo sed -i 's| splash||' /boot/cmdline.txt
+sudo sed -i 's| plymouth.ignore-serial-consoles||' /boot/cmdline.txt
+sudo sed -i 's| rootwait| rootwait fbcon=map:10 fbcon=font:ProFont6x11 logo.nologo|' /boot/cmdline.txt
 sudo cp ./conf/config.txt /boot/

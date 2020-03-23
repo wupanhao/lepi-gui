@@ -50,6 +50,9 @@ sudo service dphys-swapfile restart
 sudo docker run --rm -t -v /home/pi:/home/pi wupanhao/lepi_server:melodic bash -c "source /ros_entrypoint.sh && cd catkin_ws/ && catkin_make_isolated"
 
 # Install Other
+mkdir -p /home/pi/Lepi_Data
+touch /home/pi/Lepi_Data/.variable.yaml
+
 pip install --user PyUserInput
 
 # Install Node.js Environment
@@ -62,6 +65,9 @@ else
   echo "nodejs installed, ignore"
 fi
 # Install GUI
+source ~/nodejs.sh
+cd ~/workspace/lepi-gui/server && npm i
+cd ~/workspace/lepi-gui/app && npm i
 
 # Set GUI Auto Start
 cd ~/workspace/lepi-gui

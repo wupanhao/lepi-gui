@@ -16,11 +16,6 @@
         "scratch-vm": "^0.2.0-prerelease.20191227164934",
         "sweetalert": "^2.1.2"
     },
-    "scripts": {
-        "postinstall": "npm run copy-libs",
-        "copy-libs": "node scripts/copy-libs.js"
-    },
-    "devDependencies": {
-        "cpx": "^1.5.0"
-    }
+    "scripts": {},
+    "devDependencies": {}
 }

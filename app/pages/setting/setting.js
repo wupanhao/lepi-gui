@@ -47,6 +47,27 @@ angular.module('myApp.setting', ['ngRoute'])
     $rootScope.rowNum = 3
     $rootScope.colNum = 2
     // $scope.show = items
+
+    $rootScope.localMenus[$location.path()] = [
+      {
+        text: '扩展系统分区',
+        callback: (index) => {
+          console.log(`menu item-${index} clicked`)
+          $http.get('/system/expand_rootfs').then(res => {
+            var data = res.data
+            if (data && data.msg) {
+              swal({
+                title: data.msg,
+                text: "",
+                button: false,
+                timer: 1000,
+              });
+            }
+          })
+        }
+      }
+    ]
+
     $rootScope.updatePageInfo()
     console.log($rootScope)
   });

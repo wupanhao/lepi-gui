@@ -138,6 +138,15 @@ router.get('/audio', function (req, res) {
 	}
 })
 
+router.get('/expand_rootfs', function (req, res) {
+	const out = ChildProcess.execSync('sudo raspi-config  --expand-rootfs')
+	console.log(out)
+	res.json({
+		code: 0,
+		msg: '操作已执行,重启后生效'
+	})
+})
+
 module.exports = {
 	systemRouter: router,
 	startPiDriver: startPiDriver,

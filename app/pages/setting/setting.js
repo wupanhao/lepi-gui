@@ -9,7 +9,7 @@ angular.module('myApp.setting', ['ngRoute'])
     })
   }])
 
-  .controller('SettingCtrl', function ($scope, $routeParams, $rootScope, $location) {
+  .controller('SettingCtrl', function ($scope, $http, $rootScope, $location) {
     const items = [
       {
         id: 0,

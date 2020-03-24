@@ -17,7 +17,7 @@ angular.module('myApp.bluetooth', ['ngRoute'])
 
         const updateBluetoothList = () => {
             $http.get('/bluetooth/devices').then(res => {
-                // $scope.wifiList = res.data
+                console.log(res.data)
                 $rootScope.items = Object.values(res.data)
                 $rootScope.rowNum = 6
                 $rootScope.colNum = 1
@@ -58,7 +58,8 @@ angular.module('myApp.bluetooth', ['ngRoute'])
         }
 
         function scan() {
-            $http.get(`/bluetooth/scanStart`).then(res => {
+            console.log('startScan')
+            $http.get(`/bluetooth/startScan`).then(res => {
                 if (res.data && res.data.code == 0) {
                     swal({
                         title: '正在重新扫描，请稍等',
@@ -99,7 +100,7 @@ angular.module('myApp.bluetooth', ['ngRoute'])
             },
             {
                 text: '重新扫描',
-                callback: scan()
+                callback: scan
             },
             {
                 text: '重启蓝牙',

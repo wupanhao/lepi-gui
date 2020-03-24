@@ -14,7 +14,7 @@ class BluetoothCtl {
 
     getDevices() {
         const out = execSync('bluetoothctl devices').toString();
-        const devs = out.trim().split('\n')
+        const devs = out.trim().split('\n').filter(dev => dev && dev.length > 1)
         this.devices = devs.map(item => {
             const device = item.split(' ')
             return {
@@ -27,7 +27,7 @@ class BluetoothCtl {
 
     getPairedDevices() {
         const out = execSync('bluetoothctl paired-devices').toString();
-        const devs = out.trim().split('\n')
+        const devs = out.trim().split('\n').filter(dev => dev && dev.length > 1)
         this.pairedDevices = devs.map(item => {
             const device = item.split(' ')
             return {

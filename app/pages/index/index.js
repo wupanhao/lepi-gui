@@ -39,6 +39,12 @@ angular.module('myApp.index', ['ngRoute'])
     $rootScope.colNum = 2
     $rootScope.localMenus[$location.path()] = [
       {
+        text: '重新载入',
+        callback: (index) => {
+          window.location.reload(true);
+        }
+      },
+      {
         text: '关机',
         callback: (index) => {
           console.log(`menu item-${index} clicked`)

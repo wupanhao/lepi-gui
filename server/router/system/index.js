@@ -147,6 +147,28 @@ router.get('/expand_rootfs', function (req, res) {
 	})
 })
 
+router.get('/update', function (req, res) {
+	var buf = ChildProcess.execSync('git reset HEAD --hard && git pull')
+	console.log(`${out}`)
+	var msg = `未知错误`
+	var code = -99
+	const out = buf.toString()
+	if (out.indexOf('Already up to date') >= 0) {
+		msg = '已经是最新系统'
+		code = 0
+	} else if (out.indexOf('Aborting') >= 0 || out.indexOf('error') >= 0) {
+		msg = '更新出错'
+		code = -1
+	} else if (out.indexOf('Updating') >= 0) {
+		msg = '更新成功，重载或重启后生效'
+		code = 1
+	}
+	res.json({
+		code: code,
+		msg: msg
+	})
+})
+
 module.exports = {
 	systemRouter: router,
 	startPiDriver: startPiDriver,

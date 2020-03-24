@@ -65,7 +65,29 @@ angular.module('myApp.setting', ['ngRoute'])
             }
           })
         }
-      }
+      }, {
+        text: '系统更新',
+        callback: (index) => {
+          console.log(`menu item-${index} clicked`)
+          swal({
+            title: '正在检查更新',
+            text: "请稍等",
+            button: false,
+          });
+          $http.get('/system/update').then(res => {
+            var data = res.data
+            if (data && data.msg) {
+              swal({
+                title: data.msg,
+                text: "",
+                button: false,
+                timer: 1000,
+              });
+            }
+          })
+        }
+      },
+
     ]
 
     $rootScope.updatePageInfo()

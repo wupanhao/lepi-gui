@@ -7,7 +7,7 @@ const path = require('path')
 
 const os = require('os')
 
-const homedir = os.homedir()
+const homedir = path.join(os.homedir(), 'Lepi_Data')
 router.homedir = homedir
 console.log(homedir)
 router.get('/', function (req, res) {

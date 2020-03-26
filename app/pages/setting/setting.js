@@ -32,7 +32,7 @@ angular.module('myApp.setting', ['ngRoute'])
       {
         id: 4,
         link: '#!/setting/rosNode',
-        src: "assets/images/node.png",
+        src: "assets/images/application-x-addon.png",
         name: '节点管理'
       },
       {

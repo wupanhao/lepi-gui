@@ -88,6 +88,17 @@ function btnHandler(message) {
         code = 'Key' + code
     }
 
+    if (window.ignore_input) {
+        if (code == 'KeyS') {
+            axios.get('/system/resetAll').then(res => {
+                console.log(res.data)
+            })
+            window.ignore_input = false
+            swal.close()
+        }
+        return
+    }
+
     // console.log(message.value)
     // console.log(event, '-', message)
     if (message.type == 1) {
@@ -111,8 +122,7 @@ function btnHandler(message) {
         });
         document.dispatchEvent(keypress);
          */
-    }
-    if (message.type == 3 || message.type == 2) {
+    } else if (message.type == 3 || message.type == 2) {
         var keyup = new KeyboardEvent('keyup', {
             bubbles: true,
             cancelable: true,
@@ -123,6 +133,7 @@ function btnHandler(message) {
         });
         // console.log(keyup, message.value, keyCodeMap[message.value])
         document.dispatchEvent(keyup);
+
     }
 }
 
@@ -154,7 +165,7 @@ angular.module('myApp', [
         $locationProvider.hashPrefix('!');
         $routeProvider.otherwise({ redirectTo: '/index' });
     }])
-    .controller('App', function ($rootScope, $location, $scope) {
+    .controller('App', function ($rootScope, $location, $http) {
         console.log('call only once')
         $rootScope.debug = false
         $rootScope.ros = null
@@ -226,18 +237,30 @@ angular.module('myApp', [
                     break;
                 case "Enter":
                     if (i < $rootScope.show.length) {
-                        // var link = $rootScope.show[i].link
-                        var link = document.querySelector('div.active a')
-                        if (link) {
+                        var item = $rootScope.show[i]
+                        if (item.link) {
+                            var link = document.querySelector('div.active a')
                             console.log(link)
                             // $window.location.href = link
                             // $window.location.assign(link)
                             // history.go()
                             link.click()
                             return
+                        } else if (item.api) {
+                            window.ignore_input = true
+                            swal({
+                                title: "正在运行",
+                                text: "可以开始你的创作了",
+                                button: false,
+                                timer: 1000,
+                            })
+                            $http.get(item.api).then(res => {
+                                console.log(res.data)
+                            })
                         }
                     }
                     break;
+
             }
             if ($rootScope.itemIndex != i) {
                 $rootScope.itemIndex = i

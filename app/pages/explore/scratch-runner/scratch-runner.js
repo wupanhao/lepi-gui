@@ -39,8 +39,12 @@ class Runner {
     var renderer = new ScratchRender(this.canvas);
     Scratch.renderer = renderer;
     vm.attachRenderer(renderer);
-    var audioEngine = new AudioEngine();
-    vm.attachAudioEngine(audioEngine);
+    try {
+      var audioEngine = new AudioEngine();
+      vm.attachAudioEngine(audioEngine);
+    } catch (error) {
+      console.log(error)
+    }
     vm.attachV2SVGAdapter(new ScratchSVGRenderer.SVGRenderer());
     vm.attachV2BitmapAdapter(new ScratchSVGRenderer.BitmapAdapter());
 

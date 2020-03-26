@@ -6,7 +6,7 @@ const router = express.Router();
 
 const ns = '/variable'
 
-const prefix = 'docker exec -it lepi_server bash -c '
+const prefix = 'docker exec -t lepi_server bash -c '
 
 const launchCMD = {
   '/ubiquityrobot/camera_node': `${prefix} "source env.sh && roslaunch pi_cam camera_node.launch"`,
@@ -40,6 +40,27 @@ function PromisifyExec(cmd) {
         resolve()
       }
     })
+  })
+}
+
+function startPiDriver() {
+  // ChildProcess.exec(`source /home/pi/workspace/lepi_gui/ros_env.sh ; roslaunch pi_driver pi_master_node.launch > /tmp/pi_master_node.log`)
+}
+
+function startPiServer() {
+  PromisifyExec('docker ps').then(output => {
+    if (output.indexOf('lepi_server') >= 0) {
+      console.log('节点已启动')
+    }
+    else {
+      console.log('startPiServer')
+      const child = ChildProcess.spawn(`docker run -t -v /home/pi:/home/pi --net host --privileged --rm --name lepi_server wupanhao/lepi_server:melodic bash -c "source env.sh && roslaunch pi_driver lepi_server.launch" > /tmp/lepi_server.log &`, {
+        detached: true,
+        stdio: 'ignore',
+        shell: true
+      })
+      child.unref()
+    }
   })
 }
 
@@ -115,16 +136,22 @@ router.get('/launch', function (req, res) {
       return
     }
     */
-    console.log('trying to launch node ' + nodeName)
+    console.log('trying to launch node ' + nodeName, launchCMD[nodeName])
     nodeInfo[nodeName].status = '启动中'
     nodeInfo[nodeName].process = ChildProcess.spawn(launchCMD[nodeName], {
-      stdio: 'inherit',
+      // stdio: 'inherit',
+      detached: true,
+      stdio: 'ignore',
       shell: true
     })
     nodeInfo[nodeName].process.on('exit', (code, signal) => {
       console.log(`child node [${nodeName}] exit with: code ${code}, signal: ${signal}`);
       nodeInfo[nodeName].status = '已停止'
     });
+    nodeInfo[nodeName].process.on('error', (error) => {
+      console.log(`child node [${nodeName}] error with: ${error}`);
+    });
+
     res.json({ msg: '正在启动节点:' + nodeName, code: 0 })
   } catch (error) {
     console.log(error)
@@ -132,6 +159,25 @@ router.get('/launch', function (req, res) {
   }
 })
 
+router.get('/start_pi_driver', function (req, res) {
+  res.json({
+    status: 'ok'
+  })
+  startPiDriver()
+})
 
+router.get('/start_pi_server', function (req, res) {
+  res.json({
+    status: 'ok',
+    msg: '启动中'
+  })
+  startPiServer()
+})
+
+try {
+  startPiServer()
+} catch (error) {
+  console.log(error)
+}
 
 module.exports = router

@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const os = require('os');
+const fs = require('fs');
 const ChildProcess = require('child_process');
 const router = express.Router();
 const {
@@ -10,6 +11,8 @@ const {
 const AudioControl = require('./audio-control')
 
 const audio = new AudioControl()
+
+var my_process
 
 const info = {
 	speaker: 50,
@@ -68,17 +71,65 @@ function getDeviceInfo() {
 
 // getDeviceInfo().then(console.log)
 
-function startPiDriver() {
-	// ChildProcess.exec(`source /home/pi/workspace/lepi_gui/ros_env.sh ; roslaunch pi_driver pi_master_node.launch > /tmp/pi_master_node.log`)
-}
 
-function startDuckService() {
-	// ChildProcess.exec(`docker run -t -v /home/pi:/home/pi --net host --privileged --rm --name lepi_server wupanhao/lepi_server:melodic bash -c "source env.sh && roslaunch pi_driver lepi_server.launch" > /tmp/lepi_server.log &`)
-}
 function resetAll() {
 	file_name = path.join(__dirname, 'stopMotors.py')
 	ChildProcess.exec(`sudo killall lxterminal;python ${file_name}`)
 }
+
+function executeTerminal(file) {
+	console.log(file)
+
+	var extname = path.extname(file)
+	var cmd = 'lxterminal'
+	// var cmd = 'x-terminal-emulator'
+	if (extname == '.py') {
+		param = `-e 'python ${file};read'`
+	} else if (extname == '.sh') {
+		param = `-e 'bash ${file};read'`
+	} else {
+		console.log("file type %s to be handled", extname)
+		param = `-e 'echo  unsupported file type:${file}'`
+	}
+
+	if (my_process && !my_process.killed) {
+		my_process.kill()
+	}
+
+	my_process = ChildProcess.spawn(cmd, [param], {
+		shell: true,
+		detached: true
+	});
+
+	console.log(cmd, param)
+	console.log('start child_process with pid %d', my_process.pid)
+
+}
+
+router.get('/execFile', function (req, res) {
+	console.log(req.query)
+	const file = decodeURI(req.query['path'])
+	if (file && fs.existsSync(file)) {
+		executeTerminal(file)
+		res.json({
+			status: 'ok'
+		})
+	} else {
+		res.json({
+			status: 'fail',
+			msg: 'file_path不存在'
+		})
+	}
+
+})
+
+router.get('/resetAll', function (req, res) {
+	resetAll()
+	res.json({
+		status: 'ok'
+	})
+})
+
 router.get('/deviceInfo', function (req, res) {
 	getDeviceInfo().then(info => {
 		res.json(info)
@@ -100,19 +151,7 @@ router.get('/reboot', function (req, res) {
 		ChildProcess.exec("sudo reboot")
 	})
 })
-router.get('/start_pi_driver', function (req, res) {
-	res.json({
-		status: 'ok'
-	})
-	startPiDriver()
-})
 
-router.get('/start_duck_service', function (req, res) {
-	res.json({
-		status: 'ok'
-	})
-	startDuckService()
-})
 
 router.get('/audio', function (req, res) {
 	console.log(req.query)
@@ -149,7 +188,7 @@ router.get('/expand_rootfs', function (req, res) {
 
 router.get('/update', function (req, res) {
 	var buf = ChildProcess.execSync('git reset HEAD --hard && git pull')
-	console.log(`${out}`)
+	console.log(`${buf}`)
 	var msg = `未知错误`
 	var code = -99
 	const out = buf.toString()
@@ -171,7 +210,5 @@ router.get('/update', function (req, res) {
 
 module.exports = {
 	systemRouter: router,
-	startPiDriver: startPiDriver,
-	startDuckService: startDuckService,
 	resetAll: resetAll
 }

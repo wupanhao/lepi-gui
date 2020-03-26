@@ -35,7 +35,9 @@ angular.module('myApp.explore', ['ngRoute'])
             })
             data && data.files && data.files.map(item => {
                 var imageUrl = null
-                var url = '#!' + $location.path()
+                // var url = '#!' + $location.path()
+                var url = null
+                var api = null
                 var splitNames = item.split('.')
                 var len = splitNames.length
                 if (len > 1) {
@@ -46,8 +48,8 @@ angular.module('myApp.explore', ['ngRoute'])
                         var path = data.current + '/' + item
                     }
 
-                    path = path.slice(data.homedir.length, path.length)
-                    path = path.replace('\\', '/')
+                    var url_path = path.slice(data.homedir.length, path.length)
+                    url_path = url_path.replace('\\', '/')
 
                     var extName = splitNames[len - 1]
                     switch (extName) {
@@ -55,29 +57,32 @@ angular.module('myApp.explore', ['ngRoute'])
                         case 'ogg':
                         case 'wav':
                         case 'm4a':
-                            imageUrl = 'assets/images/explore/music.png'
-                            url = encodeURI(`#!/player?src=/explore${path}`)
+                            imageUrl = 'assets/images/explore/audio-x-generic.png'
+                            url = encodeURI(`#!/player?src=/explore${url_path}`)
                             break
                         case 'mp4':
                         case 'webm':
-                            imageUrl = 'assets/images/explore/video.png'
-                            url = encodeURI(`#!/player?src=/explore${path}`)
+                            imageUrl = 'assets/images/explore/video-x-generic.png'
+                            url = encodeURI(`#!/player?src=/explore${url_path}`)
                             break
                         case 'sb3':
                             imageUrl = 'assets/images/explore/file.png'
-                            url = encodeURI(`#!/scratchRunner?src=/explore${path}`)
+                            url = encodeURI(`#!/scratchRunner?src=/explore${url_path}`)
                             break
                         case 'py':
                             imageUrl = 'assets/images/explore/file.png'
+                            api = encodeURI(`/system/execFile?path=${path}`)
                             break
                         case 'sh':
-                            imageUrl = 'assets/images/explore/file.png'
+                            imageUrl = 'assets/images/explore/text-x-script.png'
+                            api = encodeURI(`/system/execFile?path=${path}`)
                             break
                     }
-
                 }
-                if (imageUrl) {
+                if (url) {
                     explorePages.push({ link: url, src: imageUrl, name: item })
+                } else if (api) {
+                    explorePages.push({ link: url, src: imageUrl, name: item, api: api })
                 }
             })
             if ($location.path() == '/explore') {

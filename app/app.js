@@ -250,9 +250,7 @@ angular.module('myApp', [
                             window.ignore_input = true
                             swal({
                                 title: "正在运行",
-                                text: "可以开始你的创作了",
                                 button: false,
-                                timer: 1000,
                             })
                             $http.get(item.api).then(res => {
                                 console.log(res.data)

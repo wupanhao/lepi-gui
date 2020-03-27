@@ -9,12 +9,12 @@ const ns = '/variable'
 const prefix = 'docker exec -t lepi_server bash -c '
 
 const launchCMD = {
-  '/ubiquityrobot/camera_node': `${prefix} "source env.sh && roslaunch pi_cam camera_node.launch"`,
-  '/ubiquityrobot/apriltag_detector_node': `${prefix} "source env.sh && roslaunch pi_cam apriltag_detector_node.launch"`,
-  '/ubiquityrobot/transfer_learning_node': `${prefix} "source env.sh && roslaunch pi_cam transfer_learning_node.launch"`,
-  '/ubiquityrobot/line_detector_node': `${prefix} "source env.sh && roslaunch pi_cam line_detector_node.launch"`,
-  '/ubiquityrobot/face_recognizer_node': `${prefix} "source env.sh && roslaunch pi_cam face_recognizer_node.launch"`,
-  '/ubiquityrobot/joystick_node': `${prefix} "source env.sh && roslaunch pi_driver joystick_node.launch"`,
+  '/ubiquityrobot/camera_node': `bash -c "source /home/pi/workspace/lepi-gui/ros_env.sh && roslaunch pi_cam camera_node.launch" > /tmp/camera_node.log`,
+  '/ubiquityrobot/apriltag_detector_node': `${prefix} "source env.sh && roslaunch pi_cam apriltag_detector_node.launch" > /tmp/apriltag_detector_node.log`,
+  '/ubiquityrobot/transfer_learning_node': `${prefix} "source env.sh && roslaunch pi_cam transfer_learning_node.launch" > /tmp/transfer_learning_node.log`,
+  '/ubiquityrobot/line_detector_node': `${prefix} "source env.sh && roslaunch pi_cam line_detector_node.launch" > /tmp/line_detector_node.log`,
+  '/ubiquityrobot/face_recognizer_node': `${prefix} "source env.sh && roslaunch pi_cam face_recognizer_node.launch" > /tmp/face_recognizer_node.log`,
+  '/ubiquityrobot/joystick_node': `bash -c "source /home/pi/workspace/lepi-gui/ros_env.sh && roslaunch pi_driver joystick_node.launch" > /tmp/joystick_node.log`,
 }
 const availableNode = Object.keys(launchCMD)
 

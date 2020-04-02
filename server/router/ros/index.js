@@ -6,16 +6,27 @@ const router = express.Router();
 
 const ns = '/variable'
 
-const prefix = 'docker exec -t lepi_server bash -c '
+const prefix = 'bash -c "source /home/pi/workspace/lepi-gui/ros_env.sh && '
+// const prefix = 'docker exec -t lepi_server bash -c "source env.sh && '
 
 const launchCMD = {
   '/ubiquityrobot/camera_node': `bash -c "source /home/pi/workspace/lepi-gui/ros_env.sh && roslaunch pi_cam camera_node.launch" > /tmp/camera_node.log`,
-  '/ubiquityrobot/apriltag_detector_node': `${prefix} "source env.sh && roslaunch pi_cam apriltag_detector_node.launch" > /tmp/apriltag_detector_node.log`,
-  '/ubiquityrobot/transfer_learning_node': `${prefix} "source env.sh && roslaunch pi_cam transfer_learning_node.launch" > /tmp/transfer_learning_node.log`,
-  '/ubiquityrobot/line_detector_node': `${prefix} "source env.sh && roslaunch pi_cam line_detector_node.launch" > /tmp/line_detector_node.log`,
-  '/ubiquityrobot/face_recognizer_node': `${prefix} "source env.sh && roslaunch pi_cam face_recognizer_node.launch" > /tmp/face_recognizer_node.log`,
+  '/ubiquityrobot/apriltag_detector_node': `${prefix} roslaunch pi_cam apriltag_detector_node.launch" > /tmp/apriltag_detector_node.log`,
+  '/ubiquityrobot/transfer_learning_node': `${prefix} roslaunch pi_cam transfer_learning_node.launch" > /tmp/transfer_learning_node.log`,
+  '/ubiquityrobot/line_detector_node': `${prefix} roslaunch pi_cam line_detector_node.launch" > /tmp/line_detector_node.log`,
+  '/ubiquityrobot/face_recognizer_node': `${prefix} roslaunch pi_cam face_recognizer_node.launch" > /tmp/face_recognizer_node.log`,
   '/ubiquityrobot/joystick_node': `bash -c "source /home/pi/workspace/lepi-gui/ros_env.sh && roslaunch pi_driver joystick_node.launch" > /tmp/joystick_node.log`,
 }
+
+const nodeNameMap = {
+  '/ubiquityrobot/camera_node': '摄像头',
+  '/ubiquityrobot/apriltag_detector_node': '标签检测',
+  '/ubiquityrobot/transfer_learning_node': '迁移学习',
+  '/ubiquityrobot/line_detector_node': '颜色检测',
+  '/ubiquityrobot/face_recognizer_node': '人脸识别',
+  '/ubiquityrobot/joystick_node': '游戏手柄',
+}
+
 const availableNode = Object.keys(launchCMD)
 
 const nodeInfo = {}
@@ -73,11 +84,12 @@ router.get('/status', function (req, res) {
     nodeList.map(nodeName => {
       if (nodeInfo[nodeName]) {
         nodeInfo[nodeName].status = '已启动'
+        nodeInfo[nodeName]
       }
     })
     res.json(Object.keys(nodeInfo).map(nodeName => {
       const item = nodeInfo[nodeName]
-      return { name: item.name, status: item.status, id: item.id }
+      return { name: item.name, status: item.status, id: item.id, text: nodeNameMap[item.name], value: item.name }
     }))
   })
 })

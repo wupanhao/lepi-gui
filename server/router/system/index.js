@@ -120,7 +120,15 @@ router.get('/execFile', function (req, res) {
 			msg: 'file_path不存在'
 		})
 	}
+})
 
+router.get('/openTerminal', function (req, res) {
+	console.log(req.query)
+
+	res.json({
+		status: 'fail',
+		msg: 'file_path不存在'
+	})
 })
 
 router.get('/resetAll', function (req, res) {

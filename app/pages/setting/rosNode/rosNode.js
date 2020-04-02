@@ -18,14 +18,6 @@ angular.module('myApp.rosNode', ['ngRoute'])
         $rootScope.items = []
         $rootScope.show = []
         console.log($location.path(), ' entered')
-        $scope.nodeNameMap = {
-            '/ubiquityrobot/camera_node': '摄像头',
-            '/ubiquityrobot/apriltag_detector_node': '标签检测',
-            '/ubiquityrobot/transfer_learning_node': '迁移学习',
-            '/ubiquityrobot/line_detector_node': '颜色检测',
-            '/ubiquityrobot/face_recognizer_node': '人脸识别',
-            '/ubiquityrobot/joystick_node': '游戏手柄',
-        }
 
         const updateNodeStatus = () => {
             swal('正在更新数据')

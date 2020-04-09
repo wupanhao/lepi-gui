@@ -4,12 +4,16 @@ class BluetoothCtl {
     constructor() {
         this.devices = []
         this.scanProcess = null
-        console.log(this.getDevices(), this.getPairedDevices())
-        // this.startDiscovering()
-        setTimeout(() => {
-            this.stopDiscovering()
+        try {
             console.log(this.getDevices(), this.getPairedDevices())
-        }, 10000);
+            // this.startDiscovering()
+            setTimeout(() => {
+                this.stopDiscovering()
+                console.log(this.getDevices(), this.getPairedDevices())
+            }, 10000);
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     getDevices() {

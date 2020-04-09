@@ -56,8 +56,10 @@ class ros_client {
     });
 
     ros.on('close', () => {
+
       console.log('Connection to websocket server closed.');
-      // return
+      if (navigator && navigator.platform == 'Win32')
+        return
       console.log('Connection to websocket server closed. retrying after 3 seconds');
       setTimeout(() => {
         this.conectToRos(callback)

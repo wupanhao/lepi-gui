@@ -25,6 +25,32 @@ class Runner {
         swal.close()
       }, 500);
       // vm.greenFlag();
+      const monitors = vm.runtime.getMonitorState()._list
+      for (let i = 0; i < monitors.size; i++) {
+        const monitor = monitors.get(i)[1];
+        console.log(monitor)
+        if (monitor.mode != 'list' && monitor.visible) {
+          const element = document.createElement('div')
+          element.classList.add('monitor-container')
+          element.setAttribute('id', 'monitor-' + i)
+          element.setAttribute('value', monitor.value)
+          // monitor.params.VARIABLE || monitor.id
+          var lable = monitor.params.VARIABLE || monitor.id
+          var type = 'addon'
+          if (monitor.params.VARIABLE) {
+            type = 'builtin'
+          }
+          if (monitor.mode == 'default' || monitor.mode == 'slider') {
+            element.innerHTML = `<span class="monitor-label">${lable}</span> <span class="monitor-value ${type}">${monitor.value}</span>`
+          } else if (monitor.mode == 'large') {
+            element.innerHTML = `<span class="monitor-large-value ${type}">${monitor.value}</span>`
+          }
+          element.style.top = monitor.y / 3.0 * 2 + 'px'
+          element.style.left = monitor.x / 3.0 * 2 + 'px'
+          document.querySelector('#monitor-list').appendChild(element)
+        }
+        Scratch.monitors = monitors
+      }
     })
 
     vm.on('PROJECT_RUN_START', () => {
@@ -34,6 +60,25 @@ class Runner {
     vm.on('PROJECT_RUN_STOP', () => {
       console.log('PROJECT_RUN_STOP')
       this.running = false
+    })
+
+    vm.on('MONITORS_UPDATE', (monitorState) => {
+      // console.log('MONITORS_UPDATE', monitorState)
+      if (Scratch.monitors && Scratch.monitors.size > 0) {
+        const monitors = vm.runtime.getMonitorState()._list
+        for (let i = 0; i < monitors.size; i++) {
+          const monitorNew = monitors.get(i)[1];
+          const monitorOld = Scratch.monitors.get(i)[1]
+          if (monitorNew.visible && monitorNew.mode != 'list' && monitorNew.value != monitorOld.value) {
+            const element = document.querySelector(`#monitor-${i} .monitor-value`) || document.querySelector(`#monitor-${i} .monitor-large-value`)
+            if (element) {
+              element.textContent = monitorNew.value
+            }
+          }
+        }
+        Scratch.monitors = monitors
+      }
+
     })
 
     var renderer = new ScratchRender(this.canvas);
@@ -159,7 +204,7 @@ angular.module('myApp.scratchRunner', ['ngRoute'])
   .controller('ScratchRunnerCtrl', function ($rootScope, $scope, $location) {
     $rootScope.show_header = false
     $rootScope.show_footer = false
-
+    $scope.monitors = []
     var src = $location.search().src || ''
     $rootScope.items = []
     $rootScope.updatePageInfo()

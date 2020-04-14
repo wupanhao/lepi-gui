@@ -74,22 +74,21 @@ function getDeviceInfo() {
 
 function resetAll() {
 	file_name = path.join(__dirname, 'stopMotors.py')
-	ChildProcess.exec(`sudo killall lxterminal;python ${file_name}`)
+	ChildProcess.exec(`DISPLAY=:0.1 xdotool mousemove --screen 0  120 300 ; sudo killall konsole;python ${file_name}`)
 }
 
 function executeTerminal(file) {
 	console.log(file)
 
 	var extname = path.extname(file)
-	var cmd = 'lxterminal'
+	var cmd = 'DISPLAY=:0.1 konsole -p TerminalRows=19 -p TerminalColumns=34 -e bash -c "xdotool mousemove --screen 1  120 300 click 1 ;'
 	// var cmd = 'x-terminal-emulator'
 	if (extname == '.py') {
-		param = `-e 'python ${file};read'`
+		param = `python ${file};bash"`
 	} else if (extname == '.sh') {
-		param = `-e 'bash ${file};read'`
+		param = `bash ${file};bash"`
 	} else {
-		console.log("file type %s to be handled", extname)
-		param = `-e 'echo  unsupported file type:${file}'`
+		param = `${file}"`
 	}
 
 	if (my_process && !my_process.killed) {
@@ -124,10 +123,50 @@ router.get('/execFile', function (req, res) {
 
 router.get('/openTerminal', function (req, res) {
 	console.log(req.query)
-
+	executeTerminal('bash')
 	res.json({
-		status: 'fail',
-		msg: 'file_path不存在'
+		status: 'ok',
+		msg: 'terminal is open'
+	})
+})
+
+router.get('/inputString', (req, res) => {
+	console.log(req.query)
+	var input = decodeURI(req.query.input)
+	if (input) {
+		input = input.replace("'", "\'")
+	}
+	const enter = req.query.enter
+
+	var cmd = `export DISPLAY=:0.1 && xdotool type '${input}'`
+	if (enter)
+		cmd = cmd + ' && xdotool key Return'
+	console.log(cmd)
+	ChildProcess.exec(cmd, (error, stdout, stderr) => {
+		if (error || stderr) {
+			console.log(error, stderr)
+		}
+		res.json({
+			status: 'ok',
+			msg: '输入完成'
+		})
+	})
+})
+
+router.get('/inputKey', (req, res) => {
+	console.log(req.query)
+	var keys = Object.keys(req.query).join('+')
+	var cmd = `export DISPLAY=:0.1 && xdotool key ${keys}`
+	console.log(cmd)
+	ChildProcess.exec(cmd, (error, stdout, stderr) => {
+		if (error || stderr) {
+			console.log(error, stderr)
+		}
+		if (stdout) {
+			resolve(stdout.trim())
+		} else {
+			resolve()
+		}
 	})
 })
 

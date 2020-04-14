@@ -13,3 +13,4 @@ DISPLAY=:0.1 bash -c "source /home/pi/nodejs.sh && source /home/pi/workspace/lep
 #/sbin/iw phy phy0 interface add uap0 type __ap
 #/sbin/iw dev uap0 del
 #docker run -idt --name demo_duck --privileged --net host  --env="DISPLAY=:0.1" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" wupanhao/demo_duck:v0.1
+#DISPLAY=:0.1 konsole -p TerminalColumns=34 -p TerminalRows=19

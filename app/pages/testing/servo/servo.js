@@ -1,18 +1,18 @@
 'use strict';
 
-angular.module('myApp.motor', ['ngRoute'])
+angular.module('myApp.servo', ['ngRoute'])
 
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/testing/motor', {
-            templateUrl: 'pages/testing/motor/motor.html',
-            controller: 'MotorCtrl'
+        $routeProvider.when('/testing/servo', {
+            templateUrl: 'pages/testing/servo/servo.html',
+            controller: 'ServoCtrl'
         });
     }])
 
-    .controller('MotorCtrl', function ($scope, $location, $rootScope) {
+    .controller('ServoCtrl', function ($scope, $location, $rootScope) {
         $rootScope.show_header = true
         $rootScope.show_footer = true
-        $rootScope.title = '电机'
+        $rootScope.title = '舵机'
         $rootScope.items = []
         console.log($location.path(), ' entered')
         $scope.motors = [1, 2, 3, 4, 5].map(port => {
@@ -20,6 +20,7 @@ angular.module('myApp.motor', ['ngRoute'])
                 position: 0,
                 enable: 0,
                 speed: 0,
+                angle:0,
                 port: port
             }
         })
@@ -55,17 +56,23 @@ angular.module('myApp.motor', ['ngRoute'])
                 // console.log(data)
                 if (data && data.length == 5) {
                     data.map((motor, id) => {
-                        motor.speed = Math.round(motor.speed / 10.0 / 655.35) * 10
+                        motor.angle = parseInt((motor.speed -4500 )/32)
+                        if(motor.angle < -90)
+                            motor.angle = -90
+                        if(motor.angle > 90)
+                            motor.angle = 90
+                        $scope.motors[id].angle = motor.angle
+                        
                         if ($scope.motors[id].speed != motor.speed) {
-                            $scope.elements.speed[id].textContent = motor.speed
+                            $scope.elements.speed[id].textContent = motor.angle
                             $scope.motors[id].speed = motor.speed
                         }
-                        if ($scope.motors[id].position != motor.position) {
-                            $scope.elements.position[id].textContent = motor.position
-                            $scope.motors[id].position = motor.position
-                        }
+                        // if ($scope.motors[id].position != motor.position) {
+                        //     $scope.elements.position[id].textContent = motor.position
+                        //     $scope.motors[id].position = motor.position
+                        // }
                         if ($scope.motors[id].enable != motor.enable) {
-                            if (motor.enable == 0) {  // type
+                            if (motor.enable == 1) {
                                 $scope.elements.toggle[id].MaterialSwitch.on()
                             } else {
                                 $scope.elements.toggle[id].MaterialSwitch.off()
@@ -75,8 +82,8 @@ angular.module('myApp.motor', ['ngRoute'])
                     })
                 }
 
-                if ($location.path() == '/testing/motor') {
-                    setTimeout(updateData, 100)
+                if ($location.path() == '/testing/servo') {
+                    setTimeout(updateData, 200)
                 }
             })
         }
@@ -91,17 +98,15 @@ angular.module('myApp.motor', ['ngRoute'])
                     i = i < 4 ? i + 1 : 0
                     break;
                 case "ArrowLeft":
-                    var speed = $scope.motors[i].speed - 10
-                    speed = Math.round(speed / 10.0) * 10
-                    speed = speed > -100 ? speed : -100
-                    speed = Math.round(speed * 655.35)
+                    var speed = $scope.motors[i].angle - 10
+                    speed = speed > -90 ? speed : -90
+                    speed = Math.round(4500 + speed*32)
                     $rootScope.ros.motorSetSpeed(i + 1, speed)
                     break;
                 case "ArrowRight":
-                    var speed = $scope.motors[i].speed + 10
-                    speed = Math.round(speed / 10.0) * 10
-                    speed = speed > 100 ? 100 : speed
-                    speed = Math.round(speed * 655.35)
+                    var speed = $scope.motors[i].angle + 10
+                    speed = speed > 90 ? 90 : speed
+                    speed = Math.round(4500 + speed*32)
                     $rootScope.ros.motorSetSpeed(i + 1, speed)
                     break;
                 case "Enter":
@@ -113,7 +118,7 @@ angular.module('myApp.motor', ['ngRoute'])
             }
         }
 
-        $rootScope.localHandler['/testing/motor'] = localHandler
+        $rootScope.localHandler['/testing/servo'] = localHandler
 
         updateData()
 

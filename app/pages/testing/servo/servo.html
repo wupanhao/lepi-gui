@@ -11,12 +11,12 @@
     }
 
     .table-container td {
-        padding-left: 10px;
+        padding-left: 15px;
         padding-right: 15px;
     }
 
     .table-container th {
-        padding-left: 10px;
+        padding-left: 15px;
     }
 </style>
 <table class="table-container" rules="none">
@@ -24,8 +24,8 @@
         <tr>
             <th>端口</th>
             <th id="th-toggle">连接</th>
-            <th>速度</th>
-            <th>编码器</th>
+            <th>角度</th>
+            <!-- <th>编码器</th> -->
         </tr>
     </thead>
     <tbody>
@@ -38,8 +38,8 @@
                     <span class="mdl-switch__label"></span>
                 </label>
             </td>
-            <td class="motor-speed">{{motor.speed}}</td>
-            <td class="motor-position">{{motor.position}}</td">
+            <td class="motor-speed">{{motor.angle}}</td>
+            <!-- <td class="motor-position">{{motor.position}}</td> -->
         </tr>
     </tbody>
 </table>

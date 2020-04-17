@@ -97,6 +97,10 @@ function btnHandler(message) {
             swal.close()
         }
         return
+    }else if(code == 'KeyS'){
+        axios.get('/system/resetAll').then(res => {
+            console.log(res.data)
+        })
     }
 
     // console.log(message.value)
@@ -150,6 +154,7 @@ angular.module('myApp', [
     'myApp.testing',
     'myApp.9_axis',
     'myApp.motor',
+    'myApp.servo',
     'myApp.camera',
     'myApp.speaker',
     'myApp.microphone',

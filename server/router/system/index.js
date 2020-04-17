@@ -234,7 +234,8 @@ router.get('/expand_rootfs', function (req, res) {
 })
 
 router.get('/update', function (req, res) {
-	var buf = ChildProcess.execSync('git reset HEAD --hard && git pull')
+	var buf = ChildProcess.execSync('cd /home/pi/workspace/lepi-gui && git reset HEAD --hard && git pull')
+	var buf2 = ChildProcess.execSync('cd /home/pi/workspace/lepi-ros-server && git reset HEAD --hard && git pull')
 	console.log(`${buf}`)
 	var msg = `未知错误`
 	var code = -99

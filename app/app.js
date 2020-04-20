@@ -88,19 +88,12 @@ function btnHandler(message) {
         code = 'Key' + code
     }
 
-    if (window.ignore_input) {
-        if (code == 'KeyS') {
-            axios.get('/system/resetAll').then(res => {
-                console.log(res.data)
-            })
-            window.ignore_input = false
-            swal.close()
-        }
-        return
-    }else if(code == 'KeyS'){
-        axios.get('/system/resetAll').then(res => {
+    if (code == 'KeyS') {
+        axios.get('/system/closeTerminal').then(res => {
             console.log(res.data)
         })
+        window.ignore_input = false
+        swal.close()
     }
 
     // console.log(message.value)
@@ -193,7 +186,7 @@ angular.module('myApp', [
             // closeOnClickOutside: false,
             // closeOnEsc: false
         });
-        $rootScope.ros = new ros_client('ws://' + $location.host() + ':9090', btnHandler)
+        $rootScope.ros = new ros_client($location.host(), btnHandler)
         window.ros = $rootScope.ros
         $rootScope.ros.conectToRos(() => {
             // updateData()

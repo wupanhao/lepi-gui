@@ -2,8 +2,9 @@
 const ROS_NAMESPACE = '/ubiquityrobot/'
 
 class ros_client {
-  constructor(ros_base_url, btnHandler = null) {
-    this.url = ros_base_url
+  constructor(ros_base_ip, btnHandler = null) {
+    this.url = 'ws://'+ros_base_ip+':9090'
+    this.ip = ros_base_ip
     this.btnListener = null
     this.sensorStatusListener = null
     this.btnHandler = btnHandler
@@ -11,10 +12,6 @@ class ros_client {
     this.ros = null
     this.setSensorStatusHandler = this.setSensorStatusHandler.bind(this)
     // this.conectToRos()
-  }
-
-  setRosUrl(ros_base_url) {
-    this.url = ros_base_url
   }
 
   conectToRos(callback) {
@@ -56,10 +53,8 @@ class ros_client {
     });
 
     ros.on('close', () => {
-
       console.log('Connection to websocket server closed.');
-      if (navigator && navigator.platform == 'Win32')
-        return
+      return
       console.log('Connection to websocket server closed. retrying after 3 seconds');
       setTimeout(() => {
         this.conectToRos(callback)

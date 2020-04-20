@@ -72,9 +72,10 @@ function getDeviceInfo() {
 // getDeviceInfo().then(console.log)
 
 
-function resetAll() {
+function stopAll() {
 	file_name = path.join(__dirname, 'stopMotors.py')
-	ChildProcess.exec(`DISPLAY=:0.1 xdotool mousemove --screen 0  120 300 ; sudo killall konsole;python ${file_name}`)
+	// ChildProcess.exec(`DISPLAY=:0.1 xdotool mousemove --screen 0  120 300 ; sudo killall konsole;python ${file_name}`)
+	ChildProcess.exec(`python ${file_name}`)
 }
 
 function executeTerminal(file) {
@@ -130,6 +131,15 @@ router.get('/openTerminal', function (req, res) {
 	})
 })
 
+router.get('/closeTerminal', function (req, res) {
+	console.log(req.query)
+	ChildProcess.exec(`DISPLAY=:0.1 xdotool mousemove --screen 0  120 300 ; sudo killall konsole`)
+	res.json({
+		status: 'ok',
+		msg: 'terminal is open'
+	})
+})
+
 router.get('/inputString', (req, res) => {
 	console.log(req.query)
 	var input = decodeURI(req.query.input)
@@ -170,8 +180,8 @@ router.get('/inputKey', (req, res) => {
 	})
 })
 
-router.get('/resetAll', function (req, res) {
-	resetAll()
+router.get('/stopAll', function (req, res) {
+	stopAll()
 	res.json({
 		status: 'ok'
 	})
@@ -258,5 +268,5 @@ router.get('/update', function (req, res) {
 
 module.exports = {
 	systemRouter: router,
-	resetAll: resetAll
+	stopAll: stopAll
 }

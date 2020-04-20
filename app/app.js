@@ -188,8 +188,8 @@ angular.module('myApp', [
         });
         $rootScope.ros = new ros_client($location.host(), btnHandler)
         window.ros = $rootScope.ros
-        $rootScope.ros.conectToRos(() => {
-            // updateData()
+
+	var onConnected = () => {
             console.log('connected to ros ', $rootScope.ros)
             swal({
                 title: "启动完毕",
@@ -199,7 +199,21 @@ angular.module('myApp', [
             });
             $rootScope.updatePowerInfo()
             setTimeout(swal.close, 1000)
-        })
+
+	}
+
+	var onConnectFail = () => {
+		if(navigator.platform!='Linux armv7l'){
+			console.log('not on pi, do not retry')
+			return
+		}
+		console.log('connect Fail, retry after 3 seconds')
+		setTimeout(() => {
+			$rootScope.ros.conectToRos(onConnected,onConnectFail)
+		},3000)
+	}
+
+        $rootScope.ros.conectToRos(onConnected,onConnectFail)
 
         function clickHandlerForContent(e) {
             console.log('clickHandlerForContent', e.code)

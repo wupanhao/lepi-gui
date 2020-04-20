@@ -14,7 +14,7 @@ class ros_client {
     // this.conectToRos()
   }
 
-  conectToRos(callback) {
+  conectToRos(onConnected,onFail) {
     console.log('trying to conect to ros server:')
     try {
       var ros = new ROSLIB.Ros({
@@ -25,7 +25,7 @@ class ros_client {
       return
       console.log('trying to reconect after 3 seconds')
       setTimeout(() => {
-        this.conectToRos(callback)
+        this.conectToRos(onConnected,onFail)
       }, 3000)
       return
     }
@@ -43,13 +43,16 @@ class ros_client {
       if (this.btnHandler) {
         btnListener.subscribe(this.btnHandler);
       }
-      if (callback) {
-        callback()
+      if (onConnected) {
+        onConnected()
       }
     });
 
     ros.on('error', function (error) {
       console.log('Error connecting to websocket server: ', error);
+      if (onFail) {
+        onFail()
+      }
     });
 
     ros.on('close', () => {

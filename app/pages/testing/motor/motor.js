@@ -18,7 +18,7 @@ angular.module('myApp.motor', ['ngRoute'])
         $scope.motors = [1, 2, 3, 4, 5].map(port => {
             return {
                 position: 0,
-                enable: 0,
+                enable: 1,
                 speed: 0,
                 port: port
             }

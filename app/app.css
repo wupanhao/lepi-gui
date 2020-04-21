@@ -6,7 +6,7 @@ body {
     padding: 0px;
     width: 240px;
     height: 320px;
-    background: url("assets/images/bg.png") no-repeat;
+    background: url("assets/themes/banbao-v1/background.jpg") no-repeat;
     color: white;
 }
 
@@ -78,7 +78,7 @@ a {
 }
 
 .active {
-    background-color: rgb(200, 198, 202);
+    background-color: rgb(0, 174, 188);
 }
 
 .card .card-img-top {

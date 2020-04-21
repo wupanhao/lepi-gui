@@ -33,7 +33,7 @@ angular.module('myApp.explore', ['ngRoute'])
                         } else {
                             var path = data.current + '/' + item
                         }
-                        explorePages.push({ link: `#!/explore?dir=${encodeURI(path)}`, src: 'assets/images/explore/folder.png', name: item })
+                        explorePages.push({ link: `#!/explore?dir=${encodeURI(path)}`, src: `assets/themes/${iconTheme}/icon-folder.png`, name: item })
                     }
                 })
                 data && data.files && data.files.map(item => {
@@ -60,24 +60,24 @@ angular.module('myApp.explore', ['ngRoute'])
                             case 'ogg':
                             case 'wav':
                             case 'm4a':
-                                imageUrl = 'assets/images/explore/audio-x-generic.png'
+                                imageUrl = `assets/themes/${iconTheme}/icon-mp3.png`
                                 url = encodeURI(`#!/player?src=/explore${url_path}`)
                                 break
                             case 'mp4':
                             case 'webm':
-                                imageUrl = 'assets/images/explore/video-x-generic.png'
+                                imageUrl = `assets/themes/${iconTheme}/icon-mp4.png`
                                 url = encodeURI(`#!/player?src=/explore${url_path}`)
                                 break
                             case 'sb3':
-                                imageUrl = 'assets/images/explore/file.png'
+                                imageUrl = `assets/themes/${iconTheme}/icon-scratch.png`
                                 url = encodeURI(`#!/scratchRunner?src=/explore${url_path}`)
                                 break
                             case 'py':
-                                imageUrl = 'assets/images/explore/file.png'
+                                imageUrl = `assets/themes/${iconTheme}/icon-python.png`
                                 api = encodeURI(`/system/execFile?path=${path}`)
                                 break
                             case 'sh':
-                                imageUrl = 'assets/images/explore/text-x-script.png'
+                                imageUrl = `assets/themes/${iconTheme}/icon-shell.png`
                                 api = encodeURI(`/system/execFile?path=${path}`)
                                 break
                         }

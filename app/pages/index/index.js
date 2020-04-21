@@ -14,22 +14,22 @@ angular.module('myApp.index', ['ngRoute'])
     const items = [
       {
         link: '#!/explore',
-        src: "assets/images/explore.png",
+        src: `assets/themes/${iconTheme}/icon-folder.png`,
         name: '文件管理'
       },
       {
         link: '#!/testing',
-        src: "assets/images/testing.png",
+        src: `assets/themes/${iconTheme}/icon-testing.png`,
         name: '内置测试'
       },
       {
         link: '#!/variable',
-        src: "assets/images/variable.png",
+        src: `assets/themes/${iconTheme}/icon-variable.png`,
         name: '变量设置'
       },
       {
         link: '#!/setting',
-        src: "assets/images/setting.png",
+        src: `assets/themes/${iconTheme}/icon-setting.png`,
         name: '系统设置'
       }
     ]

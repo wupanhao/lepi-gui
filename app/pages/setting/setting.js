@@ -14,31 +14,31 @@ angular.module('myApp.setting', ['ngRoute'])
       {
         id: 0,
         link: '#!/setting/wifi',
-        src: "assets/images/wifi_m.png",
+        src: `assets/themes/${iconTheme}/icon-wifi.png`,
         name: 'WiFi'
       },
       {
         id: 1,
         link: '#!/setting/bluetooth',
-        src: "assets/images/bluetooth_m.png",
+        src: `assets/themes/${iconTheme}/icon-bluetooth.png`,
         name: '蓝牙'
       },
       {
         id: 3,
         link: '#!/setting/audio',
-        src: "assets/images/volume.png",
+        src: `assets/themes/${iconTheme}/icon-audio.png`,
         name: '音频'
       },
       {
         id: 4,
         link: '#!/setting/rosNode',
-        src: "assets/images/application-x-addon.png",
+        src: `assets/themes/${iconTheme}/icon-node.png`,
         name: '节点管理'
       },
       {
         id: 5,
         link: '#!/setting/deviceInfo',
-        src: "assets/images/info.png",
+        src: `assets/themes/${iconTheme}/icon-info.png`,
         name: '设备信息'
       },
     ]

@@ -4,49 +4,49 @@ const testingPages = [
   {
     id: 0,
     link: '#!/testing/9_axis',
-    src: "assets/images/9_axis.png",
+    src: `assets/themes/${iconTheme}/icon-9axes.png`,
     name: '九轴传感器'
   },
   {
     id: 1,
     link: '#!/testing/camera',
-    src: "assets/images/camera.png",
+    src: `assets/themes/${iconTheme}/icon-camera.png`,
     name: '摄像头'
   },
   {
     id: 2,
     link: '#!/testing/microphone',
-    src: "assets/images/microphone.png",
+    src: `assets/themes/${iconTheme}/icon-microphone.png`,
     name: '麦克风'
   },
   {
     id: 3,
     link: '#!/testing/speaker',
-    src: "assets/images/volume.png",
+    src: `assets/themes/${iconTheme}/icon-speaker.png`,
     name: '扬声器'
   },
   {
     id: 4,
     link: '#!/testing/motor',
-    src: "assets/images/motor.png",
+    src: `assets/themes/${iconTheme}/icon-motor.png`,
     name: '电机'
   },
   {
     id: 5,
     link: '#!/testing/servo',
-    src: "assets/images/servo.png",
+    src: `assets/themes/${iconTheme}/icon-servo.png`,
     name: '舵机'
   },
   {
     id: 6,
     link: '#!/testing/sservo',
-    src: "assets/images/servo.png",
+    src: `assets/themes/${iconTheme}/icon-smart-servo.png`,
     name: '智能舵机'
   },
   {
     id: 7,
     link: '#!/testing/sensor',
-    src: "assets/images/sensor.png",
+    src: `assets/themes/${iconTheme}/icon-smart-sensor.png`,
     name: '智能传感器'
   },
 ]

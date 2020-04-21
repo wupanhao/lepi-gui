@@ -1,5 +1,7 @@
 'use strict';
 
+const iconTheme = 'banbao-v1'
+
 const KEY = {
     ArrowLeft: 37,
     ArrowUp: 38,

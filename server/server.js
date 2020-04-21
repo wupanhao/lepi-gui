@@ -13,6 +13,8 @@ const uploadRouter = require('./router/upload')
 const fileRouter = require('./router/file-reader')
 const rosRouter = require('./router/ros')
 const variableRouter = require('./router/variable')
+const serialRouter = require('./router/serial')
+
 const {
   systemRouter,
 } = require('./router/system')
@@ -56,6 +58,7 @@ app.use('/explore', fileRouter)
 app.use('/explore', express.static(fileRouter.homedir))
 app.use('/rosNode', rosRouter)
 app.use('/variable', variableRouter)
+app.use('/serial', serialRouter)
 app.use('/system', systemRouter)
 app.get('/stream_list', (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");

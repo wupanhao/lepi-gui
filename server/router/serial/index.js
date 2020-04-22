@@ -9,6 +9,8 @@ const router = express.Router();
 
 const devices = {}
 
+var my_process = null
+
 function PromisifyExec(cmd) {
     return new Promise(resolve => {
         console.log('PromisifyExec', cmd)
@@ -42,18 +44,51 @@ router.get('/bind', function (req, res) {
     }
 })
 
+router.get('/list', function (req, res) {
+    SerialPort.listDevices().then(ports => {
+        res.json(ports)
+    })
+})
+
 router.get('/connect', function (req, res) {
     const name = req.query['name']
     if (name == undefined) {
         res.json({ code: -2, msg: '设备名未提供' })
         return
     }
+
+    const device = devices[name]
+
+    if(device && device.isOpen){
+        res.json({ code: -1, msg: '请先断开连接' })
+        return
+    }
+
     try {
-            devices[name] = new SerialPort(name)
-            res.json({ code: 0, msg: '连接成功' })
+        devices[name] = new SerialPort(name)
+        res.json({ code: 0, msg: '连接成功' })
     } catch (error) {
         console.log(error)
         res.json({ code: -1, msg: '连接失败' })
+    }
+})
+
+router.get('/connected', function (req, res) {
+    const name = req.query['name']
+    const device = devices[name]
+    if(!device){
+        res.json({ code: -2, msg: '设备未连接' })
+        return
+    }
+    try {
+        if(device.isOpen)
+            res.json({ code:0, msg: '设备已连接' })
+        else{
+            res.json({ code:-3, msg: '设备未连接' })
+        }
+    } catch (error) {
+        console.log(error)
+        res.json({ code: -1, msg: '操作失败',value: '' })
     }
 })
 
@@ -65,6 +100,7 @@ router.get('/release', function (req, res) {
         return
     }
     try {
+        // device.close()
         const out = ChildProcess.execSync(`sudo rfcomm release ${name}`)
         devices[name] = null
         console.log(out)
@@ -92,6 +128,61 @@ router.get('/send', function (req, res) {
         console.log(error)
         res.json({ code: -1, msg: '操作失败' })
     }
+})
+
+
+router.get('/receive', function (req, res) {
+    const count = req.query['count']
+    const name = req.query['name']
+    const device = devices[name]
+    if(!device){
+        res.json({ code: -2, msg: '设备未连接' })
+        return
+    }
+    try {
+        var str = device.readString(count)
+        res.json({ code:0, len: str.length, value: str })
+    } catch (error) {
+        console.log(error)
+        res.json({ code: -1, msg: '操作失败',value: '' })
+    }
+})
+
+router.get('/startListening', function (req, res) {
+	if (my_process && my_process.exitCode==null && (!my_process.killed) ) {
+        res.json({ code:0, msg: '已处于监听模式，请先停止'})
+		return
+	}
+    try {
+        my_process = ChildProcess.spawn('sudo rfcomm watch hci0 > /tmp/rfcomm.log 2>&1',{shell:true})
+        // my_process = ChildProcess.spawn('sudo rfcomm watch hci0',{shell:true,stdio:'inherit'})
+        res.json({ code:0, msg: '已执行'})
+    } catch (error) {
+        console.log(error)
+        res.json({ code: -1, msg: '操作失败',value: '' })
+    }
+})
+
+router.get('/stopListening', function (req, res) {
+    try {
+        const out = ChildProcess.execSync(`sudo killall rfcomm`)
+    } catch (error) {
+        console.log(error)
+    }
+
+	if (my_process && !my_process.killed) {
+        try {
+
+            my_process.kill()
+            res.json({ code:0, msg: '已执行'})
+        } catch (error) {
+            console.log(error)
+            res.json({ code: -1, msg: '操作失败',value: '' })
+        }
+	}else{
+        res.json({ code:-2, msg: '未处于监听模式'})
+    }
+
 })
 
 module.exports = router

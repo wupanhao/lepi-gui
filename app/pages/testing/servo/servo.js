@@ -101,21 +101,24 @@ angular.module('myApp.servo', ['ngRoute'])
                     var speed = $scope.motors[i].angle - 10
                     speed = speed > -90 ? speed : -90
                     speed = Math.round(4500 + speed*32)
-                    $rootScope.ros.motorSetSpeed(i + 1, speed)
+                    $rootScope.ros.motorSetPulse(i + 1, speed)
                     break;
                 case "ArrowRight":
                     var speed = $scope.motors[i].angle + 10
                     speed = speed > 90 ? 90 : speed
                     speed = Math.round(4500 + speed*32)
-                    $rootScope.ros.motorSetSpeed(i + 1, speed)
+                    $rootScope.ros.motorSetPulse(i + 1, speed)
                     break;
                 case "Enter":
                     $rootScope.ros.motorSetType(i + 1, 1 - $scope.motors[i].enable)
                     break;
+                default:
+                    return false
             }
             if ($scope.activeId != i) {
                 active(i)
             }
+            return true
         }
 
         $rootScope.localHandler['/testing/servo'] = localHandler

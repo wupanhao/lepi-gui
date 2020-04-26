@@ -1089,7 +1089,22 @@ class ros_client {
       });
     })
   }
+  getSensorsInfo(){
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'pi_driver_node/sensors_get_info',
+        serviceType: 'pi_driver/GetMotorsInfo'
+      });
 
+      var request = new ROSLIB.ServiceRequest();
+      // console.log(request)
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve(result.motors)
+      });
+    })
+  }
 }
 
 // module.exports = ros_client

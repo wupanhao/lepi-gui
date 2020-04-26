@@ -95,22 +95,25 @@ angular.module('myApp.motor', ['ngRoute'])
                     speed = Math.round(speed / 10.0) * 10
                     speed = speed > -100 ? speed : -100
                     speed = Math.round(speed * 655.35)
-                    $rootScope.ros.motorSetSpeed(i + 1, speed)
+                    $rootScope.ros.motorSetPulse(i + 1, speed)
                     break;
                 case "ArrowRight":
                     var speed = $scope.motors[i].speed + 10
                     speed = Math.round(speed / 10.0) * 10
                     speed = speed > 100 ? 100 : speed
                     speed = Math.round(speed * 655.35)
-                    $rootScope.ros.motorSetSpeed(i + 1, speed)
+                    $rootScope.ros.motorSetPulse(i + 1, speed)
                     break;
                 case "Enter":
-                    $rootScope.ros.motorSetType(i + 1, 1 - $scope.motors[i].enable)
+                    $rootScope.ros.motorSetType(i + 1, 1 - $scope.motors[i].enable).then(console.log)
                     break;
+                default:
+                    return false
             }
             if ($scope.activeId != i) {
                 active(i)
             }
+            return true
         }
 
         $rootScope.localHandler['/testing/motor'] = localHandler

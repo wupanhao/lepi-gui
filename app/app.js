@@ -149,6 +149,7 @@ angular.module('myApp', [
     'myApp.testing',
     'myApp.9_axis',
     'myApp.motor',
+    'myApp.sensor',
     'myApp.servo',
     'myApp.sservo',
     'myApp.camera',
@@ -191,30 +192,58 @@ angular.module('myApp', [
         });
         $rootScope.ros = new ros_client($location.host(), btnHandler)
         window.ros = $rootScope.ros
+        const sensorName = {
+            29: '红外',
+            30: '超声波'
+        }
+        const sensors = [0,0,0,0,0]
+        var onSensorChange = (msg) => {
+            console.log(msg)
+            var text = ''
+            if(msg.status == 1){
+                text =  `${sensorName[msg.id]}传感器已连接至S${msg.port}口`
+                sensors[msg.port - 1] = msg.id
+            }else{
+                text =  `${sensorName[sensors[msg.port - 1]] || ''}传感器已从S${msg.port}口断开`
+            }
+            swal({
+                title: text,
+                button: false,
+                timer: 600,
+            });
+            // setTimeout(swal.close, 1000)
+        }
 
-	var onConnected = () => {
+        var onConnected = () => {
             console.log('connected to ros ', $rootScope.ros)
+            $rootScope.updatePowerInfo()
             swal({
                 title: "启动完毕",
                 text: "可以开始你的创作了",
                 button: false,
                 timer: 1000,
             });
-            $rootScope.updatePowerInfo()
             setTimeout(swal.close, 1000)
 
-	}
+            var sensorListener = new ROSLIB.Topic({
+                ros: $rootScope.ros.ros,
+                name: '/ubiquityrobot/pi_driver_node/sensor_status_change',
+                messageType: 'pi_driver/SensorStatusChange'
+              });
 
-	var onConnectFail = () => {
-		if(navigator.platform!='Linux armv7l'){
-			console.log('not on pi, do not retry')
-			return
-		}
-		console.log('connect Fail, retry after 3 seconds')
-		setTimeout(() => {
-			$rootScope.ros.conectToRos(onConnected,onConnectFail)
-		},3000)
-	}
+            sensorListener.subscribe(onSensorChange)
+        }
+
+        var onConnectFail = () => {
+            if(navigator.platform!='Linux armv7l'){
+                console.log('not on pi, do not retry')
+                return
+            }
+            console.log('connect Fail, retry after 3 seconds')
+            setTimeout(() => {
+                $rootScope.ros.conectToRos(onConnected,onConnectFail)
+            },3000)
+        }
 
         $rootScope.ros.conectToRos(onConnected,onConnectFail)
 

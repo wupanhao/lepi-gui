@@ -47,7 +47,7 @@ sudo apt install -y python-rospy python-rosnode python-roslaunch ros-core
 # Before, change the swap size
 sudo sed -i 's|CONF_SWAPSIZE=100$|CONF_SWAPSIZE=1000|' /etc/dphys-swapfile
 sudo service dphys-swapfile restart
-sudo docker run --rm -t -v /home/pi:/home/pi wupanhao/lepi_server:melodic bash -c "source /ros_entrypoint.sh && cd catkin_ws/ && catkin_make_isolated"
+sudo docker run --rm -t -v /home/pi:/home/pi wupanhao/lepi_driver:melodic bash -c "source /ros_entrypoint.sh && cd catkin_ws/ && catkin_make_isolated"
 
 # Install Other
 mkdir -p /home/pi/Lepi_Data
@@ -66,7 +66,7 @@ else
 fi
 # Install GUI
 source ~/nodejs.sh
-cd ~/workspace/lepi-gui/server && npm i
+cd ~/workspace/lepi-gui/server && npm i && electron-rebuild
 cd ~/workspace/lepi-gui/app && npm i
 
 # Set GUI Auto Start

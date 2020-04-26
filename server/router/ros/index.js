@@ -55,7 +55,7 @@ function PromisifyExec(cmd) {
 }
 
 function startPiDriver() {
-  // ChildProcess.exec(`source /home/pi/workspace/lepi_gui/ros_env.sh ; roslaunch pi_driver pi_master_node.launch > /tmp/pi_master_node.log`)
+  // ChildProcess.exec(`source /home/pi/workspace/lepi-gui/ros_env.sh ; roslaunch pi_driver pi_master_node.launch > /tmp/pi_master_node.log`)
 }
 
 function startPiServer() {
@@ -65,7 +65,7 @@ function startPiServer() {
     }
     else {
       console.log('startPiServer')
-      const child = ChildProcess.spawn(`docker run -t -v /home/pi:/home/pi --net host --privileged --rm --name lepi_server wupanhao/lepi_driver:melodic bash -c "source env.sh && roslaunch pi_driver lepi_server.launch" > /tmp/lepi_server.log &`, {
+      const child = ChildProcess.spawn(`docker run -t -v /home/pi:/home/pi --rm --net host --privileged --name lepi_server wupanhao/lepi_driver:melodic bash -c "source env.sh && roslaunch pi_driver lepi_server.launch" > /tmp/lepi_server.log &`, {
         detached: true,
         stdio: 'ignore',
         shell: true

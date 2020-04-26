@@ -27,3 +27,4 @@ function install_from_wget(){
 install_from_wget
 npm i -g electron@6.0.0
 npm i -g yarn
+npm i -g electron-rebuild

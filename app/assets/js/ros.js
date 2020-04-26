@@ -941,6 +941,8 @@ class ros_client {
       });
     })
   }
+
+  /*
   inputString(input) {
     return new Promise((resolve) => {
       var client = new ROSLIB.Service({
@@ -958,6 +960,7 @@ class ros_client {
       });
     })
   }
+  */
 
   variableList() {
     return new Promise((resolve) => {
@@ -972,6 +975,117 @@ class ros_client {
       client.callService(request, (result) => {
         console.log(result)
         resolve(result.data)
+      });
+    })
+  }
+
+  getServosInfo(ids = []){
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'pi_driver_node/servos_get_info',
+        serviceType: 'pi_driver/GetServosInfo'
+      });
+
+      var request = new ROSLIB.ServiceRequest({
+        ids:ids
+      });
+      // console.log(request)
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve(result.servos)
+      });
+    })
+  }
+
+  setServoPosition(id,position,ms = 0,speed = 0){
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'pi_driver_node/servo_set_position',
+        serviceType: 'pi_driver/SetServoPosition'
+      });
+
+      var request = new ROSLIB.ServiceRequest({
+        id,position,ms,speed
+      });
+      console.log(request)
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve(result.status)
+      });
+    })
+  }
+
+  setServoParamU8(id,param_id,value){
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'pi_driver_node/servo_set_u8',
+        serviceType: 'pi_driver/SetServoParam'
+      });
+
+      var request = new ROSLIB.ServiceRequest({
+        id,param_id,value
+      });
+      console.log(request)
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve(result.status)
+      });
+    })
+  }
+  setServoParamU16(id,param_id,value){
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'pi_driver_node/servo_set_u16',
+        serviceType: 'pi_driver/SetServoParam'
+      });
+
+      var request = new ROSLIB.ServiceRequest({
+        id,param_id,value
+      });
+      console.log(request)
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve(result.status)
+      });
+    })
+  }
+  getServoParamU8(id,param_id,value){
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'pi_driver_node/servo_get_u8',
+        serviceType: 'pi_driver/SetServoParam'
+      });
+
+      var request = new ROSLIB.ServiceRequest({
+        id,param_id,value
+      });
+      console.log(request)
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve(result.status)
+      });
+    })
+  }
+  getServoParamU16(id,param_id,value){
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'pi_driver_node/servo_get_u16',
+        serviceType: 'pi_driver/SetServoParam'
+      });
+
+      var request = new ROSLIB.ServiceRequest({
+        id,param_id,value
+      });
+      console.log(request)
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve(result.status)
       });
     })
   }

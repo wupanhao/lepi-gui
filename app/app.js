@@ -150,6 +150,7 @@ angular.module('myApp', [
     'myApp.9_axis',
     'myApp.motor',
     'myApp.servo',
+    'myApp.sservo',
     'myApp.camera',
     'myApp.speaker',
     'myApp.microphone',

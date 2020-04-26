@@ -22,6 +22,13 @@ angular.module('myApp.sservo', ['ngRoute'])
         $scope.blanks = [{},{},{},{},{}]
         $scope.servos = []
         $scope.activeId = -1
+
+        swal({
+            title: "正在扫描舵机",
+            text: "请稍等",
+            button: false,
+        });
+
         // $rootScope.updatePageInfo($rootScope.pageIndex)
         var active = (i) => {
             for (let index = 0; index < $scope.servos.length; index++) {
@@ -36,8 +43,13 @@ angular.module('myApp.sservo', ['ngRoute'])
         }
         var updateData = () => {
             const ids = $rootScope.show.map(servo => servo.id)
-            console.log('updateData:',ids)
+            // console.log('updateData:',ids)
             $rootScope.ros.getServosInfo(ids).then(data => {
+
+                if($rootScope.items.length == 0){
+                    swal.close()
+                }
+
                 // console.log(data)
                 if (data && data.length > 0) {
                     const servos = data.map( (servo) => {

@@ -20,7 +20,12 @@ angular.module('myApp.rosNode', ['ngRoute'])
         console.log($location.path(), ' entered')
 
         const updateNodeStatus = () => {
-            swal('正在更新数据')
+            // swal('正在更新数据')
+            swal({
+                title: "正在更新数据",
+                text: "请稍等",
+                button: false,
+            });
             $http.get('/rosNode/status').then(res => {
                 console.log(res.data)
                 $scope.nodeInfo = res.data
@@ -31,11 +36,9 @@ angular.module('myApp.rosNode', ['ngRoute'])
                     $rootScope.show = Object.values(res.data)
                     if (!menuShown()) {
                         ngRefresh()
-                    } else {
-                        setTimeout(swal.close, 500)
-                    }
+                    } 
                 }
-                setTimeout(swal.close, 1000)
+                swal.close()
 
                 if ($location.path() == '/setting/rosNode/') {
                     // setTimeout(updateNodeStatus, 3000)

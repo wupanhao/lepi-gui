@@ -1,3 +1,34 @@
-<audio src="/app/lib/Capo Productions - Journey.mp3" autoplay controls loop>
+<style>
+    .table-container {
+        background-color: transparent;
+        color: white;
+        width: 100%;
+        height: 270px;
+        padding: 20px;
+        text-align: center;
+        table-layout: fixed;
 
-</audio>
+    }
+
+    .table-container td{
+        border: 1px white solid;
+        border-radius: 5px;
+    }
+</style>
+<table class="table-container">
+    <tr>
+        <td></td>
+        <td onclick="piano.play(PianoFreq[1])">1</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td onclick="piano.play(PianoFreq[2])">2</td>
+        <td onclick="piano.play(PianoFreq[3])">3</td>
+        <td onclick="piano.play(PianoFreq[4])">4</td>
+    </tr>
+    <tr>
+        <td onclick="piano.play(PianoFreq[5])">5</td>
+        <td onclick="piano.play(PianoFreq[6])">6</td>
+        <td onclick="piano.play(PianoFreq[7])">7</td>
+    </tr>
+</table>

@@ -18,6 +18,55 @@ function setOutAudioDevices(element, deviceId) {
         }
     })
 }
+
+class Piano{
+
+    constructor(){
+        this.audioContext = new(window.AudioContext || window.webkitAudioContext)()
+    }
+
+    /**
+     * play the musical note
+     *
+     * @param {number} frequency
+     */
+    play(frequency) {
+        if (!this.audioContext) {
+            return
+        }
+        if (this.oscillator) {
+            this.stop()
+        }
+        this.oscillator = this.audioContext.createOscillator()
+        this.oscillator.connect(this.audioContext.destination)
+        this.oscillator.start()
+        this.oscillator.frequency.value = frequency
+        if(this.timer){
+            clearTimeout(this.timer)
+        }
+        this.timer = setTimeout(() => {
+            this.timer = null
+            this.stop()
+        },800)
+    }
+
+    stop() {
+        this.oscillator && this.oscillator.stop()
+        this.oscillator = null
+    }
+}
+const PianoFreq = {
+    1:261,
+    2:293,
+    3:330,
+    4:349,
+    5:392,
+    6:440,
+    7:494
+}
+
+const piano = new Piano()
+
 angular.module('myApp.speaker', ['ngRoute'])
 
     .config(['$routeProvider', function ($routeProvider) {
@@ -28,7 +77,7 @@ angular.module('myApp.speaker', ['ngRoute'])
         });
     }])
 
-    .controller('SpeakerCtrl', function ($rootScope, $scope) {
+    .controller('SpeakerCtrl', function ($location,$rootScope, $scope) {
         $rootScope.setStatusBar(true)
         $rootScope.items = []
         $rootScope.title = '扬声器测试'
@@ -68,5 +117,37 @@ angular.module('myApp.speaker', ['ngRoute'])
         }).catch(function (err) {
             console.log(err.name + ": " + err.message);
         });
+
+        const localHandler = (e) => {
+            switch (e.code) {
+                case "ArrowUp":
+                    piano.play(PianoFreq[1])
+                    break;
+                case "ArrowLeft":
+                    piano.play(PianoFreq[2])
+                    break;
+                case "Enter":
+                    piano.play(PianoFreq[3])
+                    break;
+                case "ArrowRight":
+                    piano.play(PianoFreq[4])
+                    break;
+                case "KeyR":
+                    piano.play(PianoFreq[5])
+                    break;
+                case "ArrowDown":
+                    piano.play(PianoFreq[6])
+                    break;
+                case "KeyS":
+                    piano.play(PianoFreq[7])
+                    break;
+                default:
+                    return false
+            }
+            return true
+        }
+
+        $rootScope.localHandler['/testing/speaker'] = localHandler
+
 
     });

@@ -21,9 +21,14 @@ function PromisifyExec(cmd) {
 
 class AudioControl {
     constructor() {
-        const out = ChildProcess.execSync('aplay -l | grep wm8960').toString()
-        this.cid = out[5]
-        console.log(out, this.cid)
+	try {
+          const out = ChildProcess.execSync('aplay -l | grep wm8960').toString()
+          this.cid = out[5]
+          console.log(out, this.cid)
+	} catch (e){
+	  console.log(e)
+	  this.cid = 0
+	}
         this.devices = {
             hdmi: {
                 min: -10239,

@@ -19,9 +19,13 @@ const info = {
 	headphone: 50,
 	microphone: 50
 }
-audio.getAll(data => {
+
+audio.set('speaker',70).then( () => {
+    audio.getAll(data => {
 	Object.assign(info, data)
-})
+    })
+} )
+
 function getDeviceInfo() {
 	const info = {
 		memory: {

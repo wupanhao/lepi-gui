@@ -24,7 +24,7 @@ function getLocalIps() {
 
 function start_mdns_server() {
   const mdns = require('multicast-dns')()
-  // console.log('local ip address:', getLocalIps());
+  console.log('local ip address:', getLocalIps());
   mdns.on('query', query => {
     if (query.questions[0] && query.questions[0].name === HOSTNAME) {
       console.log('got a query packet:', query)

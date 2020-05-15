@@ -7,6 +7,7 @@ const {
   createServer
 } = require('http');
 
+const mdns = require('./router/mdns')
 const wifiRouter = require('./router/wifi')
 const bluetoothRouter = require('./router/bluetooth')
 const uploadRouter = require('./router/upload')
@@ -137,6 +138,7 @@ try {
       createWindow()
     })
   })
+  mdns.start_mdns_server()
 }
 catch (error) {
   console.log(error)

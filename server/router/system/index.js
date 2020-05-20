@@ -20,11 +20,11 @@ const info = {
 	microphone: 50
 }
 
-audio.set('speaker',70).then( () => {
-    audio.getAll(data => {
-	Object.assign(info, data)
-    })
-} )
+audio.set('speaker', 70).then(() => {
+	audio.getAll(data => {
+		Object.assign(info, data)
+	})
+})
 
 function getDeviceInfo() {
 	const info = {
@@ -137,10 +137,14 @@ router.get('/openTerminal', function (req, res) {
 
 router.get('/closeTerminal', function (req, res) {
 	console.log(req.query)
-	ChildProcess.exec(`DISPLAY=:0.1 xdotool mousemove --screen 0  120 300 ; sudo killall konsole`)
+	try {
+		ChildProcess.execSync(`DISPLAY=:0.1 xdotool mousemove --screen 0  120 300 ; sudo killall konsole`)
+	} catch (error) {
+		console.log(error)
+	}
 	res.json({
 		status: 'ok',
-		msg: 'terminal is open'
+		msg: 'terminal is close'
 	})
 })
 

@@ -16,7 +16,8 @@ angular.module('myApp.explore', ['ngRoute'])
         $rootScope.rowNum = 3
         $rootScope.colNum = 2
         console.log('/explore page entered')
-
+        $rootScope.items = []
+        $rootScope.updatePageInfo()
         var explorePages = []
         var dir = $location.search().dir || ''
 
@@ -89,8 +90,16 @@ angular.module('myApp.explore', ['ngRoute'])
                     }
                 })
                 if ($location.path() == '/explore') {
-                    $rootScope.items = explorePages
-                    $rootScope.updatePageInfo()
+                    if (explorePages.length == 0) {
+                        const ele = document.querySelector('.blank')
+                        if (ele) {
+                            ele.textContent = '空目录'
+                        }
+                    } else {
+                        $rootScope.items = explorePages
+                        $rootScope.updatePageInfo()
+                    }
+
                 } else {
                     console.log('/explore page exit')
 

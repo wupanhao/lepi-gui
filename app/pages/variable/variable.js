@@ -18,6 +18,7 @@ angular.module('myApp.variable', ['ngRoute'])
         console.log('/variable page entered')
 
         $rootScope.items = []
+        $rootScope.updatePageInfo()
 
         function updateVariableData() {
             $rootScope.ros.variableList().then(res => {

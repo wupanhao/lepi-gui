@@ -3,7 +3,7 @@
 angular.module('myApp.bluetooth', ['ngRoute'])
 
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/setting/bluetooth/', {
+        $routeProvider.when('/setting/bluetooth', {
             templateUrl: 'pages/setting/bluetooth/bluetooth.html',
             controller: 'BluetoothCtrl'
         });
@@ -14,14 +14,17 @@ angular.module('myApp.bluetooth', ['ngRoute'])
         $rootScope.show_footer = true
         $rootScope.title = '蓝牙'
         console.log($location.path(), ' entered')
-
+        $rootScope.items = []
+        $rootScope.rowNum = 6
+        $rootScope.colNum = 1
+        $rootScope.updatePageInfo()
         const updateBluetoothList = () => {
             $http.get('/bluetooth/devices').then(res => {
                 console.log(res.data)
-                $rootScope.items = Object.values(res.data)
-                $rootScope.rowNum = 6
-                $rootScope.colNum = 1
-                $rootScope.updatePageInfo()
+                if ($location.path() == '/setting/bluetooth') {
+                    $rootScope.items = Object.values(res.data)
+                    $rootScope.updatePageInfo()
+                }
             }, (err) => {
                 console.log(err)
             })

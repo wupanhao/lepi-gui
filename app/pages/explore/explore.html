@@ -1,6 +1,7 @@
 <div id="index" class="flex-container">
-    <div ng-repeat="item in show" ng-click="click($index)" ng-class="{ active: $index == itemIndex}" class="card card-small">
-        <a href="{{item.link}}" >
+    <div ng-repeat="item in show" ng-click="click($index)" ng-class="{ active: $index == itemIndex}"
+        class="card card-small">
+        <a href="{{item.link}}">
             <div class="img-holder">
                 <img class="card-img-top" src="{{item.src}}">
             </div>
@@ -11,7 +12,7 @@
     </div>
     <div ng-show='maxPageIndex == -1'>
         <div class="blank">
-            空目录
+
         </div>
     </div>
 </div>

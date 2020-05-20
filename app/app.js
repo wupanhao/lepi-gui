@@ -93,6 +93,7 @@ function btnHandler(message) {
     if (code == 'KeyS') {
         axios.get('/system/closeTerminal').then(res => {
             console.log(res.data)
+            axios.get('/system/stopAll')
         })
         window.ignore_input = false
         swal.close()
@@ -196,15 +197,15 @@ angular.module('myApp', [
             29: '红外',
             30: '超声波'
         }
-        const sensors = [0,0,0,0,0]
+        const sensors = [0, 0, 0, 0, 0]
         var onSensorChange = (msg) => {
             console.log(msg)
             var text = ''
-            if(msg.status == 1){
-                text =  `${sensorName[msg.id]}传感器已连接至S${msg.port}口`
+            if (msg.status == 1) {
+                text = `${sensorName[msg.id]}传感器已连接至S${msg.port}口`
                 sensors[msg.port - 1] = msg.id
-            }else{
-                text =  `${sensorName[sensors[msg.port - 1]] || ''}传感器已从S${msg.port}口断开`
+            } else {
+                text = `${sensorName[sensors[msg.port - 1]] || ''}传感器已从S${msg.port}口断开`
             }
             swal({
                 title: text,
@@ -229,23 +230,23 @@ angular.module('myApp', [
                 ros: $rootScope.ros.ros,
                 name: '/ubiquityrobot/pi_driver_node/sensor_status_change',
                 messageType: 'pi_driver/SensorStatusChange'
-              });
+            });
 
             sensorListener.subscribe(onSensorChange)
         }
 
         var onConnectFail = () => {
-            if(navigator.platform!='Linux armv7l'){
+            if (navigator.platform != 'Linux armv7l') {
                 console.log('not on pi, do not retry')
                 return
             }
             console.log('connect Fail, retry after 3 seconds')
             setTimeout(() => {
-                $rootScope.ros.conectToRos(onConnected,onConnectFail)
-            },3000)
+                $rootScope.ros.conectToRos(onConnected, onConnectFail)
+            }, 3000)
         }
 
-        $rootScope.ros.conectToRos(onConnected,onConnectFail)
+        $rootScope.ros.conectToRos(onConnected, onConnectFail)
 
         function clickHandlerForContent(e) {
             console.log('clickHandlerForContent', e.code)

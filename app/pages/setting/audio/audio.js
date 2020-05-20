@@ -3,7 +3,7 @@
 angular.module('myApp.audio', ['ngRoute'])
 
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/setting/audio/', {
+        $routeProvider.when('/setting/audio', {
             templateUrl: 'pages/setting/audio/audio.html',
             controller: 'AudioCtrl'
         });
@@ -15,17 +15,18 @@ angular.module('myApp.audio', ['ngRoute'])
         $rootScope.title = '音频'
         console.log($location.path(), ' entered')
         $scope.devices = []
+        $scope.deviceName = {
+            'microphone': '麦克风',
+            'speaker': '外放',
+            'headphone': '耳机'
+        }
+        $rootScope.items = ['microphone', 'speaker', 'headphone']
+        $rootScope.rowNum = 6
+        $rootScope.colNum = 1
+        $rootScope.updatePageInfo()
         const updatePageInfo = () => {
             $http.get('/system/audio').then(res => {
                 $scope.devices = res.data
-                $scope.deviceName = {
-                    'microphone': '麦克风',
-                    'speaker': '外放',
-                    'headphone': '耳机'
-                }
-                $rootScope.items = ['microphone', 'speaker', 'headphone']
-                $rootScope.rowNum = 6
-                $rootScope.colNum = 1
                 $rootScope.updatePageInfo()
             }, (err) => {
                 console.log(err)

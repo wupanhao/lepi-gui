@@ -3,7 +3,7 @@ const ROS_NAMESPACE = '/ubiquityrobot/'
 
 class ros_client {
   constructor(ros_base_ip, btnHandler = null) {
-    this.url = 'ws://'+ros_base_ip+':9090'
+    this.url = 'ws://' + ros_base_ip + ':9090'
     this.ip = ros_base_ip
     this.btnListener = null
     this.sensorStatusListener = null
@@ -14,7 +14,7 @@ class ros_client {
     // this.conectToRos()
   }
 
-  conectToRos(onConnected,onFail) {
+  conectToRos(onConnected, onFail) {
     console.log('trying to conect to ros server:')
     try {
       var ros = new ROSLIB.Ros({
@@ -25,7 +25,7 @@ class ros_client {
       return
       console.log('trying to reconect after 3 seconds')
       setTimeout(() => {
-        this.conectToRos(onConnected,onFail)
+        this.conectToRos(onConnected, onFail)
       }, 3000)
       return
     }
@@ -865,7 +865,7 @@ class ros_client {
     });
 
     listener.subscribe((message) => {
-      console.log('Received message on ' + listener.name + ': ', message);
+      // console.log('Received message on ' + listener.name + ': ', message);
       if (callback) {
         callback(message)
       } else {
@@ -979,7 +979,7 @@ class ros_client {
     })
   }
 
-  getServosInfo(ids = []){
+  getServosInfo(ids = []) {
     return new Promise((resolve) => {
       var client = new ROSLIB.Service({
         ros: this.ros,
@@ -988,7 +988,7 @@ class ros_client {
       });
 
       var request = new ROSLIB.ServiceRequest({
-        ids:ids
+        ids: ids
       });
       // console.log(request)
       client.callService(request, (result) => {
@@ -998,7 +998,7 @@ class ros_client {
     })
   }
 
-  setServoPosition(id,position,ms = 0,speed = 0){
+  setServoPosition(id, position, ms = 0, speed = 0) {
     return new Promise((resolve) => {
       var client = new ROSLIB.Service({
         ros: this.ros,
@@ -1007,7 +1007,7 @@ class ros_client {
       });
 
       var request = new ROSLIB.ServiceRequest({
-        id,position,ms,speed
+        id, position, ms, speed
       });
       console.log(request)
       client.callService(request, (result) => {
@@ -1017,7 +1017,7 @@ class ros_client {
     })
   }
 
-  setServoParamU8(id,param_id,value){
+  setServoParamU8(id, param_id, value) {
     return new Promise((resolve) => {
       var client = new ROSLIB.Service({
         ros: this.ros,
@@ -1026,7 +1026,7 @@ class ros_client {
       });
 
       var request = new ROSLIB.ServiceRequest({
-        id,param_id,value
+        id, param_id, value
       });
       console.log(request)
       client.callService(request, (result) => {
@@ -1035,7 +1035,7 @@ class ros_client {
       });
     })
   }
-  setServoParamU16(id,param_id,value){
+  setServoParamU16(id, param_id, value) {
     return new Promise((resolve) => {
       var client = new ROSLIB.Service({
         ros: this.ros,
@@ -1044,7 +1044,7 @@ class ros_client {
       });
 
       var request = new ROSLIB.ServiceRequest({
-        id,param_id,value
+        id, param_id, value
       });
       console.log(request)
       client.callService(request, (result) => {
@@ -1053,7 +1053,7 @@ class ros_client {
       });
     })
   }
-  getServoParamU8(id,param_id,value){
+  getServoParamU8(id, param_id, value) {
     return new Promise((resolve) => {
       var client = new ROSLIB.Service({
         ros: this.ros,
@@ -1062,7 +1062,7 @@ class ros_client {
       });
 
       var request = new ROSLIB.ServiceRequest({
-        id,param_id,value
+        id, param_id, value
       });
       console.log(request)
       client.callService(request, (result) => {
@@ -1071,7 +1071,7 @@ class ros_client {
       });
     })
   }
-  getServoParamU16(id,param_id,value){
+  getServoParamU16(id, param_id, value) {
     return new Promise((resolve) => {
       var client = new ROSLIB.Service({
         ros: this.ros,
@@ -1080,7 +1080,7 @@ class ros_client {
       });
 
       var request = new ROSLIB.ServiceRequest({
-        id,param_id,value
+        id, param_id, value
       });
       console.log(request)
       client.callService(request, (result) => {
@@ -1089,7 +1089,7 @@ class ros_client {
       });
     })
   }
-  getSensorsInfo(){
+  getSensorsInfo() {
     return new Promise((resolve) => {
       var client = new ROSLIB.Service({
         ros: this.ros,

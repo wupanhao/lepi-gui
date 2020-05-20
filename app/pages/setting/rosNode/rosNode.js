@@ -3,7 +3,7 @@
 angular.module('myApp.rosNode', ['ngRoute'])
 
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/setting/rosNode/', {
+        $routeProvider.when('/setting/rosNode', {
             templateUrl: 'pages/setting/rosNode/rosNode.html',
             controller: 'NodeCtrl'
         });
@@ -29,6 +29,13 @@ angular.module('myApp.rosNode', ['ngRoute'])
             $http.get('/rosNode/status').then(res => {
                 console.log(res.data)
                 $scope.nodeInfo = res.data
+
+                swal.close()
+                if ($location.path() != '/setting/rosNode') {
+                    // setTimeout(updateNodeStatus, 3000)
+                    return
+                }
+
                 if ($rootScope.items.length == 0) {
                     $rootScope.items = Object.values(res.data)
                     $rootScope.updatePageInfo()
@@ -36,13 +43,10 @@ angular.module('myApp.rosNode', ['ngRoute'])
                     $rootScope.show = Object.values(res.data)
                     if (!menuShown()) {
                         ngRefresh()
-                    } 
+                    }
                 }
-                swal.close()
 
-                if ($location.path() == '/setting/rosNode/') {
-                    // setTimeout(updateNodeStatus, 3000)
-                }
+
             }, (err) => {
                 console.log(err)
             })

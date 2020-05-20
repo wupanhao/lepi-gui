@@ -3,7 +3,7 @@
 angular.module('myApp.wifi', ['ngRoute'])
 
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/setting/wifi/', {
+        $routeProvider.when('/setting/wifi', {
             templateUrl: 'pages/setting/wifi/wifi.html',
             controller: 'WifiCtrl'
         });
@@ -17,6 +17,11 @@ angular.module('myApp.wifi', ['ngRoute'])
 
         const updateWiFiList = () => {
             $http.get('/wifi/scan').then(res => {
+
+                if ($location.path() != '/setting/wifi') {
+                    return
+                }
+
                 // $scope.wifiList = res.data
                 $rootScope.items = res.data.map(item => {
                     item.ssid = decodeURI(item.ssid.split('\\x').join('%'))

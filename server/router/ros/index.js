@@ -14,6 +14,7 @@ const launchCMD = {
   '/ubiquityrobot/apriltag_detector_node': `${prefix} roslaunch pi_cam apriltag_detector_node.launch" > /tmp/apriltag_detector_node.log`,
   '/ubiquityrobot/transfer_learning_node': `${prefix} roslaunch pi_cam transfer_learning_node.launch" > /tmp/transfer_learning_node.log`,
   '/ubiquityrobot/line_detector_node': `${prefix} roslaunch pi_cam line_detector_node.launch" > /tmp/line_detector_node.log`,
+  '/ubiquityrobot/object_detector_node': `${prefix} roslaunch pi_ai object_detector_node.launch" > /tmp/object_detector_node.log`,
   '/ubiquityrobot/face_recognizer_node': `${prefix} roslaunch pi_cam face_recognizer_node.launch" > /tmp/face_recognizer_node.log`,
   '/ubiquityrobot/joystick_node': `bash -c "source /home/pi/workspace/lepi-gui/ros_env.sh && roslaunch pi_driver joystick_node.launch" > /tmp/joystick_node.log`,
 }
@@ -23,6 +24,7 @@ const nodeNameMap = {
   '/ubiquityrobot/apriltag_detector_node': '标签检测',
   '/ubiquityrobot/transfer_learning_node': '迁移学习',
   '/ubiquityrobot/line_detector_node': '颜色检测',
+  '/ubiquityrobot/object_detector_node': '目标检测',
   '/ubiquityrobot/face_recognizer_node': '人脸识别',
   '/ubiquityrobot/joystick_node': '游戏手柄',
 }

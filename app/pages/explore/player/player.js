@@ -1,5 +1,43 @@
 'use strict';
 
+function playMP3(url) {
+  // Create a buffer for the incoming sound content
+  var source = audioContext.createBufferSource();
+  // Create the XHR which will grab the audio contents
+  var request = new XMLHttpRequest();
+  // Set the audio file src here
+  request.open('GET', url, true);
+  // Setting the responseType to arraybuffer sets up the audio decoding
+  request.responseType = 'arraybuffer';
+  request.onload = function () {
+    // Decode the audio once the require is complete
+    audioContext.decodeAudioData(request.response, function (buffer) {
+      source.buffer = buffer;
+      // Connect the audio to source (multiple audio buffers can be connected!)
+      source.connect(audioContext.destination);
+      // Simple setting for the buffer
+      source.loop = false;
+      // Play the sound!
+      source.start(0);
+    }, function (e) {
+      console.log('Audio error! ', e);
+    });
+  }
+  // Send the request which kicks off 
+  request.send();
+}
+function playAudio(ele) {
+  // Create a buffer for the incoming sound content
+  var source = audioContext.createMediaElementSource(ele);
+  document.source = source
+  console.log(source)
+  source.connect(audioContext.destination);
+  // Simple setting for the buffer
+  source.loop = false;
+  // Play the sound!
+  // source.play(0);
+}
+
 angular.module('myApp.player', ['ngRoute'])
 
   .config(['$routeProvider', function ($routeProvider) {
@@ -14,8 +52,20 @@ angular.module('myApp.player', ['ngRoute'])
     $rootScope.title = '播放器'
 
     var src = $location.search().src || ''
-    const player = document.getElementById('player')
-    player.src = src
+    const audioNode = document.getElementById('player')
+    const source = audioContext.createMediaElementSource(audioNode)
+    audioNode.src = src
+    // document.audioEngine.playMP3(src)
+    // playAudio(audioNode)
+
+    audioNode.addEventListener("canplay", function (event) {
+      console.log(event.type);
+      source.connect(audioContext.destination);
+      // audioNode.play();
+    });
+
+    audioNode.load();
+
     $rootScope.items = []
 
     $rootScope.menus = [
@@ -39,22 +89,22 @@ angular.module('myApp.player', ['ngRoute'])
       console.log(e.code)
       switch (e.code) {
         case "ArrowLeft":
-          player.currentTime -= 10
+          audioNode.currentTime -= 10
           break
         case "ArrowRight":
-          player.currentTime += 10
+          audioNode.currentTime += 10
           break
         case "ArrowUp":
-          player.volume = Math.min(player.volume + 0.1, 1)
+          audioNode.volume = Math.min(audioNode.volume + 0.1, 1)
           break
         case "ArrowDown":
-          player.volume = Math.max(player.volume - 0.1, 0)
+          audioNode.volume = Math.max(audioNode.volume - 0.1, 0)
           break
         case "Enter":
-          if (player.paused) {
-            player.play()
+          if (audioNode.paused) {
+            audioNode.play()
           } else {
-            player.pause()
+            audioNode.pause()
           }
           break
         case "KeyM":

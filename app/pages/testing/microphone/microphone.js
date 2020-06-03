@@ -86,7 +86,6 @@ angular.module('myApp.microphone', ['ngRoute'])
         };
         myChart.setOption(option);
 
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)()
         const scriptProcessor = audioContext.createScriptProcessor(512, 1, 1)
 
         scriptProcessor.connect(audioContext.destination)

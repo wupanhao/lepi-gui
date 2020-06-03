@@ -4,6 +4,7 @@ const Scratch = window.Scratch = window.Scratch || {};
 
 class Runner {
   constructor(canvasId = 'scratch-stage') {
+    console.log('create scratch runner')
     const vm = new VirtualMachine();
     Scratch.vm = vm
     Scratch.runner = this
@@ -85,8 +86,9 @@ class Runner {
     Scratch.renderer = renderer;
     vm.attachRenderer(renderer);
     try {
-      var audioEngine = new AudioEngine();
+      var audioEngine = new AudioEngine(audioContext);
       vm.attachAudioEngine(audioEngine);
+      document.audioEngine = audioEngine
     } catch (error) {
       console.log(error)
     }
@@ -192,6 +194,8 @@ class Runner {
   }
 }
 
+const runner = Scratch.runner || new Runner()
+
 angular.module('myApp.scratchRunner', ['ngRoute'])
 
   .config(['$routeProvider', function ($routeProvider) {
@@ -209,7 +213,6 @@ angular.module('myApp.scratchRunner', ['ngRoute'])
     $rootScope.items = []
     $rootScope.updatePageInfo()
     console.log(Scratch)
-    const runner = Scratch.runner || new Runner()
     console.log(runner)
     document.getElementById('scratch').appendChild(runner.canvas)
     runner.loadProjectFromUrl(src)

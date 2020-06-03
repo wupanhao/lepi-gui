@@ -19,10 +19,10 @@ function setOutAudioDevices(element, deviceId) {
     })
 }
 
-class Piano{
+class Piano {
 
-    constructor(){
-        this.audioContext = new(window.AudioContext || window.webkitAudioContext)()
+    constructor() {
+        this.audioContext = audioContext
     }
 
     /**
@@ -41,13 +41,13 @@ class Piano{
         this.oscillator.connect(this.audioContext.destination)
         this.oscillator.start()
         this.oscillator.frequency.value = frequency
-        if(this.timer){
+        if (this.timer) {
             clearTimeout(this.timer)
         }
         this.timer = setTimeout(() => {
             this.timer = null
             this.stop()
-        },800)
+        }, 800)
     }
 
     stop() {
@@ -56,13 +56,13 @@ class Piano{
     }
 }
 const PianoFreq = {
-    1:261,
-    2:293,
-    3:330,
-    4:349,
-    5:392,
-    6:440,
-    7:494
+    1: 261,
+    2: 293,
+    3: 330,
+    4: 349,
+    5: 392,
+    6: 440,
+    7: 494
 }
 
 const piano = new Piano()
@@ -77,7 +77,7 @@ angular.module('myApp.speaker', ['ngRoute'])
         });
     }])
 
-    .controller('SpeakerCtrl', function ($location,$rootScope, $scope) {
+    .controller('SpeakerCtrl', function ($location, $rootScope, $scope) {
         $rootScope.setStatusBar(true)
         $rootScope.items = []
         $rootScope.title = '扬声器测试'

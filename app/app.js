@@ -2,6 +2,8 @@
 
 const iconTheme = 'banbao-v1'
 
+const audioContext = new (window.AudioContext || window.webkitAudioContext)()
+
 const KEY = {
     ArrowLeft: 37,
     ArrowUp: 38,

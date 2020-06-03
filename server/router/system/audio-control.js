@@ -139,16 +139,16 @@ class AudioControl {
             output = this.cid
         }
         const asoundrc = `pcm.!default {
-type asym
-playback.pcm {
-    type plug
-    slave.pcm "output"
-}
-capture.pcm {
-    type plug
-    slave.pcm "input"
+    type asym
+    playback.pcm {
+        type plug
+        slave.pcm "output"
+        }
+    capture.pcm {
+        type plug
+        slave.pcm "input"
+        }
     }
-}
 
 pcm.output {
     type hw
@@ -163,7 +163,8 @@ ctl.!default {
 pcm.input {
     type hw
     card ${this.cid}
-}`
+}
+`
         try {
             fs.writeFileSync('/home/pi/.asoundrc', asoundrc)
         } catch (error) {

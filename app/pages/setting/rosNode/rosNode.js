@@ -40,9 +40,10 @@ angular.module('myApp.rosNode', ['ngRoute'])
                     $rootScope.items = Object.values(res.data)
                     $rootScope.updatePageInfo()
                 } else {
-                    $rootScope.show = Object.values(res.data)
+                    $rootScope.items = Object.values(res.data)
                     if (!menuShown()) {
-                        ngRefresh()
+                        $rootScope.updatePageInfo($rootScope.pageIndex)
+                        // ngRefresh()
                     }
                 }
 

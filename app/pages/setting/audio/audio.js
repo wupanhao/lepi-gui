@@ -23,6 +23,28 @@ angular.module('myApp.audio', ['ngRoute'])
         $rootScope.items = ['microphone', 'speaker', 'headphone']
         $rootScope.rowNum = 6
         $rootScope.colNum = 1
+
+        $rootScope.localMenus[$location.path()] = [
+            {
+                text: '重置音频选项',
+                callback: (index) => {
+                    $http.get('/system/reset_soundrc').then(res => {
+                        swal(res.data.msg, {
+                            button: false,
+                            timer: 1000,
+                        })
+                        // swal({
+                        //     title: "启动完毕",
+                        //     text: "可以开始你的创作了",
+                        // });
+                    }, (err) => {
+                        console.log(err)
+                    })
+                }
+            },
+        ]
+
+
         $rootScope.updatePageInfo()
         const updatePageInfo = () => {
             $http.get('/system/audio').then(res => {

@@ -242,6 +242,14 @@ router.get('/audio', function (req, res) {
 	}
 })
 
+router.get('/reset_soundrc', function (req, res) {
+	audio.setSoundrc()
+	res.json({
+		code: 0,
+		msg: '操作已执行,重启后生效'
+	})
+})
+
 router.get('/expand_rootfs', function (req, res) {
 	const out = ChildProcess.execSync('sudo raspi-config  --expand-rootfs')
 	console.log(out)

@@ -57,37 +57,6 @@ class AudioControl {
             }
         }
 
-        const asoundrc = `pcm.!default {
-    type asym
-    playback.pcm {
-        type plug
-        slave.pcm "output"
-    }
-    capture.pcm {
-        type plug
-        slave.pcm "input"
-    }
-}
-
-pcm.output {
-    type hw
-    card ${this.cid}
-}
-
-ctl.!default {
-    type hw
-    card ${this.cid}
-}
-
-pcm.input {
-    type hw
-    card ${this.cid}
-}`
-        try {
-            fs.writeFileSync('/home/pi/.asoundrc', asoundrc)
-        } catch (error) {
-            console.log(error)
-        }
     }
     get(iface) {
         return new Promise((resolve) => {
@@ -163,6 +132,43 @@ pcm.input {
                 })
             })
         })
+    }
+
+    setSoundrc(output = null) {
+        if (output == null) {
+            output = this.cid
+        }
+        const asoundrc = `pcm.!default {
+type asym
+playback.pcm {
+    type plug
+    slave.pcm "output"
+}
+capture.pcm {
+    type plug
+    slave.pcm "input"
+    }
+}
+
+pcm.output {
+    type hw
+    card ${output}
+}
+
+ctl.!default {
+    type hw
+    card ${output}
+}
+
+pcm.input {
+    type hw
+    card ${this.cid}
+}`
+        try {
+            fs.writeFileSync('/home/pi/.asoundrc', asoundrc)
+        } catch (error) {
+            console.log(error)
+        }
     }
 }
 module.exports = AudioControl

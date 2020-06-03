@@ -1,6 +1,7 @@
 'usestrict';
 
 const ChildProcess = require('child_process');
+const fs = require('fs')
 const debuglog = console.log
 
 function PromisifyExec(cmd) {
@@ -21,14 +22,14 @@ function PromisifyExec(cmd) {
 
 class AudioControl {
     constructor() {
-	try {
-          const out = ChildProcess.execSync('aplay -l | grep wm8960').toString()
-          this.cid = out[5]
-          console.log(out, this.cid)
-	} catch (e){
-	  console.log(e)
-	  this.cid = 0
-	}
+        try {
+            const out = ChildProcess.execSync('aplay -l | grep wm8960').toString()
+            this.cid = out[5]
+            console.log(out, this.cid)
+        } catch (e) {
+            console.log(e)
+            this.cid = 0
+        }
         this.devices = {
             hdmi: {
                 min: -10239,
@@ -54,6 +55,38 @@ class AudioControl {
                 cid: this.cid,
                 numid: 1
             }
+        }
+
+        const asoundrc = `pcm.!default {
+    type asym
+    playback.pcm {
+        type plug
+        slave.pcm "output"
+    }
+    capture.pcm {
+        type plug
+        slave.pcm "input"
+    }
+}
+
+pcm.output {
+    type hw
+    card ${this.cid}
+}
+
+ctl.!default {
+    type hw
+    card ${this.cid}
+}
+
+pcm.input {
+    type hw
+    card ${this.cid}
+}`
+        try {
+            fs.writeFileSync('/home/pi/.asoundrc', asoundrc)
+        } catch (error) {
+            console.log(error)
         }
     }
     get(iface) {

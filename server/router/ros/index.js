@@ -6,7 +6,7 @@ const router = express.Router();
 
 const ns = '/variable'
 
-const prefix = 'bash -c "source /home/pi/workspace/lepi-gui/ros_env.sh && '
+const prefix = `bash -c "source ${os.homedir()}/workspace/lepi-gui/ros_env.sh && `
 // const prefix = 'docker exec -t lepi_server bash -c "source env.sh && '
 
 const launchCMD = {
@@ -18,8 +18,9 @@ const launchCMD = {
   '/ubiquityrobot/object_detector_node': `${prefix} roslaunch pi_ai object_detector_node.launch" > /tmp/object_detector_node.log`,
   '/ubiquityrobot/image_classifier_node': `${prefix} roslaunch pi_ai image_classifier_node.launch" > /tmp/image_classifier_node.log`,
   '/ubiquityrobot/face_recognizer_node': `${prefix} roslaunch pi_cam face_recognizer_node.launch" > /tmp/face_recognizer_node.log`,
+  '/ubiquityrobot/ultra_face_inference_node': `${prefix} roslaunch pi_cam ultra_face_inference_node.launch" > /tmp/ultra_face_inference_node.log`,
 }
-
+// LD_PRELOAD=/usr/lib/arm-linux-gnueabihf/libatomic.so.1 
 const nodeNameMap = {
   '/ubiquityrobot/camera_node': '摄像头',
   '/ubiquityrobot/apriltag_detector_node': '标签检测',
@@ -27,6 +28,7 @@ const nodeNameMap = {
   '/ubiquityrobot/line_detector_node': '颜色检测',
   '/ubiquityrobot/object_detector_node': '目标检测',
   '/ubiquityrobot/image_classifier_node': '图像分类',
+  '/ubiquityrobot/ultra_face_inference_node': '人脸检测',
   '/ubiquityrobot/face_recognizer_node': '人脸识别',
   '/ubiquityrobot/joystick_node': '游戏手柄',
 }

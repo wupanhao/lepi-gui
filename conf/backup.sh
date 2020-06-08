@@ -72,6 +72,8 @@ mount_loop_device(){
     sudo mkdir $mount_root_to
     sudo mount -t ext4 $root_device $mount_root_to
   fi
+  sudo rm -rf $mount_boot_to/*
+  sudo rm -rf $mount_root_to/*
 }
 
 copy_boot(){

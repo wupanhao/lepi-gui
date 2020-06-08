@@ -1,0 +1,125 @@
+<html>
+
+<head>
+    <script src="/app/node_modules/roslib/build/roslib.js"></script>
+    <title>ROS Image Viewer</title>
+    <style>
+        #menu {
+            padding: 5px;
+            margin: 10px;
+            border-radius: 3px;
+        }
+
+        #pic {
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <select id="menu"> </select>
+
+    <div id="pic">
+        <img id="ros_img" src="" alt="">
+    </div>
+
+
+    <script>
+
+        // Connecting to ROS
+        // -----------------
+        const ROS_NAMESPACE = '/ubiquityrobot/'
+        var ros = {}
+        var listener = null
+
+        const topic_maps = {
+            "/ubiquityrobot/line_detector_node/image_color": '颜色检测',
+            "/ubiquityrobot/apriltag_detector_node/image_apriltag": '标签检测',
+            "/ubiquityrobot/ultra_face_inference_node/image_ultra_face": '人脸检测',
+            "/ubiquityrobot/face_recognizer_node/image_face": '人脸识别',
+            "/ubiquityrobot/object_detector_node/image_object": '目标检测',
+            "/ubiquityrobot/image_classifier_node/image_class": '图像分类',
+            "/ubiquityrobot/transfer_learning_node/image_transfer": '迁移学习',
+            "/ubiquityrobot/camera_node/image_raw/compressed": '摄像头',
+            // "/ubiquityrobot/camera_node/image_raw": '摄像头'
+        }
+
+        function getImageTopics(ros) {
+            return new Promise((resolve) => {
+                var client = new ROSLIB.Service({
+                    ros: ros,
+                    name: ROS_NAMESPACE + 'camera_node/get_image_topics',
+                    serviceType: 'pi_driver/GetStrings'
+                });
+
+                var request = new ROSLIB.ServiceRequest();
+                client.callService(request, (result) => {
+                    console.log(result)
+                    resolve(result)
+                });
+            })
+        }
+        var image = document.getElementById("ros_img");
+
+        function onImageMsg(message) {
+            var data = "data:image/jpeg;base64," + message.data;
+            image.setAttribute('src', data)
+        }
+
+        function subCompressedImage(topic) {
+            var listener = new ROSLIB.Topic({
+                ros: ros,
+                name: topic,
+                messageType: 'sensor_msgs/CompressedImage'
+            });
+
+            listener.subscribe(onImageMsg);
+            return listener
+        }
+
+        ros = new ROSLIB.Ros({
+            url: `ws://${window.location.hostname}:9090`
+        });
+
+        ros.on('connection', function () {
+            console.log('Connected to websocket server.');
+            getImageTopics(ros).then(result => {
+                topics = result.data
+                if (topics.length > 0) {
+                    ele = document.querySelector('select')
+                    ele.onchange = (e) => {
+                        var topic = e.target.value
+                        if (listener == null) {
+                            listener = subCompressedImage(topic)
+                        } else {
+                            try {
+                                listener.unsubscribe()
+                            } catch (error) {
+
+                            }
+                            listener = subCompressedImage(topic)
+                        }
+                    }
+                    content = ''
+                    topics.map(topic => {
+                        content += `<option value="${topic}">${topic_maps[topic]}</option>`
+                    })
+                    ele.innerHTML = content
+                }
+            })
+        });
+
+        ros.on('error', function (error) {
+            console.log('Error connecting to websocket server: ', error);
+        });
+
+        ros.on('close', function () {
+            console.log('Connection to websocket server closed.');
+        });
+
+    </script>
+
+</body>
+
+</html>

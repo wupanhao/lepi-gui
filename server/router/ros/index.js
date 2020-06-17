@@ -18,6 +18,8 @@ const launchCMD = {
   '/ubiquityrobot/object_detector_node': `${prefix} roslaunch pi_ai object_detector_node.launch" > /tmp/object_detector_node.log`,
   '/ubiquityrobot/image_classifier_node': `${prefix} roslaunch pi_ai image_classifier_node.launch" > /tmp/image_classifier_node.log`,
   '/ubiquityrobot/face_recognizer_node': `${prefix} roslaunch pi_cam face_recognizer_node.launch" > /tmp/face_recognizer_node.log`,
+  '/ubiquityrobot/barcode_scanner_node': `${prefix} roslaunch pi_cam barcode_scanner_node.launch" > /tmp/barcode_scanner_node.log`,
+  '/ubiquityrobot/text_recognizer_node': `${prefix} roslaunch pi_cam text_recognizer_node.launch" > /tmp/text_recognizer_node.log`,
   '/ubiquityrobot/ultra_face_inference_node': `${prefix} roslaunch pi_cam ultra_face_inference_node.launch" > /tmp/ultra_face_inference_node.log`,
 }
 // LD_PRELOAD=/usr/lib/arm-linux-gnueabihf/libatomic.so.1 
@@ -30,6 +32,8 @@ const nodeNameMap = {
   '/ubiquityrobot/image_classifier_node': '图像分类',
   '/ubiquityrobot/ultra_face_inference_node': '人脸检测',
   '/ubiquityrobot/face_recognizer_node': '人脸识别',
+  '/ubiquityrobot/barcode_scanner_node': '二维码扫描',
+  '/ubiquityrobot/text_recognizer_node': '文本识别',
   '/ubiquityrobot/joystick_node': '游戏手柄',
 }
 

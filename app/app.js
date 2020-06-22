@@ -56,7 +56,7 @@ function ngRefresh() {
 }
 function menuShown() {
     // $scope.apply()
-    const menu = document.getElementById('demo-menu-top-left')
+    const menu = document.getElementById('demo-menu-list')
     if (menu && menu.MaterialMenu.container_.classList.contains('is-visible')) {
         return true
     } else {

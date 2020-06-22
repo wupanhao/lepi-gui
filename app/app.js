@@ -26,13 +26,26 @@ const rotateMap = {
     77: 84 //M => T
 }
 
-function setPowerState(i) {
-    if (i >= 0 && i <= 100) {
+window.logPowerState = true
+
+function setPowerState(i, charging = 0) {
+    if (i >= 0) {
         const powerBar = document.querySelector('#power-bar-power')
         const powerNumber = document.querySelector('#power-bar-number')
+        if (i > 100) {
+            i = i - 100
+        }
+        if (charging > 0) {
+            powerNumber.textContent = ``
+            document.querySelector('#power-bar-charging').style.display = 'inline'
+        } else {
+            powerNumber.textContent = `${i}%`
+            document.querySelector('#power-bar-charging').style.display = 'none'
+        }
+
         powerBar.style.width = `${i}%`
         powerBar.style.background = `${i <= 10 ? 'red' : i <= 20 ? '#e4b827' : '#37c337'}`
-        powerNumber.textContent = `${i}%`
+
     }
 }
 
@@ -43,8 +56,7 @@ function ngRefresh() {
 }
 function menuShown() {
     // $scope.apply()
-    const menu = document.getElementById('demo-menu-list')
-    // console.log('menuShown ', menu.dataset.show, typeof menu.dataset.show, menu.dataset.show == true)
+    const menu = document.getElementById('demo-menu-top-left')
     if (menu && menu.MaterialMenu.container_.classList.contains('is-visible')) {
         return true
     } else {
@@ -369,11 +381,11 @@ angular.module('myApp', [
                     if (window.logPowerState) {
                         console.log(data)
                     }
-                    if (data.est_power > 0 && data.est_power <= 100) {
-                        setPowerState(data.est_power)
+                    if (data.est_power > 0) {
+                        setPowerState(data.est_power, data.charging)
                         // $rootScope.est_power = data.est_power
                     }
-                    setTimeout($rootScope.updatePowerInfo, 5000)
+                    setTimeout($rootScope.updatePowerInfo, 1000)
                 })
             } catch (e) {
                 console.log(e)

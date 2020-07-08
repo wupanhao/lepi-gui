@@ -26,7 +26,7 @@ const launchCMD = {
 const nodeNameMap = {
   '/ubiquityrobot/camera_node': '摄像头',
   '/ubiquityrobot/apriltag_detector_node': '标签检测',
-  '/ubiquityrobot/transfer_learning_node': '迁移学习',
+  // '/ubiquityrobot/transfer_learning_node': '迁移学习',
   '/ubiquityrobot/line_detector_node': '颜色检测',
   '/ubiquityrobot/object_detector_node': '目标检测',
   '/ubiquityrobot/image_classifier_node': '图像分类',
@@ -37,7 +37,7 @@ const nodeNameMap = {
   '/ubiquityrobot/joystick_node': '游戏手柄',
 }
 
-const availableNode = Object.keys(launchCMD)
+const availableNode = Object.keys(nodeNameMap)
 
 const nodeInfo = {}
 availableNode.map((nodeName, id) => {

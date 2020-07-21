@@ -231,6 +231,7 @@ angular.module('myApp', [
 
         var onConnected = () => {
             console.log('connected to ros ', $rootScope.ros)
+            window.ros = $rootScope.ros
             $rootScope.updatePowerInfo()
             swal({
                 title: "启动完毕",
@@ -379,7 +380,7 @@ angular.module('myApp', [
             try {
                 $rootScope.ros.getPowerState().then(data => {
                     if (window.logPowerState) {
-                        console.log(data)
+                        console.log('set window.logPowerState to false to cancel this log,', data)
                     }
                     if (data.est_power > 0) {
                         setPowerState(data.est_power, data.charging)
@@ -510,6 +511,7 @@ angular.module('myApp', [
                         // var pre = history.length
                         console.log('go back')
                         // $window.history.back()
+                        swal.close()
                         history.go(-1);
                         // if (history.length == pre) {
                         //     console.log('go back -2')

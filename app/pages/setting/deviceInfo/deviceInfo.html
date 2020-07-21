@@ -17,11 +17,15 @@
             <td>乐派</td>
         </tr>
         <tr>
+            <td>系统版本</td>
+            <td>0.1.0</td>
+        </tr>
+        <tr>
             <td>系统平台</td>
             <td>{{info.platform}}-{{info.arch}}</td>
         </tr>
         <tr>
-            <td>系统版本</td>
+            <td>内核版本</td>
             <td>{{info.release}}</td>
         </tr>
         <tr>
@@ -37,7 +41,7 @@
             <td>{{info.memory.used}}M/{{info.memory.total}}M</td>
         </tr>
         <tr>
-            <td>硬盘</td>
+            <td>SD卡</td>
             <td>{{info.disk.used}}/{{info.disk.total}}</td>
         </tr>
         <tr ng-repeat="ip in info.ips">

@@ -3,6 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "@tensorflow/tfjs-backend-wasm": "^2.0.1",
         "angular": "^1.7.9",
         "angular-route": "^1.7.9",
         "axios": "^0.19.2",

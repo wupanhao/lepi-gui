@@ -67,8 +67,10 @@ angular.module('myApp.motor', ['ngRoute'])
                         if ($scope.motors[id].enable != motor.enable) {
                             if (motor.enable == 0) {  // type
                                 $scope.elements.toggle[id].MaterialSwitch.on()
+                                $rootScope.ros.motorSetSpeed(id + 1, motor.speed)
                             } else {
                                 $scope.elements.toggle[id].MaterialSwitch.off()
+                                $rootScope.ros.motorSetState(id + 1, 0)
                             }
                             $scope.motors[id].enable = motor.enable
                         }

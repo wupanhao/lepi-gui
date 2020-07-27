@@ -188,7 +188,7 @@ class ros_client {
       var request = new ROSLIB.ServiceRequest();
 
       client.callService(request, (result) => {
-        console.log(result)
+        // console.log(result)
         resolve(result.motors)
       });
     })
@@ -272,7 +272,44 @@ class ros_client {
       });
     })
   }
+  motorSetCurrentPosition(port, position) {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'pi_driver_node/motor_set_current_position',
+        serviceType: 'pi_driver/SetInt32'
+      });
 
+      var request = new ROSLIB.ServiceRequest({
+        port: port,
+        value: position
+      });
+
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve()
+      });
+    })
+  }
+  motorSetRotate(port, position) {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'pi_driver_node/motor_set_rotate',
+        serviceType: 'pi_driver/SetInt32'
+      });
+
+      var request = new ROSLIB.ServiceRequest({
+        port: port,
+        value: position
+      });
+
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve()
+      });
+    })
+  }
   nineAxisSetEnable(value) {
     return new Promise((resolve) => {
       var client = new ROSLIB.Service({
@@ -549,18 +586,18 @@ class ros_client {
     return new Promise((resolve) => {
       var client = new ROSLIB.Service({
         ros: this.ros,
-        name: ROS_NAMESPACE + 'transfer_learning_node/list_cat',
+        name: ROS_NAMESPACE + 'transfer_learning_node/list_ns',
         serviceType: 'pi_driver/GetStrings'
       });
 
-      var request = new ROSLIB.ServiceRequest();
+      var request = new ROSLIB.ServiceRequest({ data: '' });
       client.callService(request, (result) => {
         console.log(result)
         resolve(result)
       });
     })
   }
-  listCat(data) {
+  listCat() {
     return new Promise((resolve) => {
       var client = new ROSLIB.Service({
         ros: this.ros,
@@ -568,9 +605,7 @@ class ros_client {
         serviceType: 'pi_driver/GetStrings'
       });
 
-      var request = new ROSLIB.ServiceRequest({
-        data: data
-      });
+      var request = new ROSLIB.ServiceRequest({ data: '' });
       client.callService(request, (result) => {
         console.log(result)
         resolve(result)
@@ -657,6 +692,22 @@ class ros_client {
       }
     });
   }
+  setTransferSize(w = 224, h = 224) {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'transfer_learning_node/set_size',
+        serviceType: 'pi_driver/SetInt32'
+      });
+
+      var request = new ROSLIB.ServiceRequest({ port: w, value: h });
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve()
+      });
+    })
+  }
+
   getFaceLabels() {
     return new Promise((resolve) => {
       var client = new ROSLIB.Service({
@@ -1105,6 +1156,229 @@ class ros_client {
       });
     })
   }
+  getObjectDetections() {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'object_detector_node/detect_object',
+        serviceType: 'pi_cam/GetObjectDetections'
+      });
+
+      var request = new ROSLIB.ServiceRequest();
+      // console.log(request)
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve(result)
+      });
+    })
+  }
+  setObjectDetectionThreshold(value) {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'object_detector_node/set_threshold',
+        serviceType: 'pi_driver/SetInt32'
+      });
+
+      var request = new ROSLIB.ServiceRequest({ value: value });
+      // console.log(request)
+      client.callService(request, (result) => {
+        resolve(result)
+      });
+    })
+  }
+  getImageClassify() {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'image_classifier_node/class_image',
+        serviceType: 'pi_cam/GetObjectDetections'
+      });
+
+      var request = new ROSLIB.ServiceRequest();
+      // console.log(request)
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve(result)
+      });
+    })
+  }
+  setImageClassifyThreshold(value) {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'image_classifier_node/set_threshold',
+        serviceType: 'pi_driver/SetInt32'
+      });
+
+      var request = new ROSLIB.ServiceRequest({ value: value });
+      // console.log(request)
+      client.callService(request, (result) => {
+        resolve(result)
+      });
+    })
+  }
+
+  setClassifySize(w = 224, h = 224) {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'image_classifier_node/set_size',
+        serviceType: 'pi_driver/SetInt32'
+      });
+
+      var request = new ROSLIB.ServiceRequest({ port: w, value: h });
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve()
+      });
+    })
+  }
+  getUltraFaceInference() {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'ultra_face_inference_node/detect_face_locations',
+        serviceType: 'pi_cam/GetFaceDetections'
+      });
+
+      var request = new ROSLIB.ServiceRequest();
+      // console.log(request)
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve(result)
+      });
+    })
+  }
+  setUltraFaceThreshold(value) {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'ultra_face_inference_node/set_threshold',
+        serviceType: 'pi_driver/SetInt32'
+      });
+
+      var request = new ROSLIB.ServiceRequest({ value: value });
+      // console.log(request)
+      client.callService(request, (result) => {
+        resolve(result)
+      });
+    })
+  }
+
+  setUltraFaceResize(w = 160, h = 120) {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'ultra_face_inference_node/set_resize',
+        serviceType: 'pi_driver/SetInt32'
+      });
+
+      var request = new ROSLIB.ServiceRequest({ port: w, value: h });
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve()
+      });
+    })
+  }
+
+  subCompressedImage(topic, callback) {
+    var listener = new ROSLIB.Topic({
+      ros: this.ros,
+      name: topic,
+      // name: '/ubiquityrobot/camera_node/image_raw/compressed',
+      messageType: 'sensor_msgs/CompressedImage'
+    });
+
+    listener.subscribe(callback);
+    return listener
+  }
+
+  listCaliFiles() {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'camera_node/list_cali_file',
+        serviceType: 'pi_driver/GetStrings'
+      });
+
+      var request = new ROSLIB.ServiceRequest({
+      });
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve(result)
+      });
+    })
+  }
+
+  loadCaliFile(value) {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'camera_node/load_cali_file',
+        serviceType: 'pi_driver/SetString'
+      });
+
+      var request = new ROSLIB.ServiceRequest({
+        data: value
+      });
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve(result.data)
+      });
+    })
+  }
+
+  recognizeText(lang = 'eng') {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'text_recognizer_node/detect_text',
+        serviceType: 'pi_driver/GetString'
+      });
+
+      var request = new ROSLIB.ServiceRequest({
+        data: lang
+      });
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve(result)
+      });
+    })
+  }
+
+  setTextRoi(value) {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'text_recognizer_node/set_roi',
+        serviceType: 'pi_cam/SetRoi'
+      });
+
+      var request = new ROSLIB.ServiceRequest(value);
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve(result.data)
+      });
+    })
+  }
+
+  detectBarcode() {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'barcode_scanner_node/barcode_scan',
+        serviceType: 'pi_cam/GetObjectDetections'
+      });
+
+      var request = new ROSLIB.ServiceRequest();
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve(result)
+      });
+    })
+  }
+
 }
 
 // module.exports = ros_client

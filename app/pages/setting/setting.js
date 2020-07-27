@@ -53,6 +53,11 @@ angular.module('myApp.setting', ['ngRoute'])
         text: '扩展系统分区',
         callback: (index) => {
           console.log(`menu item-${index} clicked`)
+          swal({
+            title: '正在设置',
+            text: "请稍等",
+            button: false,
+          });
           $http.get('/system/expand_rootfs').then(res => {
             var data = res.data
             if (data && data.msg) {

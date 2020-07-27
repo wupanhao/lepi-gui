@@ -23,6 +23,23 @@ angular.module('myApp.motor', ['ngRoute'])
                 port: port
             }
         })
+
+        $rootScope.localMenus[$location.path()] = [
+            {
+                text: '编码器清零',
+                callback: (index) => {
+                    console.log(`menu item-${index} clicked`)
+                    $rootScope.ros.motorSetCurrentPosition(0, 0)
+                    swal({
+                        title: '已执行',
+                        text: "",
+                        button: false,
+                        timer: 500,
+                    });
+                }
+            },
+        ]
+
         $rootScope.updatePageInfo()
 
         var active = (i) => {

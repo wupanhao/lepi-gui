@@ -68,7 +68,7 @@ angular.module('myApp.player', ['ngRoute'])
 
     $rootScope.items = []
 
-    $rootScope.menus = [
+    $rootScope.localMenus[$location.path()] = [
       {
         text: '全屏',
         callback: (index) => {

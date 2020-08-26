@@ -282,6 +282,26 @@ router.get('/update', function (req, res) {
 	})
 })
 
+router.get('/update_firmware', function (req, res) {
+	var buf = ChildProcess.execSync('cd /home/pi/workspace/lepi-gui && ./flash-firmware.sh ./firmware/lepi_samd51_latest.hex 2>&1')
+	// var buf = ChildProcess.execSync('cd /home/pi/workspace/lepi-gui && ~/workspace/xpack-openocd-0.10.0-14/bin/openocd -c "set FIRMWARE_FILE ./firmware/lepi_samd51_latest.hex" -f ~/workspace/lepi-gui/conf/lepi-d51.cfg 2>&1')
+	console.log(`${buf}`)
+	var msg = `未知错误`
+	var code = -99
+	const out = buf.toString()
+	if (out.indexOf('Verified OK') >= 0) {
+		msg = '更新成功'
+		code = 0
+	} else {
+		msg = '更新出错'
+		code = -1
+	}
+	res.json({
+		code: code,
+		msg: msg
+	})
+})
+
 module.exports = {
 	systemRouter: router,
 	stopAll: stopAll

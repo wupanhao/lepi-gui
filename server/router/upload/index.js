@@ -20,6 +20,8 @@ mkdirIfNotExists(path.join(save_dir, 'Scratch'))
 mkdirIfNotExists(path.join(save_dir, 'Python'))
 mkdirIfNotExists(path.join(save_dir, 'Shell'))
 mkdirIfNotExists(path.join(save_dir, 'Music'))
+mkdirIfNotExists(path.join(save_dir, 'Photo'))
+mkdirIfNotExists(path.join(save_dir, 'Recording'))
 
 // watchFile(temp_dir)
 
@@ -61,6 +63,10 @@ const saveStorage = multer.diskStorage({
 			cb(null, path.join(save_dir, 'Shell'))
 		} else if (path.extname(file.originalname) == '.mp3') {
 			cb(null, path.join(save_dir, 'Music'))
+		} else if (path.extname(file.originalname) == '.png') {
+			cb(null, path.join(save_dir, 'Photo'))
+		} else if (path.extname(file.originalname) == '.wav' || path.extname(file.originalname) == '.oga') {
+			cb(null, path.join(save_dir, 'Recording'))
 		} else {
 			cb(null, temp_dir)
 		}

@@ -10,17 +10,17 @@ const prefix = `bash -c "source ${os.homedir()}/workspace/lepi-gui/ros_env.sh &&
 // const prefix = 'docker exec -t lepi_server bash -c "source env.sh && '
 
 const launchCMD = {
-  '/ubiquityrobot/camera_node': `bash -c "source /home/pi/workspace/lepi-gui/ros_env.sh && roslaunch pi_cam camera_node.launch" > /tmp/camera_node.log`,
-  '/ubiquityrobot/joystick_node': `bash -c "source /home/pi/workspace/lepi-gui/ros_env.sh && roslaunch pi_driver joystick_node.launch" > /tmp/joystick_node.log`,
-  '/ubiquityrobot/apriltag_detector_node': `${prefix} roslaunch pi_cam apriltag_detector_node.launch" > /tmp/apriltag_detector_node.log`,
-  '/ubiquityrobot/transfer_learning_node': `${prefix} roslaunch pi_cam transfer_learning_node.launch" > /tmp/transfer_learning_node.log`,
-  '/ubiquityrobot/line_detector_node': `${prefix} roslaunch pi_cam line_detector_node.launch" > /tmp/line_detector_node.log`,
-  '/ubiquityrobot/object_detector_node': `${prefix} roslaunch pi_ai object_detector_node.launch" > /tmp/object_detector_node.log`,
-  '/ubiquityrobot/image_classifier_node': `${prefix} roslaunch pi_ai image_classifier_node.launch" > /tmp/image_classifier_node.log`,
-  '/ubiquityrobot/face_recognizer_node': `${prefix} roslaunch pi_cam face_recognizer_node.launch" > /tmp/face_recognizer_node.log`,
-  '/ubiquityrobot/barcode_scanner_node': `${prefix} roslaunch pi_cam barcode_scanner_node.launch" > /tmp/barcode_scanner_node.log`,
-  '/ubiquityrobot/text_recognizer_node': `${prefix} roslaunch pi_cam text_recognizer_node.launch" > /tmp/text_recognizer_node.log`,
-  '/ubiquityrobot/ultra_face_inference_node': `${prefix} roslaunch pi_cam ultra_face_inference_node.launch" > /tmp/ultra_face_inference_node.log`,
+  '/ubiquityrobot/camera_node': `bash -c "source /home/pi/workspace/lepi-gui/ros_env.sh && roslaunch pi_cam camera_node.launch" `,
+  '/ubiquityrobot/joystick_node': `bash -c "source /home/pi/workspace/lepi-gui/ros_env.sh && roslaunch pi_driver joystick_node.launch" `,
+  '/ubiquityrobot/apriltag_detector_node': `${prefix} roslaunch pi_cam apriltag_detector_node.launch" `,
+  '/ubiquityrobot/transfer_learning_node': `${prefix} roslaunch pi_cam transfer_learning_node.launch" `,
+  '/ubiquityrobot/line_detector_node': `${prefix} roslaunch pi_cam line_detector_node.launch" `,
+  '/ubiquityrobot/object_detector_node': `${prefix} roslaunch pi_ai object_detector_node.launch" `,
+  '/ubiquityrobot/image_classifier_node': `${prefix} roslaunch pi_ai image_classifier_node.launch" `,
+  '/ubiquityrobot/face_recognizer_node': `${prefix} roslaunch pi_cam face_recognizer_node.launch" `,
+  '/ubiquityrobot/barcode_scanner_node': `${prefix} roslaunch pi_cam barcode_scanner_node.launch" `,
+  '/ubiquityrobot/text_recognizer_node': `${prefix} roslaunch pi_cam text_recognizer_node.launch" `,
+  '/ubiquityrobot/ultra_face_inference_node': `${prefix} roslaunch pi_cam ultra_face_inference_node.launch" `,
 }
 // LD_PRELOAD=/usr/lib/arm-linux-gnueabihf/libatomic.so.1 
 const nodeNameMap = {

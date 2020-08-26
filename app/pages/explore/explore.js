@@ -59,12 +59,14 @@ angular.module('myApp.explore', ['ngRoute'])
                         switch (extName) {
                             case 'mp3':
                             case 'ogg':
+                            case 'oga':
                             case 'wav':
                             case 'm4a':
                                 imageUrl = `assets/themes/${iconTheme}/icon-mp3.png`
                                 url = encodeURI(`#!/player?src=/explore${url_path}`)
                                 break
                             case 'mp4':
+                            case 'ogv':
                             case 'webm':
                                 imageUrl = `assets/themes/${iconTheme}/icon-mp4.png`
                                 url = encodeURI(`#!/player?src=/explore${url_path}`)
@@ -80,6 +82,16 @@ angular.module('myApp.explore', ['ngRoute'])
                             case 'sh':
                                 imageUrl = `assets/themes/${iconTheme}/icon-shell.png`
                                 api = encodeURI(`/system/execFile?path=${path}`)
+                                break
+                            case 'png':
+                            case 'jpg':
+                            case 'svg':
+                            case 'bmp':
+                            case 'webp':
+                            case 'jpeg':
+                            case 'gif':
+                                imageUrl = `/explore${url_path}`
+                                url = encodeURI(`#!/imageViewer?src=/explore${url_path}`)
                                 break
                         }
                     }

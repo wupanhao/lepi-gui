@@ -44,11 +44,8 @@ angular.module('myApp.sservo', ['ngRoute'])
         var updateData = () => {
             const ids = $rootScope.show.map(servo => servo.id)
             // console.log('updateData:',ids)
-            $rootScope.ros.getServosInfo(ids).then(data => {
 
-                if ($rootScope.items.length == 0) {
-                    swal.close()
-                }
+            $rootScope.ros.getServosInfo(ids).then(data => {
 
                 // console.log(data)
                 if (data && data.length > 0) {
@@ -62,6 +59,7 @@ angular.module('myApp.sservo', ['ngRoute'])
                     })
                     $rootScope.itemIndex = 0
                     if ($rootScope.items.length == 0) {
+                        swal.close()
                         $rootScope.items = servos
                         if ($rootScope.items.length > 5) {
                             $rootScope.localMenus[$location.path()] = [
@@ -103,11 +101,12 @@ angular.module('myApp.sservo', ['ngRoute'])
                         }
                     }
                     if ($location.path() == '/testing/sservo') {
-                        setTimeout(updateData, 300)
-                    } else {
-                        swal.close()
+                        setTimeout(updateData, 100)
                     }
 
+                } else {
+                    $rootScope.updatePageInfo()
+                    swal.close()
                 }
 
             })
@@ -148,12 +147,15 @@ angular.module('myApp.sservo', ['ngRoute'])
                     position = position > 0 ? position : 0
                     position = parseInt(position / 200 * 0x03ff)
                     $rootScope.ros.setServoPosition($scope.servos[i].id, position)
+                    setTimeout(updateData, 500)
+
                     break;
                 case "ArrowRight":
                     var position = $scope.servos[i].angle + 10
                     position = position < 200 ? position : 200
                     position = parseInt(position / 200 * 0x03ff)
                     $rootScope.ros.setServoPosition($scope.servos[i].id, position)
+                    setTimeout(updateData, 500)
                     break;
                 default:
                     return false

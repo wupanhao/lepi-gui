@@ -9,12 +9,11 @@ const {
 
 const mdns = require('./router/mdns')
 const wifiRouter = require('./router/wifi')
-const bluetoothRouter = require('./router/bluetooth')
 const uploadRouter = require('./router/upload')
 const fileRouter = require('./router/file-reader')
 const rosRouter = require('./router/ros')
 const variableRouter = require('./router/variable')
-const serialRouter = require('./router/serial')
+const bluetoothRouter = require('./router/bluetooth')
 
 const {
   systemRouter,
@@ -53,13 +52,19 @@ app.use('/', (req, res, next) => {
 })
 app.use('/static', express.static(path.join(__dirname, 'router/static')))
 app.use('/wifi', wifiRouter)
+
+try {
+  const serialRouter = require('./router/serial')
+  app.use('/serial', serialRouter)
+} catch (error) {
+  console.log(error)
+}
 app.use('/bluetooth', bluetoothRouter)
 app.use('/upload', uploadRouter)
 app.use('/explore', fileRouter)
 app.use('/explore', express.static(fileRouter.homedir))
 app.use('/rosNode', rosRouter)
 app.use('/variable', variableRouter)
-app.use('/serial', serialRouter)
 app.use('/system', systemRouter)
 app.get('/stream_list', (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -74,6 +79,38 @@ app.get('/stream_list', (req, res) => {
     }
   })
 })
+app.get('/proxy', (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  if (req.query.method == 'POST') {
+    axios.post(req.query.url).then(result => {
+      // console.log(result)
+      // console.log(result.data)
+      if (result && result.data) {
+        res.send(result.data)
+      } else {
+        res.send('error')
+      }
+    }).catch(error => {
+      console.log('error', error)
+      resolve('error')
+    })
+  } else {
+    axios.get(req.query.url).then(result => {
+      // console.log(result)
+      // console.log(result.data)
+      if (result && result.data) {
+        res.send(result.data)
+      } else {
+        res.send('error')
+      }
+    }).catch(error => {
+      console.log('error', error)
+      resolve('error')
+    })
+  }
+})
+
 
 app.use('/app', express.static(path.join(__dirname, '../app')));
 app.get('/app', (req, res) => {

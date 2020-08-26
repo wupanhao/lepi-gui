@@ -187,6 +187,7 @@ class Runner {
     swal("程序加载中", {
       button: false,
     });
+
     JSZipUtils.getBinaryContent(url, (err, data) => {
       console.log(data)
       this.vm.loadProject(data)
@@ -216,6 +217,18 @@ angular.module('myApp.scratchRunner', ['ngRoute'])
     console.log(runner)
     document.getElementById('scratch').appendChild(runner.canvas)
     runner.loadProjectFromUrl(src)
+
+    $scope.$on('$routeChangeStart', ($event, next, current) => {
+      console.log('$routeChangeStart', $event, next, current)
+      if (runner.vm.ros._disablePreview) {
+        try {
+          runner.vm.ros._disablePreview()
+        } catch (error) {
+          console.log(error)
+        }
+      }
+
+    });
 
     $rootScope.localHandler[$location.path()] = (e) => {
       switch (e.code) {

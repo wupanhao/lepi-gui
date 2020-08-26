@@ -63,6 +63,7 @@
         var image = document.getElementById("ros_img");
 
         function onImageMsg(message) {
+            console.log(message)
             var data = "data:image/jpeg;base64," + message.data;
             image.setAttribute('src', data)
         }
@@ -106,6 +107,11 @@
                         content += `<option value="${topic}">${topic_maps[topic]}</option>`
                     })
                     ele.innerHTML = content
+                    try {
+                        subCompressedImage(topics[0])
+                    } catch (error) {
+                        console.log(error)
+                    }
                 }
             })
         });

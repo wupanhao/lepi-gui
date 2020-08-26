@@ -131,8 +131,9 @@ p {
     color: black;
 }
 
-video, audio {
+video, audio, .image {
     width: 240px;
+    max-height: 295px;
 }
 
 .horizontal {

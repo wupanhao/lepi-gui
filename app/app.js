@@ -160,6 +160,7 @@ angular.module('myApp', [
     'myApp.index',
     'myApp.explore',
     'myApp.player',
+    'myApp.imageViewer',
     'myApp.scratchRunner',
     'myApp.testing',
     'myApp.9_axis',
@@ -232,7 +233,7 @@ angular.module('myApp', [
         var onConnected = () => {
             console.log('connected to ros ', $rootScope.ros)
             window.ros = $rootScope.ros
-            $rootScope.updatePowerInfo()
+            setInterval($rootScope.updatePowerInfo, 2000)
             swal({
                 title: "启动完毕",
                 text: "可以开始你的创作了",
@@ -386,7 +387,7 @@ angular.module('myApp', [
                         setPowerState(data.est_power, data.charging)
                         // $rootScope.est_power = data.est_power
                     }
-                    setTimeout($rootScope.updatePowerInfo, 1000)
+                    // setTimeout($rootScope.updatePowerInfo, 1000)
                 })
             } catch (e) {
                 console.log(e)

@@ -38,7 +38,7 @@ else
   echo "Docker installed, ignore"
 fi
 # Pull Docker Image
-sudo docker pull wupanhao/lepi_server:melodic
+sudo docker pull wupanhao/lepi_driver
 
 # Install ROS Runtime
 sudo apt install -y python-rospy python-rosnode python-roslaunch ros-core

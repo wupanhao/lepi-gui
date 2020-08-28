@@ -93,7 +93,7 @@ app.get('/proxy', (req, res) => {
       }
     }).catch(error => {
       console.log('error', error)
-      resolve('error')
+      res.send('error')
     })
   } else {
     axios.get(req.query.url).then(result => {
@@ -106,7 +106,7 @@ app.get('/proxy', (req, res) => {
       }
     }).catch(error => {
       console.log('error', error)
-      resolve('error')
+      res.send('error')
     })
   }
 })

@@ -31,7 +31,6 @@ fi
 # Install OpenOcd
 if [ -f ~/workspace/xpack-openocd-0.10.0-14/bin/openocd ];then
   echo "openocd installed"
-  exit 0
 else
   cd ~/workspace
   wget https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.10.0-14/xpack-openocd-0.10.0-14-linux-arm.tar.gz
@@ -39,3 +38,9 @@ else
   sudo ln ~/workspace/xpack-openocd-0.10.0-14/bin/openocd /usr/local/bin/
 fi
 
+#sudo mv /etc/profile.d/sshpwd.sh ~
+#sudo mv /etc/profile.d/wifi-check.sh ~
+# disable welcome page
+sudo mv /etc/xdg/autostart/piwiz.desktop ~
+# disable ssh warning
+sudo apt purge libpam-chksshpwd

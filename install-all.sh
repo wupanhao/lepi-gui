@@ -23,9 +23,6 @@ fi
 # Pull Docker Image
 sudo docker pull wupanhao/lepi_driver
 
-# Install ROS Runtime
-sudo apt install -y python-rospy python-rosnode python-roslaunch ros-core
-
 # Compile ROS Workspace
 # Before, change the swap size
 sudo sed -i 's|CONF_SWAPSIZE=100$|CONF_SWAPSIZE=1000|' /etc/dphys-swapfile
@@ -53,7 +50,7 @@ cd ~/workspace/lepi-gui/server && npm i && electron-rebuild
 cd ~/workspace/lepi-gui/app && npm i
 
 # Set GUI Auto Start
-cd ~/workspace/lepi-gui
-bash auto_start.sh
+# cd ~/workspace/lepi-gui
+# bash auto_start.sh
 
 date >> /tmp/time.log

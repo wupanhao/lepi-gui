@@ -15,15 +15,39 @@ function mkdirIfNotExists(target_dir) {
 	}
 }
 
-mkdirIfNotExists(path.join(save_dir, ''))
-mkdirIfNotExists(path.join(save_dir, 'Scratch'))
-mkdirIfNotExists(path.join(save_dir, 'Python'))
-mkdirIfNotExists(path.join(save_dir, 'Shell'))
-mkdirIfNotExists(path.join(save_dir, 'Music'))
-mkdirIfNotExists(path.join(save_dir, 'Photo'))
-mkdirIfNotExists(path.join(save_dir, 'Recording'))
+function createDirectory() {
+	mkdirIfNotExists(path.join(save_dir, ''))
+	mkdirIfNotExists(path.join(save_dir, 'Scratch'))
+	mkdirIfNotExists(path.join(save_dir, 'Python'))
+	mkdirIfNotExists(path.join(save_dir, 'Shell'))
+	mkdirIfNotExists(path.join(save_dir, 'Music'))
+	mkdirIfNotExists(path.join(save_dir, 'Photo'))
+	mkdirIfNotExists(path.join(save_dir, 'Recording'))
+}
+
+createDirectory()
 
 // watchFile(temp_dir)
+
+
+router.get('/clearData', (req, res) => {
+	console.log('clear data')
+	exec(`mv ${save_dir}/Scratch ${save_dir}/Python ${save_dir}/Shell ${save_dir}/Music ${save_dir}/Photo ${save_dir}/Recording /tmp`)
+	createDirectory()
+	res.send({
+		status: 0,
+		msg: 'ok'
+	});
+})
+
+router.get('/restoreData', (req, res) => {
+	console.log('restore data')
+	exec(`mv /tmp/Scratch /tmp/Python /tmp/Shell /tmp/Music /tmp/Photo /tmp/Recording  ${save_dir}`)
+	res.send({
+		status: 0,
+		msg: 'ok'
+	});
+})
 
 const tempStorage = multer.diskStorage({
 	destination: function (req, file, cb) {

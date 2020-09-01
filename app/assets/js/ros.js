@@ -367,7 +367,43 @@ class ros_client {
       });
     })
   }
+  getSensorMode(port) {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'pi_driver_node/sensor_get_mode',
+        serviceType: 'pi_driver/GetInt32'
+      });
 
+      var request = new ROSLIB.ServiceRequest({
+        port: port
+      });
+
+      client.callService(request, (result) => {
+        // console.log(result)
+        resolve(result.value)
+      });
+    })
+  }
+  setSensorMode(port, value) {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'pi_driver_node/sensor_set_mode',
+        serviceType: 'pi_driver/SetInt32'
+      });
+
+      var request = new ROSLIB.ServiceRequest({
+        port: port,
+        value: value
+      });
+
+      client.callService(request, (result) => {
+        // console.log(result)
+        resolve(result.value)
+      });
+    })
+  }
   getSensorValue(port) {
     return new Promise((resolve) => {
       var client = new ROSLIB.Service({
@@ -378,6 +414,25 @@ class ros_client {
 
       var request = new ROSLIB.ServiceRequest({
         port: port
+      });
+
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve(result.value)
+      });
+    })
+  }
+  setSensorValue(port, value) {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'pi_driver_node/sensor_set_value',
+        serviceType: 'pi_driver/SetInt32'
+      });
+
+      var request = new ROSLIB.ServiceRequest({
+        port: port,
+        value: value
       });
 
       client.callService(request, (result) => {
@@ -1291,7 +1346,19 @@ class ros_client {
     });
 
     listener.subscribe(callback);
+    this.imageListener = listener
     return listener
+  }
+
+  unsubCompressedImage() {
+    if (this.imageListener) {
+      try {
+        this.imageListener.unsubscribe()
+        this.imageListener = null
+      } catch (error) {
+        console.log(error)
+      }
+    }
   }
 
   listCaliFiles() {
@@ -1375,6 +1442,61 @@ class ros_client {
       client.callService(request, (result) => {
         console.log(result)
         resolve(result)
+      });
+    })
+  }
+  getCompressedImage() {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'camera_node/camera_get_compressed',
+        serviceType: 'pi_cam/GetCompressedFrame'
+      });
+
+      var request = new ROSLIB.ServiceRequest();
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve(result)
+      });
+    })
+  }
+  publishImage(data) {
+    var topic = new ROSLIB.Topic({
+      ros: this.ros,
+      name: ROS_NAMESPACE + 'camera_node/image_raw/compressed',
+      messageType: 'sensor_msgs/CompressedImage'
+    });
+    // var data = canvas.toDataURL('image/jpeg');
+    var msg = new ROSLIB.Message({
+      format: "jpeg",
+      data: data.replace("data:image/jpeg;base64,", "")
+    });
+    topic.publish(msg)
+  }
+
+  getTopicsForType(type) {
+    return new Promise(resolve => {
+      this.ros.getTopicsForType(type, (topics) => {
+        resolve({ data: topics })
+      }, (error) => {
+        console.log(error)
+        resolve({ data: [] })
+      })
+    })
+  }
+
+  getFirmwareVersion() {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'pi_driver_node/get_firmware_version',
+        serviceType: 'pi_driver/GetInt32'
+      });
+
+      var request = new ROSLIB.ServiceRequest();
+      // console.log(request)
+      client.callService(request, (result) => {
+        resolve(result.value)
       });
     })
   }

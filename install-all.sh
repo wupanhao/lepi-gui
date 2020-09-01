@@ -8,26 +8,9 @@ cd ~/workspace
 git clone https://github.com/wupanhao/lepi-gui
 git clone https://github.com/wupanhao/lepi-ros-server
 
-# Install LCD Driver
-cat /boot/config.txt | grep tft9341
-if [ $? -ne 0 ]; then
-  echo "LCD Driver not install, install now"
-  cd ~/workspace/lepi-gui
-  bash install-lcd.sh
-else
-  echo "LCD Driver installed, ignore"
-fi
-# Install WM8960 Audio Driver
-cat /boot/config.txt | grep wm8960
-if [ $? -ne 0 ]; then
-  echo "WM8960 Audio Driver not install, install now"
-  cd ~/workspace/lepi-gui/conf/WM8960-Audio-HAT
-  sudo ./install.sh
-# https://github.com/respeaker/seeed-voicecard
-# https://github.com/waveshare/WM8960-Audio-HAT
-else
-  echo "WM8960 Audio Driver installed, ignore"
-fi
+# Install Driver
+bash ~/workspace/lepi-gui/install_driver.sh
+
 # Install Docker
 docker -v
 if [ $? -ne 0 ]; then
@@ -53,7 +36,7 @@ sudo docker run --rm -t -v /home/pi:/home/pi wupanhao/lepi_driver bash -c "sourc
 mkdir -p /home/pi/Lepi_Data
 touch /home/pi/Lepi_Data/.variable.yaml
 
-pip install --user PyUserInput
+#pip install --user PyUserInput
 
 # Install Node.js Environment
 node -v

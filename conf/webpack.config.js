@@ -7,10 +7,24 @@ module.exports = {
         dist: './src/index.js'
     },
     output: {
-        path: path.resolve('dist', 'web'),
+        path: __dirname,
         library: 'AudioEngine',
         libraryTarget: 'umd',
-        filename: 'scratch-audio.js'
+        filename: '[name].js'
     },
-
+    module: {
+        rules: [{
+            test: /\.js$/,
+            include: path.resolve(__dirname, 'src'),
+            loader: 'babel-loader',
+            options: {
+                presets: [['env', { targets: { browsers: ['last 3 versions', 'Safari >= 8', 'iOS >= 8'] } }]]
+            }
+        }]
+    },
+    externals: {
+        'audio-context': true,
+        'minilog': false,
+        'startaudiocontext': false
+    }
 };

@@ -12,6 +12,11 @@ function install_from_apt(){
 
 function install_from_wget(){
 	cd ~/workspace
+	if [ -f node-v12.14.1-linux-armv7l.tar.xz ];then
+	  echo "nodejs file exists"
+	  exit 0
+      return
+	fi 
 	wget https://nodejs.org/dist/v12.14.1/node-v12.14.1-linux-armv7l.tar.xz
 	tar -xvf node-v12.14.1-linux-armv7l.tar.xz
 

@@ -38,5 +38,9 @@ angular.module('myApp.deviceInfo', ['ngRoute'])
             })
         }
 
-        updatePageData()
+        $rootScope.ros.getFirmwareVersion().then(version => {
+            $scope.firmware_version = version
+            updatePageData()
+        })
+
     });

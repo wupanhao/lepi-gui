@@ -120,15 +120,6 @@ app.get('/app', (req, res) => {
   res.send(data);
 })
 
-app.get('/clearData', (req, res) => {
-  console.log('clear data')
-  exec('rm -rf /home/pi/Programs/*')
-  res.send({
-    status: 0,
-    msg: 'ok'
-  });
-})
-
 const server = createServer(app)
 
 try {

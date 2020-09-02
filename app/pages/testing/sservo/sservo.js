@@ -101,7 +101,7 @@ angular.module('myApp.sservo', ['ngRoute'])
                         }
                     }
                     if ($location.path() == '/testing/sservo') {
-                        setTimeout(updateData, 100)
+                        // setTimeout(updateData, 100)
                     }
 
                 } else {

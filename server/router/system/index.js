@@ -73,8 +73,17 @@ function getDeviceInfo() {
 	})
 }
 
-// getDeviceInfo().then(console.log)
-
+/*
+getDeviceInfo().then(info => {
+	console.log(info)
+	if (info.disk.total < 14) {
+		console.log('automatically expand file system and reboot')
+		const out = ChildProcess.execSync('sudo raspi-config  --expand-rootfs')
+		console.log(out)
+		ChildProcess.execSync('sudo reboot')
+	}
+})
+*/
 
 function stopAll() {
 	file_name = path.join(__dirname, 'stopMotors.py')

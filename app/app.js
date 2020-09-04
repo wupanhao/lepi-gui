@@ -29,24 +29,21 @@ const rotateMap = {
 window.logPowerState = true
 
 function setPowerState(i, charging = 0) {
-    if (i >= 0) {
-        const powerBar = document.querySelector('#power-bar-power')
-        const powerNumber = document.querySelector('#power-bar-number')
-        if (i > 100) {
-            i = i - 100
-        }
-        if (charging > 0) {
-            powerNumber.textContent = ``
-            document.querySelector('#power-bar-charging').style.display = 'inline'
-        } else {
-            powerNumber.textContent = `${i}%`
-            document.querySelector('#power-bar-charging').style.display = 'none'
-        }
-
-        powerBar.style.width = `${i}%`
-        powerBar.style.background = `${i <= 10 ? 'red' : i <= 20 ? '#e4b827' : '#37c337'}`
-
+    const powerBar = document.querySelector('#power-bar-power')
+    const powerNumber = document.querySelector('#power-bar-number')
+    if (i > 100) {
+        i = i - 100
     }
+    if (charging > 0) {
+        powerNumber.textContent = ``
+        document.querySelector('#power-bar-charging').style.display = 'inline'
+    } else {
+        powerNumber.textContent = `${i}%`
+        document.querySelector('#power-bar-charging').style.display = 'none'
+    }
+
+    powerBar.style.width = `${i}%`
+    powerBar.style.background = `${i <= 10 ? 'red' : i <= 20 ? '#e4b827' : '#37c337'}`
 }
 
 function ngRefresh() {
@@ -233,6 +230,7 @@ angular.module('myApp', [
         var onConnected = () => {
             console.log('connected to ros ', $rootScope.ros)
             window.ros = $rootScope.ros
+            $rootScope.updatePowerInfo()
             setInterval($rootScope.updatePowerInfo, 2000)
             swal({
                 title: "启动完毕",
@@ -383,7 +381,7 @@ angular.module('myApp', [
                     if (window.logPowerState) {
                         console.log('set window.logPowerState to false to cancel this log,', data)
                     }
-                    if (data.est_power > 0) {
+                    if (data.est_power >= 0 && data.bat_power_ocv < 5) {
                         setPowerState(data.est_power, data.charging)
                         // $rootScope.est_power = data.est_power
                     }

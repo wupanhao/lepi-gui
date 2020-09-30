@@ -200,7 +200,7 @@
             let i = e.target.dataset.id
             angles[i] = parseInt(e.target.value)
             document.querySelector(`.label-${i} .value`).innerText = angles[i]
-            client.pubJointStates(angles)
+            client.pubJointAngles(angles)
         }
         function toggleSwitch(e) {
             // console.log(e, e.target.checked)
@@ -258,7 +258,7 @@
                     document.querySelector(`.label-${i} .value`).innerText = angles[i]
                 }
             }
-            client.pubJointStates(angles)
+            client.pubJointAngles(angles)
         }
         function save() {
             client.setHexapodOffsets(angles).then(console.log)

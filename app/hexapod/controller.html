@@ -148,16 +148,20 @@
         let controller = document.querySelector('#amdfc-controller')
         let buttons = document.querySelectorAll('.amdfc-int')
         let tp = document.getElementById("touch-point");
+        let last_state = ''
 
         function publishJoyState(state) {
             msg = {
                 data: JSON.stringify(state)
             }
-            console.log(msg)
-            joyController.onJoyMessage(msg)
-            if (joyController.joyTopic) {
-                joyController.joyTopic.publish(msg)
-                // joyController.joyTopic.publish(new ROSLIB.Message(msg))
+            if (last_state != msg.data) {
+                last_state = msg.data
+                console.log(msg)
+                joyController.onJoyMessage(msg)
+                if (joyController.joyTopic) {
+                    joyController.joyTopic.publish(msg)
+                    // joyController.joyTopic.publish(new ROSLIB.Message(msg))
+                }
             }
         }
 
@@ -335,18 +339,19 @@
                 console.log('mouse up')
                 // console.log(e)
                 document.onmousemove = null
+                tp.style.display = "none";
+                joy_state.Axes[0] = 0
+                joy_state.Axes[1] = 0
+                joy_state.Axes[3] = 0
+                joy_state.Axes[4] = 0
                 if (e.target.id == "amdfc-button-center") {
                     return
                 } else if (joy_state.Buttons[8] == 0) {
-                    document.onmousemove = null
-                    tp.style.display = "none";
-                    joy_state.Axes[0] = 0
-                    joy_state.Axes[1] = 0
-                    joy_state.Axes[3] = 0
-                    joy_state.Axes[4] = 0
                     buttonUp(e)
-                    // publishJoyState(default_state)
+                } else {
+                    publishJoyState(joy_state)
                 }
+
             }
             document.onmousedown = onMouseDown
             document.onmouseup = onMouseUp

@@ -1555,6 +1555,21 @@ class ros_client {
     topic.publish(msg)
   }
 
+  pubJointAngles(angles) {
+    var topic = new ROSLIB.Topic({
+      ros: this.ros,
+      name: ROS_NAMESPACE + 'hexapod_driver_node/joint_angles',
+      messageType: 'sensor_msgs/JointState'
+    });
+
+    var msg = new ROSLIB.Message({
+      position: angles
+    })
+
+    console.log(angles, msg)
+
+    topic.publish(msg)
+  }
 }
 
 // module.exports = ros_client

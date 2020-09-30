@@ -97,7 +97,7 @@ angular.module('myApp.setting', ['ngRoute'])
         callback: (index) => {
           console.log(`menu item-${index} clicked`)
           swal({
-            title: '正在检查更新',
+            title: '正在更新',
             text: "请稍等",
             button: false,
           });

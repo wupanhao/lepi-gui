@@ -1501,6 +1501,60 @@ class ros_client {
     })
   }
 
+  getHexapodOffsets() {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'hexapod_driver_node/get_offsets',
+        serviceType: 'hexapod_controller/GetOffsets'
+      });
+
+      var request = new ROSLIB.ServiceRequest({});
+
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve(result)
+      });
+    })
+  }
+
+  setHexapodOffsets(position) {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'hexapod_driver_node/set_offsets',
+        serviceType: 'hexapod_controller/SetOffsets'
+      });
+
+      var request = new ROSLIB.ServiceRequest({
+        data: {
+          position: position
+        }
+      });
+
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve(result)
+      });
+    })
+  }
+
+  pubJointStates(angles) {
+    var topic = new ROSLIB.Topic({
+      ros: this.ros,
+      name: ROS_NAMESPACE + 'hexapod_controller_node/joint_states',
+      messageType: 'sensor_msgs/JointState'
+    });
+
+    var msg = new ROSLIB.Message({
+      position: angles.map(angle => angle / 180.0 * Math.PI)
+    })
+
+    console.log(angles, msg)
+
+    topic.publish(msg)
+  }
+
 }
 
 // module.exports = ros_client

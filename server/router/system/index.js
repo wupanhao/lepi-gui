@@ -5,7 +5,8 @@ const fs = require('fs');
 const ChildProcess = require('child_process');
 const router = express.Router();
 const {
-	getLocalIps
+	getLocalIps,
+	getMAC
 } = require('../mdns')
 
 const AudioControl = require('./audio-control')
@@ -26,23 +27,26 @@ audio.set('speaker', 70).then(() => {
 	})
 })
 
-function getDeviceInfo() {
-	const info = {
-		memory: {
-			used: 0,
-			total: 0
-		},
-		release: os.release(),
-		arch: os.arch(),
-		uptime: os.uptime(),
-		platform: os.platform(),
-		ips: getLocalIps(),
-		loadavg: os.loadavg(),
-		disk: {
-			used: 0,
-			total: 0
-		}
+let devInfo = {
+	memory: {
+		used: 0,
+		total: 0
+	},
+	uuid: getMAC(),
+	release: os.release(),
+	arch: os.arch(),
+	platform: os.platform(),
+	disk: {
+		used: 0,
+		total: 0
 	}
+}
+
+function getDeviceInfo() {
+
+	devInfo.uptime = os.uptime()
+	devInfo.ips = getLocalIps(),
+		devInfo.loadavg = os.loadavg()
 
 	return new Promise(resolve => {
 		if (os.platform() == 'linux') {
@@ -52,8 +56,8 @@ function getDeviceInfo() {
 				}
 				const disk = stdout.trim().split(' ')
 				if (disk[0] && disk[1]) {
-					info.disk.used = disk[0]
-					info.disk.total = disk[1]
+					devInfo.disk.used = disk[0]
+					devInfo.disk.total = disk[1]
 				}
 				ChildProcess.exec(`free -m | head -n +2 | tail -n +2 | awk '{print $2 " " $3}'`, (error, stdout, stderr) => {
 					if (error || stderr) {
@@ -61,14 +65,14 @@ function getDeviceInfo() {
 					}
 					const memory = stdout.trim().split(' ')
 					if (memory[0] && memory[1]) {
-						info.memory.used = memory[1]
-						info.memory.total = memory[0]
+						devInfo.memory.used = memory[1]
+						devInfo.memory.total = memory[0]
 					}
-					resolve(info)
+					resolve(devInfo)
 				})
 			})
 		} else {
-			resolve(info)
+			resolve(devInfo)
 		}
 	})
 }

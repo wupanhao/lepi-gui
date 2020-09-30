@@ -1,4 +1,5 @@
 const os = require('os');
+const ChildProcess = require('child_process');
 
 const HOSTNAME = 'lepi.local'
 
@@ -57,7 +58,21 @@ function start_mdns_server() {
   })
 }
 
+function getMAC() {
+  var out = ChildProcess.execSync('ifconfig eth0')
+  var str = out.toString()
+  const pattern = /ether (.{17})  /
+  const match = str.match(pattern);
+  if (match && match[1]) {
+    // console.log(match)
+    return match[1]
+  }
+}
+
+// console.log(getMAC())
+
 module.exports = {
   getLocalIps: getLocalIps,
-  start_mdns_server: start_mdns_server
+  start_mdns_server: start_mdns_server,
+  getMAC: getMAC
 }

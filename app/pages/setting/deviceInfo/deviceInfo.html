@@ -48,6 +48,10 @@
             <td>SD卡</td>
             <td>{{info.disk.used}}/{{info.disk.total}}</td>
         </tr>
+        <tr>
+            <td>MAC地址</td>
+            <td>{{info.uuid}}</td>
+        </tr>
         <tr ng-repeat="ip in info.ips">
             <td>网络{{ip.interface | limitTo: 10}}</td>
             <td>{{ip.ip}}</td>

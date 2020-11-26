@@ -157,7 +157,7 @@
             if (last_state != msg.data) {
                 last_state = msg.data
                 console.log(msg)
-                joyController.onJoyMessage(msg)
+                // joyController.onJoyMessage(msg)
                 if (joyController.joyTopic) {
                     joyController.joyTopic.publish(msg)
                     // joyController.joyTopic.publish(new ROSLIB.Message(msg))

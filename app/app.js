@@ -182,6 +182,7 @@ angular.module('myApp', [
     }])
     .controller('App', function ($rootScope, $location, $http) {
         console.log('call only once')
+        window.joyController = new JoystickController()
         $rootScope.debug = false
         $rootScope.ros = null
         $rootScope.globalMenus = [{
@@ -247,6 +248,21 @@ angular.module('myApp', [
             });
 
             sensorListener.subscribe(onSensorChange)
+
+
+            if (window.location.hostname == 'localhost') {
+                let joyListener = new ROSLIB.Topic({
+                    ros: $rootScope.ros.ros,
+                    name: '/ubiquityrobot/joystick_node/joy_state',
+                    messageType: 'std_msgs/String'
+                });
+
+                joyListener.subscribe((msg) => {
+                    window.joyController.onJoyMessage(msg)
+                })
+                window.logPowerState = false
+            }
+
         }
 
         var onConnectFail = () => {

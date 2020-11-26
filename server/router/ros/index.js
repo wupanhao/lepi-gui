@@ -21,6 +21,7 @@ const launchCMD = {
   '/ubiquityrobot/barcode_scanner_node': `${prefix} roslaunch pi_cam barcode_scanner_node.launch" `,
   '/ubiquityrobot/text_recognizer_node': `${prefix} roslaunch pi_cam text_recognizer_node.launch" `,
   '/ubiquityrobot/ultra_face_inference_node': `${prefix} roslaunch pi_cam ultra_face_inference_node.launch" `,
+  '/ubiquityrobot/hexapod_driver_node': `${prefix} roslaunch hexapod_controller hexapod_driver_node.launch" `,
 }
 // LD_PRELOAD=/usr/lib/arm-linux-gnueabihf/libatomic.so.1 
 const nodeNameMap = {
@@ -35,6 +36,7 @@ const nodeNameMap = {
   '/ubiquityrobot/barcode_scanner_node': '二维码扫描',
   '/ubiquityrobot/text_recognizer_node': '文本识别',
   '/ubiquityrobot/joystick_node': '游戏手柄',
+  '/ubiquityrobot/hexapod_driver_node': '六足机器人驱动',
 }
 
 const availableNode = Object.keys(nodeNameMap)

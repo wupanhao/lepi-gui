@@ -27,8 +27,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <script src="../node_modules/roslib/build/roslib.min.js"></script>
-    <script src="../assets/js/hexapod.js"></script>
-    <script src="../assets/js/joystickController.js"></script>
+    <script src="./hexapod.js"></script>
+    <script src="./joystickController.js"></script>
 
 </head>
 
@@ -157,11 +157,13 @@
             if (last_state != msg.data) {
                 last_state = msg.data
                 console.log(msg)
-                // joyController.onJoyMessage(msg)
+                joyController.onJoyMessage(msg)
+                /* //Do not publish joy msg
                 if (joyController.joyTopic) {
                     joyController.joyTopic.publish(msg)
                     // joyController.joyTopic.publish(new ROSLIB.Message(msg))
                 }
+                */
             }
         }
 

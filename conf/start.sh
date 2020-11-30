@@ -20,4 +20,4 @@ bash -c "source /home/pi/nodejs.sh && source /home/pi/workspace/lepi-gui/ros_env
 #/sbin/iw dev uap0 del
 #docker run -idt --name demo_duck --privileged --net host  --env="DISPLAY=:0.1" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" wupanhao/demo_duck:v0.1
 #DISPLAY=:0.1 konsole -p TerminalColumns=34 -p TerminalRows=19
-
+# chromium-browser "http://localhost:8000/app" --kiosk --window-size=240,320

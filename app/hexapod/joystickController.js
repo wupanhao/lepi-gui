@@ -9,22 +9,18 @@ if (typeof ROSLIB == 'undefined') {
 // import * as ROSLIB from 'roslib'
 
 class JoystickController {
-
     joy = {
         Buttons: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         Axes: [0, 0, 0, 0, 0, 0]
     }
-
-    topic = null
-
-    joyTopic = null
-
     joint_names = ['coxa_joint_r1', 'femur_joint_r1', 'tibia_joint_r1', 'coxa_joint_r2', 'femur_joint_r2', 'tibia_joint_r2',
         'coxa_joint_r3', 'femur_joint_r3', 'tibia_joint_r3', 'coxa_joint_l1', 'femur_joint_l1', 'tibia_joint_l1',
         'coxa_joint_l2', 'femur_joint_l2', 'tibia_joint_l2', 'coxa_joint_l3', 'femur_joint_l3', 'tibia_joint_l3']
 
-    constructor(ros_url = null, walkingGaits = null, subJoyTopic = false) {
+    constructor(params = { ros_url: null, walkingGaits: null, subJoyTopic: false, onNodeExit: null }) {
+        let { ros_url, walkingGaits, subJoyTopic, onNodeExit } = params
 
+        this.onJoyMessage = this.onJoyMessage.bind(this)
         if (!ros_url) {
             try {
                 ros_url = `ws://${window.location.hostname}:9090`
@@ -58,6 +54,25 @@ class JoystickController {
                 messageType: 'sensor_msgs/JointState'
             });
 
+            this.nodeState = new ROSLIB.Topic({
+                ros: this.ros,
+                name: '/node_state',
+                messageType: 'std_msgs/String'
+            });
+
+            this.nodeState.subscribe(data => {
+                let msg = {}
+                try {
+                    msg = JSON.parse(data.data)
+                } catch (error) {
+                    console.log(error)
+                }
+                console.log(msg)
+                if (msg.node == '/ubiquityrobot/hexapod_driver_node' && onNodeExit) {
+                    onNodeExit()
+                }
+            })
+
             this.joyTopic = new ROSLIB.Topic({
                 ros: this.ros,
                 name: '/ubiquityrobot/joystick_node/joy_state',
@@ -66,6 +81,13 @@ class JoystickController {
             if (subJoyTopic) {
                 this.joyTopic.subscribe(this.onJoyMessage)
             }
+
+            let center = []
+            for (let i = 0; i < 18; i++) {
+                center.push(0)
+            }
+            this.pubServoMsg(center)
+
         })
 
         this.ros.on('error', (err) => {
@@ -74,8 +96,8 @@ class JoystickController {
     }
 
     onJoyMessage(message) {
-        // console.log('Received message on ' + listener.name + ': ', message);
         let joyStates = JSON.parse(message.data)
+        // console.log('Received message : ', this.joy, message, joyStates);
         Object.assign(this.joy, joyStates)
         if (joyStates && joyStates.Buttons[7] == 1) {
             if (this.startPress == true) {

@@ -237,6 +237,9 @@ angular.module('myApp.scratchRunner', ['ngRoute'])
             runner.vm.stopAll()
             runner.running = false
             return true
+          } else {
+            console.log('clear scratch-vm data')
+            runner.vm.clear()
           }
       }
       return false

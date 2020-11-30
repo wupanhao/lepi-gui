@@ -38,7 +38,7 @@ function setPowerState(i, charging = 0) {
         powerNumber.textContent = ``
         document.querySelector('#power-bar-charging').style.display = 'inline'
     } else {
-        powerNumber.textContent = `${i}%`
+        // powerNumber.textContent = `${i}%`
         document.querySelector('#power-bar-charging').style.display = 'none'
     }
 
@@ -182,7 +182,6 @@ angular.module('myApp', [
     }])
     .controller('App', function ($rootScope, $location, $http) {
         console.log('call only once')
-        window.joyController = new JoystickController()
         $rootScope.debug = false
         $rootScope.ros = null
         $rootScope.globalMenus = [{
@@ -251,15 +250,17 @@ angular.module('myApp', [
 
 
             if (window.location.hostname == 'localhost') {
+                /*
                 let joyListener = new ROSLIB.Topic({
                     ros: $rootScope.ros.ros,
                     name: '/ubiquityrobot/joystick_node/joy_state',
                     messageType: 'std_msgs/String'
                 });
-
+                window.joyController = new JoystickController()
                 joyListener.subscribe((msg) => {
                     window.joyController.onJoyMessage(msg)
                 })
+                */
                 window.logPowerState = false
             }
 

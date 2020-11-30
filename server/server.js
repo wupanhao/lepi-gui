@@ -137,7 +137,7 @@ try {
       // autoHideMenuBar: true, //remove menubar but save minimize maxmize controls
       // frame: false, //remove menubar and control
       webPreferences: {
-        nodeIntegration: true
+        nodeIntegration: false
       }
     })
 
@@ -159,7 +159,7 @@ try {
     mainWindow.setFullScreen(true);
     console.log(mainWindow)
   }
-
+  electron.app.commandLine.appendSwitch("--disable-http-cache");
   electron.app.on('ready', () => {
     server.listen(8000, () => {
       console.log('Listening on http://localhost:8000 with electron');
@@ -172,5 +172,20 @@ catch (error) {
   console.log(error)
   server.listen(8000, () => {
     console.log('Listening on http://localhost:8000');
+    /*
+        chromium-browser http://localhost:8000/app --window-size=240,320 \
+        --kiosk \
+        --noerrdialogs \
+        --disable-session-crashed-bubble \
+        --disable-infobars \
+        --check-for-update-interval=604800 \
+        --disable-pinch
+    */
+    /*
+     exec('chromium-browser --app=http://localhost:8000/app --window-size=240,320 --window-position=0,0 --kiosk --noerrdialogs' +
+       ' --disable-session-crashed-bubble --disable-infobars --check-for-update-interval=604800 --disable-pinch', (err, stdout, stderr) => {
+         console.log(err, stdout, stderr)
+       })
+       */
   })
 }

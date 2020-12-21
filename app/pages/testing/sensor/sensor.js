@@ -17,7 +17,8 @@ angular.module('myApp.sensor', ['ngRoute'])
         const sensorName = {
             0: '未连接',
             29: '红外',
-            30: '超声波'
+            30: '超声波',
+            31: '触碰'
         }
         console.log($location.path(), ' entered')
         $scope.sensors = [1, 2, 3, 4, 5].map(port => {

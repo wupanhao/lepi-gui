@@ -6,12 +6,12 @@ const router = express.Router();
 
 const ns = '/variable'
 
-const prefix = `bash -c "source ${os.homedir()}/workspace/lepi-gui/ros_env.sh && `
+const prefix = `bash -c "source ${os.homedir()}/workspace/lepi-gui/env.sh && `
 // const prefix = 'docker exec -t lepi_server bash -c "source env.sh && '
 
 const launchCMD = {
-  '/ubiquityrobot/camera_node': `bash -c "source /home/pi/workspace/lepi-gui/ros_env.sh && roslaunch pi_cam camera_node.launch" `,
-  '/ubiquityrobot/joystick_node': `bash -c "source /home/pi/workspace/lepi-gui/ros_env.sh && roslaunch pi_driver joystick_node.launch" `,
+  '/ubiquityrobot/camera_node': `${prefix} roslaunch pi_cam camera_node.launch" `,
+  '/ubiquityrobot/joystick_node': `${prefix} roslaunch pi_driver joystick_node.launch" `,
   '/ubiquityrobot/apriltag_detector_node': `${prefix} roslaunch pi_cam apriltag_detector_node.launch" `,
   '/ubiquityrobot/transfer_learning_node': `${prefix} roslaunch pi_cam transfer_learning_node.launch" `,
   '/ubiquityrobot/line_detector_node': `${prefix} roslaunch pi_cam line_detector_node.launch" `,
@@ -77,7 +77,8 @@ function startPiServer() {
     }
     else {
       console.log('startPiServer')
-      const child = ChildProcess.spawn(`docker run -t -v /home/pi:/home/pi --rm --net host --privileged --name lepi_server wupanhao/lepi_driver bash -c "source ${os.homedir()}/workspace/lepi-ros-server/env.sh && roslaunch pi_driver lepi_server.launch" > /tmp/lepi_server.log &`, {
+      const child = ChildProcess.spawn(`bash -c "source ${os.homedir()}/workspace/lepi-gui/env.sh && roslaunch pi_driver lepi_server.launch" > /tmp/lepi_server.log &`, {
+      //const child = ChildProcess.spawn(`docker run -t -v /home/pi:/home/pi --rm --net host --privileged --name lepi_server wupanhao/lepi_driver bash -c "source ${os.homedir()}/workspace/lepi-ros-server/env.sh && roslaunch pi_driver lepi_server.launch" > /tmp/lepi_server.log &`, {
         detached: true,
         stdio: 'ignore',
         shell: true

@@ -60,7 +60,7 @@ function PromisifyExec(cmd) {
       if (stdout) {
         resolve(stdout.trim())
       } else {
-        resolve()
+        resolve('')
       }
     })
   })
@@ -71,19 +71,30 @@ function startPiDriver() {
 }
 
 function startPiServer() {
-  PromisifyExec('docker ps').then(output => {
-    if (output.indexOf('lepi_server') >= 0) {
+  PromisifyExec('rosnode list').then(output => {
+    if (output.indexOf('pi_driver_node') >= 0) {
       console.log('节点已启动')
+      return true
     }
     else {
       console.log('startPiServer')
       const child = ChildProcess.spawn(`bash -c "source ${os.homedir()}/workspace/lepi-gui/env.sh && roslaunch pi_driver lepi_server.launch" > /tmp/lepi_server.log &`, {
-      //const child = ChildProcess.spawn(`docker run -t -v /home/pi:/home/pi --rm --net host --privileged --name lepi_server wupanhao/lepi_driver bash -c "source ${os.homedir()}/workspace/lepi-ros-server/env.sh && roslaunch pi_driver lepi_server.launch" > /tmp/lepi_server.log &`, {
+        // const child = ChildProcess.spawn(`docker run -t -v /home/pi:/home/pi --rm --net host --privileged --name lepi_server wupanhao/lepi_driver bash -c "source ${os.homedir()}/workspace/lepi-ros-server/env.sh && roslaunch pi_driver lepi_server.launch" > /tmp/lepi_server.log &`, {
         detached: true,
         stdio: 'ignore',
         shell: true
       })
       child.unref()
+
+      child.on('exit', (code, signal) => {
+        console.log(`pi_driver_node exit with: code ${code}, signal: ${signal}, restart after 5 seconds`);
+        setTimeout(startPiServer, 5000)
+      });
+      child.on('error', (error) => {
+        console.log(`pi_driver_node error with: ${error}`);
+      });
+
+      return false
     }
   })
 }
@@ -192,11 +203,18 @@ router.get('/start_pi_driver', function (req, res) {
 })
 
 router.get('/start_pi_server', function (req, res) {
-  res.json({
-    status: 'ok',
-    msg: '启动中'
-  })
-  startPiServer()
+  let started = startPiServer()
+  if (started) {
+    res.json({
+      status: 'ok',
+      msg: '已启动'
+    })
+  } else {
+    res.json({
+      status: 'ok',
+      msg: '启动中'
+    })
+  }
 })
 
 try {

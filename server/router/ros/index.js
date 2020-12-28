@@ -78,7 +78,7 @@ function startPiServer() {
     }
     else {
       console.log('startPiServer')
-      const child = ChildProcess.spawn(`bash -c "source ${os.homedir()}/workspace/lepi-gui/env.sh && roslaunch pi_driver lepi_server.launch" > /tmp/lepi_server.log &`, {
+      const child = ChildProcess.spawn(`bash -c "source ${os.homedir()}/workspace/lepi-gui/env.sh && roslaunch pi_driver lepi_server.launch" > /tmp/lepi_server.log`, {
         // const child = ChildProcess.spawn(`docker run -t -v /home/pi:/home/pi --rm --net host --privileged --name lepi_server wupanhao/lepi_driver bash -c "source ${os.homedir()}/workspace/lepi-ros-server/env.sh && roslaunch pi_driver lepi_server.launch" > /tmp/lepi_server.log &`, {
         detached: true,
         stdio: 'ignore',
@@ -87,8 +87,8 @@ function startPiServer() {
       child.unref()
 
       child.on('exit', (code, signal) => {
-        console.log(`pi_driver_node exit with: code ${code}, signal: ${signal}, restart after 5 seconds`);
-        setTimeout(startPiServer, 5000)
+        console.log(`pi_driver_node exit with: code ${code}, signal: ${signal}, restart after 15 seconds`);
+        setTimeout(startPiServer, 15000)
       });
       child.on('error', (error) => {
         console.log(`pi_driver_node error with: ${error}`);
@@ -222,5 +222,8 @@ try {
 } catch (error) {
   console.log(error)
 }
+
+console.log(`check pi_driver_node status after 30 seconds`);
+setTimeout(startPiServer, 30000)
 
 module.exports = router

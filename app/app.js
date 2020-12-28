@@ -26,7 +26,7 @@ const rotateMap = {
     77: 84 //M => T
 }
 
-window.logPowerState = true
+window.logPowerState = false
 
 function setPowerState(i, charging = 0) {
     const powerBar = document.querySelector('#power-bar-power')
@@ -226,19 +226,21 @@ angular.module('myApp', [
             });
             // setTimeout(swal.close, 1000)
         }
+        setInterval($rootScope.updatePowerInfo, 2000)
+        console.log('set window.logPowerState to true to enable power log')
 
         var onConnected = () => {
             console.log('connected to ros ', $rootScope.ros)
             window.ros = $rootScope.ros
             $rootScope.updatePowerInfo()
-            setInterval($rootScope.updatePowerInfo, 2000)
+
             swal({
                 title: "启动完毕",
                 text: "可以开始你的创作了",
                 button: false,
                 timer: 1000,
             });
-            setTimeout(swal.close, 1000)
+            // setTimeout(swal.close, 1000)
 
             var sensorListener = new ROSLIB.Topic({
                 ros: $rootScope.ros.ros,
@@ -267,11 +269,23 @@ angular.module('myApp', [
         }
 
         var onConnectFail = () => {
+            /*
             if (navigator.platform != 'Linux armv7l') {
                 console.log('not on pi, do not retry')
                 return
             }
+            */
             console.log('connect Fail, retry after 3 seconds')
+
+            swal({
+                title: "服务正在启动",
+                text: "请稍等",
+                // icon: "/images/loading.gif",
+                button: false,
+                // closeOnClickOutside: false,
+                // closeOnEsc: false
+            });
+
             setTimeout(() => {
                 $rootScope.ros.conectToRos(onConnected, onConnectFail)
             }, 3000)
@@ -390,13 +404,16 @@ angular.module('myApp', [
             }
         }
 
-
-
         $rootScope.updatePowerInfo = () => {
+            if ($rootScope.ros && $rootScope.ros.isConnected()) {
+
+            } else {
+                return
+            }
             try {
                 $rootScope.ros.getPowerState().then(data => {
                     if (window.logPowerState) {
-                        console.log('set window.logPowerState to false to cancel this log,', data)
+                        console.log(data)
                     }
                     if (data.est_power >= 0 && data.bat_power_ocv < 5) {
                         setPowerState(data.est_power, data.charging)

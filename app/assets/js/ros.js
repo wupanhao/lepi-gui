@@ -57,6 +57,9 @@ class ros_client {
 
     ros.on('close', () => {
       console.log('Connection to websocket server closed.');
+      // if (onFail) {
+      //   onFail()
+      // }
       return
       console.log('Connection to websocket server closed. retrying after 3 seconds');
       setTimeout(() => {

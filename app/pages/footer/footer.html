@@ -1,3 +1,19 @@
+<ul id="demo-menu-list" class="mdl-menu mdl-menu--top-left mdl-js-menu mdl-js-ripple-effect" for="demo-menu-top-left">
+    <!-- <a href="#!/index" class="mdl-menu__item">回主页</a> -->
+    <li ng-repeat="item in menus" class="mdl-menu__item">
+        <div>{{item.text}}<div>
+    </li>
+    <!-- <li disabled class="mdl-menu__item">Disabled Action</li> -->
+    <!-- <li class="mdl-menu__item">Yet Another Action</li> -->
+    <!-- <li class="mdl-menu__item">
+    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-1">
+        <input type="checkbox" id="switch-1" class="mdl-switch__input" checked>
+        <span class="mdl-switch__label">lalala</span>
+    </label>
+</li> -->
+
+</ul>
+
 <div id="footer" ng-show='show_footer == true'>
 
     <div class="flex-row">
@@ -6,22 +22,7 @@
             <i class="material-icons">more_vert</i>
         </button> -->
 
-        <ul id="demo-menu-list" class="mdl-menu mdl-menu--top-left mdl-js-menu mdl-js-ripple-effect"
-            for="demo-menu-top-left">
-            <!-- <a href="#!/index" class="mdl-menu__item">回主页</a> -->
-            <li ng-repeat="item in menus" class="mdl-menu__item">
-                <div>{{item.text}}<div>
-            </li>
-            <!-- <li disabled class="mdl-menu__item">Disabled Action</li> -->
-            <!-- <li class="mdl-menu__item">Yet Another Action</li> -->
-            <!-- <li class="mdl-menu__item">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-1">
-                    <input type="checkbox" id="switch-1" class="mdl-switch__input" checked>
-                    <span class="mdl-switch__label">lalala</span>
-                </label>
-            </li> -->
 
-        </ul>
         <div class="page-info">{{pageInfo}}</div>
         <div class="footer-right"><a onclick="history.back()">返回</a></div>
     </div>

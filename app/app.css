@@ -1,12 +1,13 @@
 /* app css stylesheet */
 
-body {
+body,html {
     overflow: hidden;
     margin: 0px;
     padding: 0px;
     width: 240px;
     height: 320px;
     background: url("assets/themes/banbao-v1/background.jpg") no-repeat;
+    background-size: 100% 100%;
     color: white;
 }
 
@@ -16,6 +17,10 @@ body {
     align-items: center;
     justify-content: flex-start;
     height: 270px;
+}
+
+#content.fullscreen {
+    height: 320px;
 }
 
 #footer {

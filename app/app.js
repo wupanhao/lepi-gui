@@ -175,6 +175,7 @@ angular.module('myApp', [
     'myApp.rosNode',
     'myApp.audio',
     'myApp.variable',
+    'myApp.plottor',
 ])
     .config(['$locationProvider', '$routeProvider', function ($locationProvider, $routeProvider) {
         $locationProvider.hashPrefix('!');
@@ -193,6 +194,14 @@ angular.module('myApp', [
         }]
         $rootScope.localMenus = {}
         $rootScope.localHandler = {}
+
+        $rootScope.sensorName = {
+            0: '未连接',
+            29: '红外',
+            30: '超声波',
+            31: '触碰'
+        }
+
         // if (navigator.platform.includes('arm')) {
         // navigator.platform: "Linux armv7l"
         swal({
@@ -203,11 +212,16 @@ angular.module('myApp', [
             // closeOnClickOutside: false,
             // closeOnEsc: false
         });
-        $rootScope.ros = new ros_client($location.host(), btnHandler)
+        let handler = null
+        if (window.location.hostname == 'localhost') {
+            handler = btnHandler
+        }
+        $rootScope.ros = new ros_client($location.host(), handler)
         window.ros = $rootScope.ros
         const sensorName = {
             29: '红外',
-            30: '超声波'
+            30: '超声波',
+            31: '触碰'
         }
         const sensors = [0, 0, 0, 0, 0]
         var onSensorChange = (msg) => {
@@ -226,13 +240,13 @@ angular.module('myApp', [
             });
             // setTimeout(swal.close, 1000)
         }
-        setInterval($rootScope.updatePowerInfo, 2000)
         console.log('set window.logPowerState to true to enable power log')
 
         var onConnected = () => {
             console.log('connected to ros ', $rootScope.ros)
             window.ros = $rootScope.ros
             $rootScope.updatePowerInfo()
+            setInterval($rootScope.updatePowerInfo, 2000)
 
             swal({
                 title: "启动完毕",
@@ -406,7 +420,7 @@ angular.module('myApp', [
 
         $rootScope.updatePowerInfo = () => {
             if ($rootScope.ros && $rootScope.ros.isConnected()) {
-
+                // console.log('connected')
             } else {
                 return
             }

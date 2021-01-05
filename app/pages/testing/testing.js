@@ -2,10 +2,16 @@
 
 const testingPages = [
   {
+    id: 8,
+    link: '#!/testing/plottor',
+    src: `assets/themes/${iconTheme}/icon-smart-sensor.png`,
+    name: '绘图器'
+  },
+  {
     id: 0,
     link: '#!/testing/9_axis',
     src: `assets/themes/${iconTheme}/icon-9axes.png`,
-    name: '九轴传感器'
+    name: '九轴'
   },
   {
     id: 1,
@@ -41,13 +47,13 @@ const testingPages = [
     id: 6,
     link: '#!/testing/sservo',
     src: `assets/themes/${iconTheme}/icon-smart-servo.png`,
-    name: '智能舵机'
+    name: '总线舵机'
   },
   {
     id: 7,
     link: '#!/testing/sensor',
     src: `assets/themes/${iconTheme}/icon-smart-sensor.png`,
-    name: '智能传感器'
+    name: '传感器'
   },
 ]
 

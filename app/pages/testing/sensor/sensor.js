@@ -14,12 +14,7 @@ angular.module('myApp.sensor', ['ngRoute'])
         $rootScope.show_footer = true
         $rootScope.title = '传感器'
         $rootScope.items = []
-        const sensorName = {
-            0: '未连接',
-            29: '红外',
-            30: '超声波',
-            31: '触碰'
-        }
+
         console.log($location.path(), ' entered')
         $scope.sensors = [1, 2, 3, 4, 5].map(port => {
             return {
@@ -65,7 +60,7 @@ angular.module('myApp.sensor', ['ngRoute'])
                         sensor.mode = sensor.speed
                         sensor.value = sensor.position
                         if ($scope.sensors[index].id != sensor.id) {
-                            $scope.elements.id[index].textContent = sensorName[sensor.id]
+                            $scope.elements.id[index].textContent = $rootScope.sensorName[sensor.id]
                             $scope.sensors[index].id = sensor.id
                         }
                         if ($scope.sensors[index].value != sensor.value) {

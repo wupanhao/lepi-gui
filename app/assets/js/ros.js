@@ -348,6 +348,9 @@ class ros_client {
       client.callService(request, (result) => {
         console.log(result)
         resolve(result)
+      }, (error) => {
+        console.log(error)
+        resolve()
       });
     })
   }

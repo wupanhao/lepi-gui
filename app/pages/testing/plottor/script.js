@@ -369,8 +369,7 @@ angular.module('myApp.plottor', ['ngRoute'])
     let content = document.querySelector('#content')
     content.classList.add('fullscreen')
 
-
-    $scope.selected = '接收数据'
+    $scope.selected = ''
 
     let timer = null
 
@@ -401,6 +400,7 @@ angular.module('myApp.plottor', ['ngRoute'])
     }
 
     async function startSensorReadLoop(port) {
+      $scope.selected = port
       let type = await $rootScope.ros.getSensorType(port)
       let mode = await $rootScope.ros.getSensorMode(port)
       graph.adaChart.options.title.text = $rootScope.sensorName[type]
@@ -410,7 +410,7 @@ angular.module('myApp.plottor', ['ngRoute'])
       if (type > 0) {
         startReadLoop(() => {
           $rootScope.ros.getSensorValue(port).then(value => {
-            if (timer) {
+            if ($scope.selected == port) {
               if (type == 29 && mode == 3) {
                 let R = value & 0xFF
                 let G = value >> 8 & 0xFF
@@ -431,9 +431,10 @@ angular.module('myApp.plottor', ['ngRoute'])
       switch (item) {
         case '加速度':
           graph.adaChart.options.title.text = '加速度'
+          $scope.selected = '加速度'
           startReadLoop(() => {
             $rootScope.ros.get3AxesData(1).then(res => {
-              if (timer) {
+              if ($scope.selected == '加速度') {
                 setupOrUpdate(res.data)
               }
             })
@@ -441,9 +442,10 @@ angular.module('myApp.plottor', ['ngRoute'])
           break
         case '角速度':
           graph.adaChart.options.title.text = '角速度'
+          $scope.selected = '角速度'
           startReadLoop(() => {
             $rootScope.ros.get3AxesData(2).then(res => {
-              if (timer) {
+              if ($scope.selected == '角速度') {
                 setupOrUpdate(res.data)
               }
             })
@@ -451,9 +453,10 @@ angular.module('myApp.plottor', ['ngRoute'])
           break
         case '磁力计':
           graph.adaChart.options.title.text = '磁力计'
+          $scope.selected = '磁力计'
           startReadLoop(() => {
             $rootScope.ros.get3AxesData(3).then(res => {
-              if (timer) {
+              if ($scope.selected == '磁力计') {
                 setupOrUpdate(res.data)
               }
             })

@@ -67,5 +67,5 @@ start_x=1
 # gpu_mem default is 64
 #gpu_mem=128
 dtoverlay=i2s-mmap
-dtoverlay=tft9341-lcd:rotate=0
+dtoverlay=tft9341:rotate=0
 dtoverlay=gpio-poweroff

@@ -4,15 +4,21 @@ class BluetoothCtl {
     constructor() {
         this.devices = []
         this.scanProcess = null
-        try {
-            console.log(this.getDevices(), this.getPairedDevices())
-            // this.startDiscovering()
-            setTimeout(() => {
-                this.stopDiscovering()
+        let out = execSync('hcitool dev').toString();
+        if (out.indexOf('hci0') > 0) {
+            try {
                 console.log(this.getDevices(), this.getPairedDevices())
-            }, 10000);
-        } catch (error) {
-            console.log(error)
+                // this.startDiscovering()
+                setTimeout(() => {
+                    this.stopDiscovering()
+                    console.log(this.getDevices(), this.getPairedDevices())
+                }, 10000);
+            } catch (error) {
+                console.log(error)
+            }
+        } else {
+            this.getDevices = () => []
+            this.getPairedDevices = () => []
         }
     }
 

@@ -54,7 +54,8 @@ dtparam=spi=on
 # Additional overlays and parameters are documented /boot/overlays/README
 
 # Enable audio (loads snd_bcm2835)
-#dtparam=audio=on
+# Comment this line will cause touch control not work, unknow why
+dtparam=audio=on
 
 [pi4]
 # Enable DRM VC4 V3D driver on top of the dispmanx display stack
@@ -69,3 +70,4 @@ start_x=1
 dtoverlay=i2s-mmap
 dtoverlay=tft9341:rotate=0
 dtoverlay=gpio-poweroff
+dtoverlay=seeed-2mic-voicecard

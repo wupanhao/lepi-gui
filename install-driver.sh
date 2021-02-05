@@ -32,6 +32,7 @@ fi
 if [ -f ~/workspace/xpack-openocd-0.10.0-14/bin/openocd ];then
   echo "openocd installed"
 else
+  echo "install openocd"
   cd ~/workspace
   wget https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.10.0-14/xpack-openocd-0.10.0-14-linux-arm.tar.gz
   tar -xvf xpack-openocd-0.10.0-14-linux-arm.tar.gz
@@ -40,7 +41,9 @@ fi
 
 #sudo mv /etc/profile.d/sshpwd.sh ~
 #sudo mv /etc/profile.d/wifi-check.sh ~
+
+# disable ssh warning
+sudo apt purge libpam-chksshpwd -y
+
 # disable welcome page
 sudo mv /etc/xdg/autostart/piwiz.desktop ~
-# disable ssh warning
-sudo apt purge libpam-chksshpwd

@@ -1,12 +1,12 @@
 # Install ROS Runtime
-sudo apt install -y python-rospy python-rosnode python-roslaunch ros-core
+# sudo apt install -y python-rospy python-rosnode python-roslaunch ros-core
 
 # camera node
 sudo apt install -y python-cv-bridge python-opencv fonts-wqy-zenhei
 
 # apriltag node
+sudo apt install -y libopenblas-base liblapack-dev
 pip install dt-apriltags scipy
-sudo apt install -y libopenblas-base
 
 # pi_ai module #https://www.tensorflow.org/lite/guide/python
 pip3 install https://dl.google.com/coral/python/tflite_runtime-2.1.0.post1-cp37-cp37m-linux_armv7l.whl
@@ -16,8 +16,9 @@ curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 sudo apt update && sudo apt install -y libedgetpu1-std
 
 # ultra_face_inference_node
-pip3 install opencv-python
-sudo apt install -y python3-rospy python3-cv-bridge libjasper1
+sudo apt install -y libatlas-base-dev
+pip3 install opencv-python pyyaml
+sudo apt install -y python3-rospkg python3-cv-bridge libjasper1
 
 # face recognize node
 pip install face_recognition
@@ -25,7 +26,7 @@ pip install face_recognition
 # text recognize and barcode_scanner node
 pip install pytesseract pyzbar
 sudo apt install -y tesseract-ocr tesseract-ocr-chi-sim tesseract-ocr-chi-tra
-#pip3 install pytesseract pyzbar # for python3
+#pip install pytesseract pyzbar # for python
 
 # run python and emulate input
 sudo apt install -y konsole xdotool
@@ -39,6 +40,6 @@ sudo apt install -y konsole xdotool
 
 
 #unknown
-#sudo apt install libatlas-base-dev gfortran libgfortran5 libhdf5-dev 
+#sudo apt install gfortran libgfortran5 libhdf5-dev 
 #pip install --user tensorflow sklearn
 

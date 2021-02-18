@@ -2,6 +2,15 @@
 
 const Scratch = window.Scratch = window.Scratch || {};
 
+const scratchKeyMap = {
+  'ArrowLeft': "ArrowUp",
+  'ArrowUp': "ArrowRight",
+  'ArrowRight': "ArrowDown",
+  'ArrowDown': "ArrowLeft",
+  'Enter': " ",
+  'M': "T"
+}
+
 class Runner {
   constructor(canvasId = 'scratch-stage') {
     console.log('create scratch runner')
@@ -150,7 +159,7 @@ class Runner {
 
       console.log(e)
       Scratch.vm.postIOData('keyboard', {
-        key: e.key,
+        key: scratchKeyMap[e.key] ? scratchKeyMap[e.key] : e.key,
         isDown: true
       });
 
@@ -162,7 +171,7 @@ class Runner {
       // Always capture up events,
       // even those that have switched to other targets.
       Scratch.vm.postIOData('keyboard', {
-        key: e.key,
+        key: scratchKeyMap[e.key] ? scratchKeyMap[e.key] : e.key,
         isDown: false
       });
 

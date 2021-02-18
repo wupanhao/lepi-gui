@@ -148,6 +148,19 @@ function btnHandler(message) {
     }
 }
 
+function dispatchKeyEvent(key, type) {
+    let evt = new KeyboardEvent(type, {
+        bubbles: true,
+        cancelable: true,
+        key: key,
+        code: `Key${key}`,
+        // keyCode: message.value, //已弃用
+        // shiftKey: true
+    });
+    // console.log(keyup, message.value, keyCodeMap[message.value])
+    document.dispatchEvent(evt);
+}
+
 
 // Declare app level module which depends on views, and core components
 angular.module('myApp', [
@@ -517,6 +530,48 @@ angular.module('myApp', [
         $rootScope.click = (id) => {
             $rootScope.itemIndex = id
         }
+
+        document.addEventListener('keyup', (e) => {
+            switch (e.code) {
+                case "F1":
+                    dispatchKeyEvent('M', 'keyup')
+                    break;
+                case "F2":
+                    dispatchKeyEvent('B', 'keyup')
+                    break;
+                case "F3":
+                    dispatchKeyEvent('R', 'keyup')
+                    break;
+                case "Escape":
+                    dispatchKeyEvent('S', 'keyup')
+                    break;
+            }
+        })
+
+        document.addEventListener('keydown', (e) => {
+            console.log('here', e.code)
+            switch (e.code) {
+                case "F1":
+                    e.stopPropagation();
+                    e.preventDefault();
+                    dispatchKeyEvent('M', 'keydown')
+                    break;
+                case "F2":
+                    e.stopPropagation();
+                    e.preventDefault();
+                    dispatchKeyEvent('B', 'keydown')
+                    break;
+                case "F3":
+                    e.stopPropagation();
+                    e.preventDefault();
+                    dispatchKeyEvent('R', 'keydown')
+                    break;
+                case "Escape":
+                    dispatchKeyEvent('S', 'keydown')
+                    break;
+            }
+        })
+
         document.addEventListener('keyup', (e) => {
             console.log(e.code)
             var path = $location.path()
@@ -543,10 +598,12 @@ angular.module('myApp', [
                         console.log('closeMenu')
                         closeMenu()
                     } else {
-                        console.log('showMenu')
-                        $rootScope.menuIndex = 0
-                        changeMenuActive(0)
-                        showMenu()
+                        if (window.location.hash.split('?')[0] != '#!/scratchRunner') {
+                            console.log('showMenu')
+                            $rootScope.menuIndex = 0
+                            changeMenuActive(0)
+                            showMenu()
+                        }
                     }
                     break;
                 case "KeyB":

@@ -71,3 +71,6 @@ dtoverlay=i2s-mmap
 dtoverlay=tft9341:rotate=0
 dtoverlay=gpio-poweroff
 dtoverlay=seeed-2mic-voicecard
+enable_uart=1
+dtoverlay=uart3
+dtoverlay=dwc2,dr_mode=host

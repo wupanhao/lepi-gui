@@ -127,9 +127,12 @@ try {
   const BrowserWindow = electron.BrowserWindow
   const globalShortcut = electron.globalShortcut
   function createWindow() {
+
+    /*
     globalShortcut.register('ESC', () => {
       mainWindow.setFullScreen(false);
     })
+    */
 
     mainWindow = new BrowserWindow({
       width: 240,

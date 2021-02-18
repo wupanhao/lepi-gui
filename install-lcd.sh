@@ -17,3 +17,4 @@ sudo sed -i 's| splash||' /boot/cmdline.txt
 sudo sed -i 's| plymouth.ignore-serial-consoles||' /boot/cmdline.txt
 sudo sed -i 's| rootwait| rootwait fbcon=map:10 fbcon=font:ProFont6x11 logo.nologo|' /boot/cmdline.txt
 sudo cp ./conf/config.txt /boot/
+sudo apt install xserver-xorg-input-evdev

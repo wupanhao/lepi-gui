@@ -191,7 +191,7 @@ Graph.prototype = {
   },
   resize: function () {
     if (this.plotType == 'xy') {
-      this.chart.canvas.parentNode.style.width = '50vh';
+      this.chart.canvas.parentNode.style.width = '100%';
     } else {
       this.chart.canvas.parentNode.style.width = '100%';
     }
@@ -427,7 +427,18 @@ angular.module('myApp.plottor', ['ngRoute'])
         startReadLoop()
       }
     }
+
+    function changePlotType(type) {
+      if (graph.plotType != type) {
+        graph.setPlotType(type);
+        reset();
+        createChart();
+      }
+    }
+
     function switchDataSource(item) {
+      changePlotType('xt');
+
       switch (item) {
         case '加速度':
           graph.adaChart.options.title.text = '加速度'
@@ -458,6 +469,18 @@ angular.module('myApp.plottor', ['ngRoute'])
             $rootScope.ros.get3AxesData(3).then(res => {
               if ($scope.selected == '磁力计') {
                 setupOrUpdate(res.data)
+              }
+            })
+          })
+          break
+        case '磁力计XY':
+          graph.adaChart.options.title.text = '磁力计XY'
+          $scope.selected = '磁力计XY'
+          changePlotType('xy');
+          startReadLoop(() => {
+            $rootScope.ros.get3AxesData(3).then(res => {
+              if ($scope.selected == '磁力计XY') {
+                setupOrUpdate({ '地磁XY': [res.data.x, res.data.y] })
               }
             })
           })
@@ -507,6 +530,12 @@ angular.module('myApp.plottor', ['ngRoute'])
         text: '磁力计',
         callback: (index) => {
           switchDataSource('磁力计')
+        }
+      },
+      {
+        text: '磁力计XY',
+        callback: (index) => {
+          switchDataSource('磁力计XY')
         }
       },
       {

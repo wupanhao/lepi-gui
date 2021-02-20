@@ -113,10 +113,17 @@ angular.module('myApp.9_axis', ['ngRoute'])
             }],
             yAxis: [{
                 type: 'value',
-                min: -32767, // 设置y轴刻度的最小值
-                max: 32767,  // 设置y轴刻度的最大值
+                // min: -32767, // 设置y轴刻度的最小值,不设则自适应
+                // max: 32767,  // 设置y轴刻度的最大值
                 position: 'left',
-                show: false
+                scale: true,
+                axisLabel: {
+                    show: true,
+                },
+                splitLine: {
+                    show: false
+                },
+                show: true
             }],
             series: series
         };
@@ -134,6 +141,7 @@ angular.module('myApp.9_axis', ['ngRoute'])
                 // option.series[1].data.push(res.data.y > 32768 ? res.data.y - 65536 : res.data.y)
                 // option.series[2].data.push(res.data.z > 32768 ? res.data.z - 65536 : res.data.z)
                 // console.log(option.series[0].data)
+
                 myChart.setOption(option);
                 if ($location.path() == '/testing/9_axis') {
                     updateData()

@@ -1,5 +1,37 @@
 'use strict';
 
+const reset_usb = async () => {
+  swal({
+    title: "正在执行",
+    text: "请稍等",
+    // icon: "/images/loading.gif",
+    button: false,
+  })
+  let res = await axios.get('/system/usb_reset')
+  swal({
+    title: "已执行",
+    text: "",
+    button: false,
+    timer: 1000,
+  });
+}
+
+const calibrate = async () => {
+  swal({
+    title: "正在执行",
+    text: "请稍等",
+    // icon: "/images/loading.gif",
+    button: false,
+  })
+  let res = await axios.get('/system/calibrate')
+  swal({
+    title: "已执行",
+    text: "",
+    button: false,
+    timer: 1000,
+  });
+}
+
 angular.module('myApp.setting', ['ngRoute'])
 
   .config(['$routeProvider', function ($routeProvider) {
@@ -10,6 +42,7 @@ angular.module('myApp.setting', ['ngRoute'])
   }])
 
   .controller('SettingCtrl', function ($scope, $http, $rootScope, $location) {
+
     const items = [
       {
         id: 0,
@@ -40,6 +73,18 @@ angular.module('myApp.setting', ['ngRoute'])
         link: '#!/setting/deviceInfo',
         src: `assets/themes/${iconTheme}/icon-info.png`,
         name: '设备信息'
+      },
+      {
+        id: 6,
+        src: `assets/themes/${iconTheme}/icon-setting.png`,
+        name: '按键复位',
+        action: "reset_usb"
+      },
+      {
+        id: 7,
+        src: `assets/themes/${iconTheme}/icon-setting.png`,
+        name: '触控较准',
+        action: "calibrate"
       },
     ]
     $rootScope.title = '系统设置'

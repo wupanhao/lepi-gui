@@ -11,6 +11,7 @@ git clone https://github.com/wupanhao/lepi-ros-server
 # Install Driver
 bash ~/workspace/lepi-gui/install_driver.sh
 
+<<COMMENT
 # Install Docker
 docker -v
 if [ $? -ne 0 ]; then
@@ -20,14 +21,15 @@ if [ $? -ne 0 ]; then
 else
   echo "Docker installed, ignore"
 fi
+COMMENT
 # Pull Docker Image
-sudo docker pull wupanhao/lepi_driver
+# sudo docker pull wupanhao/lepi_driver
 
 # Compile ROS Workspace
 # Before, change the swap size
-sudo sed -i 's|CONF_SWAPSIZE=100$|CONF_SWAPSIZE=1000|' /etc/dphys-swapfile
-sudo service dphys-swapfile restart
-sudo docker run --rm -t -v /home/pi:/home/pi wupanhao/lepi_driver bash -c "source /ros_entrypoint.sh && cd /home/pi/workspace/lepi-ros-server/catkin_ws/ && catkin_make_isolated"
+# sudo sed -i 's|CONF_SWAPSIZE=100$|CONF_SWAPSIZE=1000|' /etc/dphys-swapfile
+# sudo service dphys-swapfile restart
+# sudo docker run --rm -t -v /home/pi:/home/pi wupanhao/lepi_driver bash -c "source /ros_entrypoint.sh && cd /home/pi/workspace/lepi-ros-server/catkin_ws/ && catkin_make_isolated"
 
 # Install Other
 mkdir -p /home/pi/Lepi_Data

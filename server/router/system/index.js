@@ -316,6 +316,78 @@ router.get('/update_firmware', function (req, res) {
 	})
 })
 
+router.get('/usb_reset', function (req, res) {
+	try {
+		var buf = ChildProcess.execSync('cd /home/pi/workspace/lepi-gui && sudo ./scripts/usbreset /dev/bus/usb/003/001 2>&1')
+		console.log(`${buf}`)
+	} catch (error) {
+		console.log(error, `${error.output}`)
+	}
+	// var buf = ChildProcess.execSync('cd /home/pi/workspace/lepi-gui && ~/workspace/xpack-openocd-0.10.0-14/bin/openocd -c "set FIRMWARE_FILE ./firmware/lepi_samd51_latest.hex" -f ~/workspace/lepi-gui/conf/lepi-d51.cfg 2>&1')
+	var msg = `已执行`
+	var code = 0
+	res.json({
+		code: code,
+		msg: msg
+	})
+})
+
+/* sample output
+`
+Calibrating EVDEV driver for "ADS7846 Touchscreen" id=6
+	current calibration values (from XInput): min_x=208, max_x=3862 and min_y=137, max_y=3693
+
+Doing dynamic recalibration:
+	Inverting X and/or Y axis...
+	Setting calibration data: 3837, 203, 3977, 414
+	--> Making the calibration permanent <--
+  copy the snippet below into '/etc/X11/xorg.conf.d/99-calibration.conf' (/usr/share/X11/xorg.conf.d/ in some distro's)
+Section "InputClass"
+	Identifier	"calibration"
+	MatchProduct	"ADS7846 Touchscreen"
+	Option	"Calibration"	"3837 203 3977 414"
+	Option	"SwapAxes"	"0"
+EndSection
+`
+*/
+
+let calibration_conf = `
+#/etc/X11/xorg.conf.d/99-calibration.conf
+Section "InputClass"
+        Identifier      "calibration"
+        MatchProduct    "ADS7846 Touchscreen"
+        Option  "Calibration" "min_x max_x min_y max_y"
+# 240x320 LCD LeftOf 1280x720 HDMI
+        Option  "TransformationMatrix" "0.1579 0 0 0 0.4444 0 0 0 1"
+        Option  "SwapAxes"      "0"
+        Option  "InvertX"       "1"
+        Option  "InvertY"       "1"
+EndSection
+`
+
+router.get('/calibrate', function (req, res) {
+	try {
+		let buf = ChildProcess.execSync('sudo killall xinput_calibrator; DISPLAY=:0.1 xinput_calibrator')
+		let out = buf.toString()
+		let result = out.match(/Option	"Calibration"	"(\d+) (\d+) (\d+) (\d+)"/)
+		if (result.length == 5) {
+			let conf = calibration_conf.replace('min_x max_x min_y max_y', `${result[2]} ${result[1]} ${result[4]} ${result[3]}`)
+			fs.writeFileSync('/tmp/99-calibration.conf', conf)
+			ChildProcess.execSync('sudo cp /tmp/99-calibration.conf /etc/X11/xorg.conf.d/99-calibration.conf')
+		}
+		console.log(out)
+	} catch (error) {
+		console.log(error, `${error.output}`)
+	}
+	// var buf = ChildProcess.execSync('cd /home/pi/workspace/lepi-gui && ~/workspace/xpack-openocd-0.10.0-14/bin/openocd -c "set FIRMWARE_FILE ./firmware/lepi_samd51_latest.hex" -f ~/workspace/lepi-gui/conf/lepi-d51.cfg 2>&1')
+	var msg = `已执行`
+	var code = 0
+	res.json({
+		code: code,
+		msg: msg
+	})
+})
+
 module.exports = {
 	systemRouter: router,
 	stopAll: stopAll

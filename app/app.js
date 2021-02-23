@@ -196,6 +196,7 @@ angular.module('myApp', [
     }])
     .controller('App', function ($rootScope, $location, $http) {
         console.log('call only once')
+        window.$rootScope = $rootScope
         $rootScope.debug = false
         $rootScope.ros = null
         $rootScope.globalMenus = [{

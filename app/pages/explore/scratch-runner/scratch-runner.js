@@ -19,7 +19,7 @@ class Runner {
     Scratch.runner = this
     this.vm = vm
     this.running = false
-    vm.setTurboMode(true);
+    // vm.setTurboMode(true);
     // var canvas = document.getElementById(canvasId);
     const canvas = document.createElement('canvas')
     canvas.setAttribute('id', canvasId)
@@ -104,42 +104,75 @@ class Runner {
     vm.attachV2SVGAdapter(new ScratchSVGRenderer.SVGRenderer());
     vm.attachV2BitmapAdapter(new ScratchSVGRenderer.BitmapAdapter());
 
+    let touchData = {
+      start: { clientX: 0, clientY: 0 },
+      end: { clientX: 0, clientY: 0 },
+    }
+    function calculatePageMove() {
+      let $rootScope = window.$rootScope
+      // swipe left, move next page
+      if (touchData.end.clientX - touchData.start.clientX < -40 && $rootScope.pageIndex < $rootScope.maxPageIndex) {
+        $rootScope.updatePageInfo($rootScope.pageIndex + 1)
+
+        // swipe right, move prev page
+      } else if (touchData.end.clientX - touchData.start.clientX > 40 && $rootScope.pageIndex > 0) {
+        $rootScope.updatePageInfo($rootScope.pageIndex - 1)
+
+      }
+    }
+
+    function postMouseData(e, keydown = null) {
+      if (window.location.hash.split('?')[0] != '#!/scratchRunner') {
+        return
+      }
+      const rect = canvas.getBoundingClientRect();
+      console.log(e.clientX, e.clientY, rect.left, rect.top)
+      const data = {
+        y: e.clientX - rect.left,
+        x: 320 - (e.clientY - rect.top),
+        canvasHeight: rect.width,
+        canvasWidth: rect.height
+      };
+      if (keydown != null) {
+        data.isDown = keydown
+      }
+      console.log(e, data)
+      Scratch.vm.postIOData('mouse', data);
+    }
+
     // Feed mouse events as VM I/O events.
     document.addEventListener('mousemove', e => {
-      const rect = canvas.getBoundingClientRect();
-      const coordinates = {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-        canvasWidth: rect.width,
-        canvasHeight: rect.height
-      };
-      Scratch.vm.postIOData('mouse', coordinates);
+      console.log('mousemove')
+      postMouseData(e)
     });
-    canvas.addEventListener('mousedown', e => {
-      const rect = canvas.getBoundingClientRect();
-      const data = {
-        isDown: true,
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-        canvasWidth: rect.width,
-        canvasHeight: rect.height
-      };
-      Scratch.vm.postIOData('mouse', data);
-      e.preventDefault();
+    document.addEventListener('mousedown', e => {
+      console.log('mousedown')
+      postMouseData(e, true)
+      touchData.start = e
     });
-    canvas.addEventListener('mouseup', e => {
-      const rect = canvas.getBoundingClientRect();
-      const data = {
-        isDown: false,
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-        canvasWidth: rect.width,
-        canvasHeight: rect.height
-      };
-      Scratch.vm.postIOData('mouse', data);
-      e.preventDefault();
+    document.addEventListener("touchstart", e => {
+      console.log('touchstart', e)
+      touchData.start = e.touches[0]
+      postMouseData(e.touches[0], true)
+    })
+    document.addEventListener('mouseup', e => {
+      console.log('mouseup')
+      postMouseData(e, false)
+      touchData.end = e
+      if (window.location.hash.split('?')[0] != '#!/scratchRunner') {
+        calculatePageMove()
+        return
+      }
     });
-
+    document.addEventListener("touchend", e => {
+      console.log('touchend', e)
+      postMouseData(e.changedTouches[0], false)
+      touchData.end = e.changedTouches[0]
+      if (window.location.hash.split('?')[0] != '#!/scratchRunner') {
+        calculatePageMove()
+        return
+      }
+    })
     // Feed keyboard events as VM I/O events.
     document.addEventListener('keydown', e => {
       // Don't capture keys intended for Blockly inputs.

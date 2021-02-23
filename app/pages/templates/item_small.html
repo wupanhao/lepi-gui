@@ -1,7 +1,23 @@
 <div id="index" class="flex-container">
     <div ng-repeat="item in show" ng-click="click($index)" ng-class="{ active: $index == itemIndex}"
         class="card card-small">
-        <a href="{{item.link}}">
+        <a ng-if="item.link" href="{{item.link}}">
+            <div class="img-holder">
+                <img class="card-img-top" ng-src="{{item.src}}">
+            </div>
+            <div class="card-body">
+                <span>{{item.name}}</span>
+            </div>
+        </a>
+        <a ng-if="item.action == 'reset_usb'" href="javascript:void(0);" onmouseup="reset_usb()">
+            <div class="img-holder">
+                <img class="card-img-top" ng-src="{{item.src}}">
+            </div>
+            <div class="card-body">
+                <span>{{item.name}}</span>
+            </div>
+        </a>
+        <a ng-if="item.action == 'calibrate'" href="javascript:void(0);" onmouseup="calibrate()">
             <div class="img-holder">
                 <img class="card-img-top" ng-src="{{item.src}}">
             </div>

@@ -27,6 +27,7 @@
     <thead>
         <tr>
             <th class="node-name">节点名称</th>
+            <th class="node-enable">开机启动</th>
             <th class="node-status">运行状态</th>
         </tr>
     </thead>
@@ -34,6 +35,12 @@
         <tr ng-repeat="node in show" ng-init="$last && $emit('repeatFinished')"
             ng-class="{ active: $index == itemIndex}">
             <td class="node-name">{{node.text}}</td>
+            <td>
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-{{node.id}}">
+                    <input type="checkbox" id="switch-{{node.id}}" class="mdl-switch__input">
+                    <span class="mdl-switch__label"></span>
+                </label>
+            </td>
             <td class="node-status">{{node.status}}</td">
         </tr>
     </tbody>

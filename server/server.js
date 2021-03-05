@@ -13,7 +13,7 @@ const uploadRouter = require('./router/upload')
 const fileRouter = require('./router/file-reader')
 const rosRouter = require('./router/ros')
 const variableRouter = require('./router/variable')
-const bluetoothRouter = require('./router/bluetooth')
+// const bluetoothRouter = require('./router/bluetooth')
 
 const {
   systemRouter,
@@ -59,7 +59,7 @@ try {
 } catch (error) {
   console.log(error)
 }
-app.use('/bluetooth', bluetoothRouter)
+// app.use('/bluetooth', bluetoothRouter)
 app.use('/upload', uploadRouter)
 app.use('/explore', fileRouter)
 app.use('/explore', express.static(fileRouter.homedir))
@@ -138,7 +138,7 @@ try {
       width: 240,
       height: 320,
       // autoHideMenuBar: true, //remove menubar but save minimize maxmize controls
-      // frame: false, //remove menubar and control
+      frame: false, //remove menubar and control
       webPreferences: {
         nodeIntegration: false
       }

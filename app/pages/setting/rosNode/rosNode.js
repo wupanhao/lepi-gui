@@ -46,12 +46,36 @@ angular.module('myApp.rosNode', ['ngRoute'])
                         // ngRefresh()
                     }
                 }
-
-
             }, (err) => {
                 console.log(err)
             })
         }
+
+        const syncToggleState = () => {
+            var start = $rootScope.pageIndex * $rootScope.maxItemsOnPage
+            let show = $rootScope.items.slice(start, start + $rootScope.maxItemsOnPage)
+            console.log($rootScope.show)
+            for (let index = 0; index < $rootScope.show.length; index++) {
+                console.log(show[index].auto_start, $scope.elements[index].MaterialSwitch.inputElement_.checked)
+                if (show[index].auto_start != $scope.elements[index].MaterialSwitch.inputElement_.checked) {
+                    if (show[index].auto_start) {
+                        $scope.elements[index].MaterialSwitch.on()
+                    } else {
+                        $scope.elements[index].MaterialSwitch.off()
+                    }
+                    $rootScope.show[index].auto_start = $scope.elements[index].MaterialSwitch.inputElement_.checked
+                }
+            }
+        }
+
+        $scope.$on('repeatFinished', function (ngRepeatFinishedEvent) {
+            console.log(ngRepeatFinishedEvent)
+            window.componentHandler.upgradeAllRegistered()
+            $scope.elements = document.querySelectorAll('.mdl-switch')
+
+            syncToggleState()
+            console.log($scope.elements)
+        });
 
         $rootScope.localMenus[$location.path()] = [
             {
@@ -105,6 +129,29 @@ angular.module('myApp.rosNode', ['ngRoute'])
             }
         ]
 
+        const localHandler = (e) => {
+            var i = $rootScope.itemIndex
+            switch (e.code) {
+                case "Enter":
+                    if ($scope.elements[i].MaterialSwitch.inputElement_.checked) {
+                        $http.get(`/rosNode/disable?name=${$rootScope.show[i].name}`).then(res => {
+                            $rootScope.items = Object.values(res.data)
+                            syncToggleState()
+                        })
+                    } else {
+                        $http.get(`/rosNode/enable?name=${$rootScope.show[i].name}`).then(res => {
+                            $rootScope.items = Object.values(res.data)
+                            syncToggleState()
+                        })
+                    }
+                    break;
+                default:
+                    return false
+            }
+            return true
+        }
+
+        $rootScope.localHandler[$location.path()] = localHandler
 
         updateNodeStatus()
     });

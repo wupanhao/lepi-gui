@@ -1,7 +1,7 @@
 <ul id="demo-menu-list" class="mdl-menu mdl-menu--top-left mdl-js-menu mdl-js-ripple-effect" for="demo-menu-top-left">
     <!-- <a href="#!/index" class="mdl-menu__item">回主页</a> -->
     <li ng-repeat="item in menus" class="mdl-menu__item">
-        <div>{{item.text}}<div>
+        <div ng-click="item.callback()">{{item.text}}<div>
     </li>
     <!-- <li disabled class="mdl-menu__item">Disabled Action</li> -->
     <!-- <li class="mdl-menu__item">Yet Another Action</li> -->

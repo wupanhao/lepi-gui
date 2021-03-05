@@ -64,7 +64,12 @@ angular.module('myApp.sensor', ['ngRoute'])
                             $scope.sensors[index].id = sensor.id
                         }
                         if ($scope.sensors[index].value != sensor.value) {
-                            $scope.elements.value[index].textContent = sensor.value
+
+                            if (sensor.id == 35) {
+                                $scope.elements.value[index].textContent = `${parseInt(sensor.value / 10000)},${(sensor.value % 10000) / 100.0}`
+                            } else {
+                                $scope.elements.value[index].textContent = sensor.value
+                            }
                             $scope.sensors[index].value = sensor.value
                         }
                     })

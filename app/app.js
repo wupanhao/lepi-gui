@@ -213,7 +213,8 @@ angular.module('myApp', [
             0: '未连接',
             29: '红外',
             30: '超声波',
-            31: '触碰'
+            31: '触碰',
+            35: '热释',
         }
 
         // if (navigator.platform.includes('arm')) {
@@ -232,11 +233,7 @@ angular.module('myApp', [
         }
         $rootScope.ros = new ros_client($location.host(), handler)
         window.ros = $rootScope.ros
-        const sensorName = {
-            29: '红外',
-            30: '超声波',
-            31: '触碰'
-        }
+        const sensorName = $rootScope.sensorName
         const sensors = [0, 0, 0, 0, 0]
         var onSensorChange = (msg) => {
             console.log(msg)

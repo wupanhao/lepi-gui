@@ -1,55 +1,134 @@
 const express = require('express');
 const path = require('path');
 const os = require('os');
+const fs = require('fs');
 const ChildProcess = require('child_process');
 const router = express.Router();
 
-const ns = '/variable'
+// const ns = '/variable'
 
 const prefix = `bash -c "source ${os.homedir()}/workspace/lepi-gui/env.sh && `
 // const prefix = 'docker exec -t lepi_server bash -c "source env.sh && '
 
-const launchCMD = {
-  '/ubiquityrobot/camera_node': `${prefix} roslaunch pi_cam camera_node.launch" `,
-  '/ubiquityrobot/joystick_node': `${prefix} roslaunch pi_driver joystick_node.launch" `,
-  '/ubiquityrobot/apriltag_detector_node': `${prefix} roslaunch pi_cam apriltag_detector_node.launch" `,
-  '/ubiquityrobot/transfer_learning_node': `${prefix} roslaunch pi_cam transfer_learning_node.launch" `,
-  '/ubiquityrobot/line_detector_node': `${prefix} roslaunch pi_cam line_detector_node.launch" `,
-  '/ubiquityrobot/object_detector_node': `${prefix} roslaunch pi_ai object_detector_node.launch" `,
-  '/ubiquityrobot/image_classifier_node': `${prefix} roslaunch pi_ai image_classifier_node.launch" `,
-  '/ubiquityrobot/face_recognizer_node': `${prefix} roslaunch pi_cam face_recognizer_node.launch" `,
-  '/ubiquityrobot/barcode_scanner_node': `${prefix} roslaunch pi_cam barcode_scanner_node.launch" `,
-  '/ubiquityrobot/text_recognizer_node': `${prefix} roslaunch pi_cam text_recognizer_node.launch" `,
-  '/ubiquityrobot/ultra_face_inference_node': `${prefix} roslaunch pi_cam ultra_face_inference_node.launch" `,
-  '/ubiquityrobot/hexapod_driver_node': `${prefix} roslaunch hexapod_controller hexapod_driver_node.launch" `,
+const rosnodes = {
+  '/ubiquityrobot/camera_node': {
+    name: 'camera_node',
+    text: '摄像头',
+    cmd: `${prefix} roslaunch pi_cam camera_node.launch" `,
+    auto_start: true
+  },
+  '/ubiquityrobot/apriltag_detector_node': {
+    name: 'apriltag_detector_node',
+    text: '标签检测',
+    cmd: `${prefix} roslaunch pi_cam apriltag_detector_node.launch" `,
+    auto_start: true
+  },
+  // '/ubiquityrobot/transfer_learning_node': `${prefix} roslaunch pi_cam transfer_learning_node.launch" `,
+  '/ubiquityrobot/line_detector_node': {
+    name: 'line_detector_node',
+    text: '颜色检测',
+    cmd: `${prefix} roslaunch pi_cam line_detector_node.launch" `,
+    auto_start: true
+  },
+  '/ubiquityrobot/ultra_face_inference_node': {
+    name: 'ultra_face_inference_node',
+    text: '人脸检测',
+    cmd: `${prefix} roslaunch pi_cam ultra_face_inference_node.launch" `,
+    auto_start: true
+  },
+  '/ubiquityrobot/face_recognizer_node': {
+    name: 'face_recognizer_node',
+    text: '人脸识别',
+    cmd: `${prefix} roslaunch pi_cam face_recognizer_node.launch" `,
+    auto_start: true
+  },
+  '/ubiquityrobot/barcode_scanner_node': {
+    name: 'barcode_scanner_node',
+    text: '二维码扫描',
+    cmd: `${prefix} roslaunch pi_cam barcode_scanner_node.launch" `,
+    auto_start: true
+  },
+  '/ubiquityrobot/text_recognizer_node': {
+    name: 'text_recognizer_node',
+    text: '文本识别',
+    cmd: `${prefix} roslaunch pi_cam text_recognizer_node.launch" `,
+    auto_start: true
+  },
+  '/ubiquityrobot/object_detector_node': {
+    name: 'object_detector_node',
+    text: '目标检测',
+    cmd: `${prefix} roslaunch pi_ai object_detector_node.launch" `,
+    auto_start: true
+  },
+  '/ubiquityrobot/image_classifier_node': {
+    name: 'image_classifier_node',
+    text: '图像分类',
+    cmd: `${prefix} roslaunch pi_ai image_classifier_node.launch" `,
+    auto_start: true
+  },
+  '/ubiquityrobot/joystick_node': {
+    name: 'joystick_node',
+    text: '游戏手柄',
+    cmd: `${prefix} roslaunch pi_driver joystick_node.launch" `,
+    auto_start: false
+  },
+  '/ubiquityrobot/hexapod_driver_node': {
+    name: 'hexapod_driver_node',
+    text: '六足机器人',
+    cmd: `${prefix} roslaunch hexapod_controller hexapod_driver_node.launch" `,
+    auto_start: false
+  },
 }
-// LD_PRELOAD=/usr/lib/arm-linux-gnueabihf/libatomic.so.1 
-const nodeNameMap = {
-  '/ubiquityrobot/camera_node': '摄像头',
-  '/ubiquityrobot/apriltag_detector_node': '标签检测',
-  // '/ubiquityrobot/transfer_learning_node': '迁移学习',
-  '/ubiquityrobot/line_detector_node': '颜色检测',
-  '/ubiquityrobot/object_detector_node': '目标检测',
-  '/ubiquityrobot/image_classifier_node': '图像分类',
-  '/ubiquityrobot/ultra_face_inference_node': '人脸检测',
-  '/ubiquityrobot/face_recognizer_node': '人脸识别',
-  '/ubiquityrobot/barcode_scanner_node': '二维码扫描',
-  '/ubiquityrobot/text_recognizer_node': '文本识别',
-  '/ubiquityrobot/joystick_node': '游戏手柄',
-  '/ubiquityrobot/hexapod_driver_node': '六足机器人驱动',
-}
-
-const availableNode = Object.keys(nodeNameMap)
+const availableNode = Object.keys(rosnodes)
 
 const nodeInfo = {}
 availableNode.map((nodeName, id) => {
   nodeInfo[nodeName] = {
     id: id,
-    name: nodeName,
+    node: nodeName,
+    name: rosnodes[nodeName].name,
+    text: rosnodes[nodeName].text,
     status: '已停止',
+    auto_start: rosnodes[nodeName].auto_start,
     process: null
   }
 })
+
+function syncRosnode() {
+  try {
+    let conf = {}
+    availableNode.map((nodeName, id) => {
+      conf[rosnodes[nodeName].name] = nodeInfo[nodeName].auto_start
+    })
+    fs.writeFileSync(`${os.homedir()}/Lepi_Data/.rosnode.json`, JSON.stringify(conf))
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+function getNodeInfo() {
+  return Object.keys(nodeInfo).map(nodeName => {
+    const item = nodeInfo[nodeName]
+    // console.log(item)
+    return { name: item.node, status: item.status, id: item.id, text: item.text, value: item.node, auto_start: item.auto_start }
+  })
+}
+
+try {
+  let str = fs.readFileSync(`${os.homedir()}/Lepi_Data/.rosnode.json`)
+  let conf = JSON.parse(str)
+  for (const key in nodeInfo) {
+    let node = nodeInfo[key]
+    if (conf[node.name] != undefined) {
+      node.auto_start = conf[node.name]
+    }
+  }
+} catch (error) {
+  syncRosnode()
+  console.log(error)
+}
+
+// LD_PRELOAD=/usr/lib/arm-linux-gnueabihf/libatomic.so.1 
 
 function PromisifyExec(cmd) {
   return new Promise(resolve => {
@@ -72,13 +151,22 @@ function startPiDriver() {
 
 function startPiServer() {
   PromisifyExec('rosnode list').then(output => {
+    console.log(output)
     if (output.indexOf('pi_driver_node') >= 0) {
       console.log('节点已启动')
       return true
     }
     else {
       console.log('startPiServer')
-      const child = ChildProcess.spawn(`bash -c "source ${os.homedir()}/workspace/lepi-gui/env.sh && roslaunch pi_driver lepi_server.launch" > /tmp/lepi_server.log`, {
+      let cmd = "roslaunch pi_driver lepi_server.launch"
+      for (const key in rosnodes) {
+        if (rosnodes[key].auto_start) {
+          cmd += ` ${rosnodes[key].name}:=True`
+        }
+      }
+      cmd = `bash -c "source ${os.homedir()}/workspace/lepi-gui/env.sh && ${cmd}" > /tmp/lepi_server.log`
+      console.log(cmd)
+      const child = ChildProcess.spawn(cmd, {
         // const child = ChildProcess.spawn(`docker run -t -v /home/pi:/home/pi --rm --net host --privileged --name lepi_server wupanhao/lepi_driver bash -c "source ${os.homedir()}/workspace/lepi-ros-server/env.sh && roslaunch pi_driver lepi_server.launch" > /tmp/lepi_server.log &`, {
         detached: true,
         stdio: 'ignore',
@@ -111,10 +199,7 @@ router.get('/status', function (req, res) {
         nodeInfo[nodeName]
       }
     })
-    res.json(Object.keys(nodeInfo).map(nodeName => {
-      const item = nodeInfo[nodeName]
-      return { name: item.name, status: item.status, id: item.id, text: nodeNameMap[item.name], value: item.name }
-    }))
+    res.json(getNodeInfo())
   })
 })
 
@@ -217,13 +302,39 @@ router.get('/start_pi_server', function (req, res) {
   }
 })
 
+router.get('/enable', function (req, res) {
+  const nodeName = req.query['name']
+  if (!nodeName) {
+    console.log({ msg: '参数未提供:name', code: -1 })
+  } else if (nodeInfo[nodeName]) {
+    if (nodeInfo[nodeName].auto_start == false) {
+      nodeInfo[nodeName].auto_start = true
+      syncRosnode()
+    }
+  }
+  res.json(getNodeInfo())
+})
+
+router.get('/disable', function (req, res) {
+  const nodeName = req.query['name']
+  if (!nodeName) {
+    console.log({ msg: '参数未提供:name', code: -1 })
+  } else if (nodeInfo[nodeName]) {
+    if (nodeInfo[nodeName].auto_start == true) {
+      nodeInfo[nodeName].auto_start = false
+      syncRosnode()
+    }
+  }
+  res.json(getNodeInfo())
+})
+
 try {
   startPiServer()
 } catch (error) {
   console.log(error)
 }
 
-console.log(`check pi_driver_node status after 30 seconds`);
-setTimeout(startPiServer, 30000)
+console.log(`check pi_driver_node status after 60 seconds`);
+setTimeout(startPiServer, 60000)
 
 module.exports = router

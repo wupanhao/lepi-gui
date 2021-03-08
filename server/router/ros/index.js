@@ -159,9 +159,9 @@ function startPiServer() {
     else {
       console.log('startPiServer')
       let cmd = "roslaunch pi_driver lepi_server.launch"
-      for (const key in rosnodes) {
-        if (rosnodes[key].auto_start) {
-          cmd += ` ${rosnodes[key].name}:=True`
+      for (const key in nodeInfo) {
+        if (nodeInfo[key].auto_start) {
+          cmd += ` ${nodeInfo[key].name}:=True`
         }
       }
       cmd = `bash -c "source ${os.homedir()}/workspace/lepi-gui/env.sh && ${cmd}" > /tmp/lepi_server.log`

@@ -138,7 +138,7 @@ try {
       width: 240,
       height: 320,
       // autoHideMenuBar: true, //remove menubar but save minimize maxmize controls
-      frame: false, //remove menubar and control
+      // frame: false, //remove menubar and control
       webPreferences: {
         nodeIntegration: false
       }

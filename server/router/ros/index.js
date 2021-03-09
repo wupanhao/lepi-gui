@@ -257,9 +257,9 @@ router.get('/launch', function (req, res) {
       return
     }
     */
-    console.log('trying to launch node ' + nodeName, launchCMD[nodeName])
+    console.log('trying to launch node ' + nodeName, rosnodes[nodeName].cmd)
     nodeInfo[nodeName].status = '启动中'
-    nodeInfo[nodeName].process = ChildProcess.spawn(launchCMD[nodeName], {
+    nodeInfo[nodeName].process = ChildProcess.spawn(rosnodes[nodeName].cmd, {
       // stdio: 'inherit',
       detached: true,
       stdio: 'ignore',

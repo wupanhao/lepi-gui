@@ -251,13 +251,23 @@ angular.module('myApp', [
             });
             // setTimeout(swal.close, 1000)
         }
+
+        $http.get('/system/hardware_model').then(res => {
+            console.log(res.data)
+            let hardware_model = res.data
+            $rootScope.hardware_model = hardware_model
+            if (hardware_model.Model && hardware_model.Model.indexOf("Pi 3 Model B") >= 0) {
+                setInterval($rootScope.updatePowerInfo, 2000)
+            }
+        })
+
         console.log('set window.logPowerState to true to enable power log')
 
         var onConnected = () => {
             console.log('connected to ros ', $rootScope.ros)
             window.ros = $rootScope.ros
+            $rootScope.hardware_model = {}
             $rootScope.updatePowerInfo()
-            setInterval($rootScope.updatePowerInfo, 2000)
 
             swal({
                 title: "启动完毕",
@@ -364,7 +374,7 @@ angular.module('myApp', [
                         } else if (item.api) {
                             window.ignore_input = true
                             swal({
-                                title: "正在运行",
+                                title: "正在执行",
                                 button: false,
                             })
                             $http.get(item.api).then(res => {

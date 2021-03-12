@@ -74,21 +74,29 @@ angular.module('myApp.setting', ['ngRoute'])
         src: `assets/themes/${iconTheme}/icon-info.png`,
         name: '设备信息'
       },
-      {
-        id: 6,
-        src: `assets/themes/${iconTheme}/icon-setting.png`,
-        name: '按键复位',
-        action: "reset_usb"
-      },
-      {
-        id: 7,
-        src: `assets/themes/${iconTheme}/icon-setting.png`,
-        name: '触控较准',
-        action: "calibrate"
-      },
+
     ]
     $rootScope.title = '系统设置'
-    $rootScope.items = items
+    let hardware_model = $rootScope.hardware_model
+    if (hardware_model && hardware_model.Model && hardware_model.Model.indexOf("Compute Module 4") >= 0) {
+      $rootScope.items = items.concat([
+        {
+          id: 6,
+          src: `assets/themes/${iconTheme}/icon-setting.png`,
+          name: '按键复位',
+          action: "reset_usb"
+        },
+        {
+          id: 7,
+          src: `assets/themes/${iconTheme}/icon-setting.png`,
+          name: '触控较准',
+          action: "calibrate"
+        },
+      ])
+    } else {
+      $rootScope.items = items
+    }
+
     $rootScope.rowNum = 3
     $rootScope.colNum = 2
     // $scope.show = items
@@ -160,6 +168,7 @@ angular.module('myApp.setting', ['ngRoute'])
         }
       },
     ]
+
 
     $rootScope.updatePageInfo()
     console.log($rootScope)

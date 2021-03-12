@@ -388,6 +388,20 @@ router.get('/calibrate', function (req, res) {
 	})
 })
 
+router.get('/hardware_model', function (req, res) {
+	let buf = ChildProcess.execSync('tail -n 4 /proc/cpuinfo')
+	let out = buf.toString().trim()
+	let arr = out.split('\n')
+	let info = {}
+	for (let i = 0; i < arr.length; i++) {
+		const ele = arr[i].split(':');
+		if (ele && ele.length == 2) {
+			info[ele[0].trim()] = ele[1].trim()
+		}
+	}
+	res.json(info)
+})
+
 module.exports = {
 	systemRouter: router,
 	stopAll: stopAll

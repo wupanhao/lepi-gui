@@ -3,6 +3,10 @@ const path = require('path');
 const axios = require('axios');
 const fs = require('fs')
 
+const bodyParser = require('body-parser');
+let jsonParser = bodyParser.json()
+let urlencodedParser = bodyParser.urlencoded({ extended: false })
+
 const {
   createServer
 } = require('http');
@@ -13,6 +17,7 @@ const uploadRouter = require('./router/upload')
 const fileRouter = require('./router/file-reader')
 const rosRouter = require('./router/ros')
 const variableRouter = require('./router/variable')
+const scratchRouter = require('./router/scratch-cloud')
 // const bluetoothRouter = require('./router/bluetooth')
 
 const {
@@ -47,8 +52,14 @@ const app = express()
 // app.use('/wifi', express.static(__dirname + '/wifi'));
 app.use('/', (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  next()
+  res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS")
+  res.header("Access-Control-Allow-Headers", "Content-Type, x-token");
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  } else {
+    next()
+
+  }
 })
 app.use('/static', express.static(path.join(__dirname, 'router/static')))
 app.use('/wifi', wifiRouter)
@@ -66,6 +77,8 @@ app.use('/explore', express.static(fileRouter.homedir))
 app.use('/rosNode', rosRouter)
 app.use('/variable', variableRouter)
 app.use('/system', systemRouter)
+app.use('/scratch', jsonParser)
+app.use('/scratch', scratchRouter)
 app.get('/stream_list', (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Content-Type");

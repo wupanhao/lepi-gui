@@ -45,8 +45,8 @@ let devInfo = {
 function getDeviceInfo() {
 
 	devInfo.uptime = os.uptime()
-	devInfo.ips = getLocalIps(),
-		devInfo.loadavg = os.loadavg()
+	devInfo.ips = getLocalIps()
+	devInfo.loadavg = os.loadavg()
 
 	return new Promise(resolve => {
 		if (os.platform() == 'linux') {

@@ -59,14 +59,20 @@ function start_mdns_server() {
 }
 
 function getMAC() {
-  var out = ChildProcess.execSync('ifconfig eth0')
-  var str = out.toString()
-  const pattern = /ether (.{17})  /
-  const match = str.match(pattern);
-  if (match && match[1]) {
-    // console.log(match)
-    return match[1]
+  try {
+    var out = ChildProcess.execSync('ifconfig eth0')
+    var str = out.toString()
+    const pattern = /ether (.{17})  /
+    const match = str.match(pattern);
+    if (match && match[1]) {
+      // console.log(match)
+      return match[1]
+    }
+  } catch (error) {
+    console.log(error)
+    return ":::::"
   }
+
 }
 
 // console.log(getMAC())

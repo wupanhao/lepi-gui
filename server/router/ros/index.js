@@ -150,6 +150,10 @@ function startPiDriver() {
 }
 
 function startPiServer() {
+  if (os.arch() != 'arm') {
+    console.log('on PC, ignore')
+    return
+  }
   PromisifyExec('rosnode list').then(output => {
     console.log(output)
     if (output.indexOf('pi_driver_node') >= 0) {

@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs')
 const os = require('os')
 const uuid = require('uuid');
-const { json } = require('body-parser');
+const ChildProcess = require('child_process');
 
 const decodeBody = (str) => Buffer.from(str, 'base64').toString('utf8');
 const decodeImage = (str) => Buffer.from(str, 'base64');
@@ -75,13 +75,13 @@ router.delete('/backpack/:id', (req, res) => {
     let id = req.params.id
     let dir = path.join(dataDir, id)
     console.log(id)
-    fs.rmdir(dir, { recursive: true }, (err) => {
-        if (err) {
-            throw err;
-        }
-        res.json({ "ok": true })
-        console.log(`${id} is deleted!`);
-    });
+    try {
+        ChildProcess.execSync(`rm -rf ${dir}`)
+    } catch (error) {
+        console.log(error)
+    }
+    res.json({ "ok": true })
+    console.log(`${id} is deleted!`);
 })
 
 module.exports = router

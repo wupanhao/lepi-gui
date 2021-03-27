@@ -210,9 +210,9 @@ angular.module('myApp', [
         $rootScope.localHandler = {}
 
         $rootScope.sensorName = {
-            0: '未连接',
+            0: '',
             29: '红外',
-            30: '超声波',
+            30: '超声',
             31: '触碰',
             35: '热释',
         }

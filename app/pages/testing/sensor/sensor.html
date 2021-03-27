@@ -32,7 +32,7 @@
         <tr ng-repeat="sensor in sensors" ng-init="$last && $emit('repeatFinished')" class="active">
             <td>S{{sensor.port}}</td>
 
-            <td class="sensor-id">未连接</td>
+            <td class="sensor-id">无</td>
             <td class="sensor-mode">{{sensor.mode}}</td>
             <td class="sensor-value">{{sensor.value}}</td">
         </tr>

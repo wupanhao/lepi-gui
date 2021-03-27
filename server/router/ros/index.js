@@ -156,7 +156,7 @@ function startPiServer() {
   }
   PromisifyExec('rosnode list').then(output => {
     console.log(output)
-    if (output.indexOf('pi_driver_node') >= 0) {
+    if (output.indexOf('/rosbridge_websocket') >= 0) {
       console.log('节点已启动')
       return true
     }

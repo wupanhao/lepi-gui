@@ -19,7 +19,7 @@ angular.module('myApp.sensor', ['ngRoute'])
         $scope.sensors = [1, 2, 3, 4, 5].map(port => {
             return {
                 value: 0,
-                mode: 1,
+                mode: 0,
                 id: 0,
                 port: port
             }
@@ -60,11 +60,18 @@ angular.module('myApp.sensor', ['ngRoute'])
                         sensor.mode = sensor.speed
                         sensor.value = sensor.position
                         if ($scope.sensors[index].id != sensor.id) {
-                            $scope.elements.id[index].textContent = $rootScope.sensorName[sensor.id]
+                            if (sensor.id == 0) {
+                                $scope.elements.id[index].textContent = '无'
+                            } else {
+                                $scope.elements.id[index].textContent = $rootScope.sensorName[sensor.id]
+                            }
                             $scope.sensors[index].id = sensor.id
                         }
+                        if ($scope.sensors[index].mode != sensor.mode) {
+                            $scope.elements.mode[index].textContent = sensor.mode
+                            $scope.sensors[index].mode = sensor.mode
+                        }
                         if ($scope.sensors[index].value != sensor.value) {
-
                             if (sensor.id == 35) {
                                 $scope.elements.value[index].textContent = `${parseInt(sensor.value / 10000)},${(sensor.value % 10000) / 100.0}`
                             } else {
@@ -89,6 +96,18 @@ angular.module('myApp.sensor', ['ngRoute'])
                     break;
                 case "ArrowDown":
                     i = i < 4 ? i + 1 : 0
+                    break;
+                case "ArrowLeft":
+                    var mode = $scope.sensors[i].mode - 1
+                    if (mode >= 0) {
+                        $rootScope.ros.setSensorMode(i + 1, mode)
+                    }
+                    break;
+                case "ArrowRight":
+                    var mode = $scope.sensors[i].mode + 1
+                    if (mode <= 7) {
+                        $rootScope.ros.setSensorMode(i + 1, mode)
+                    }
                     break;
                 default:
                     return false

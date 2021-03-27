@@ -30,6 +30,7 @@ class AudioControl {
             console.log(e)
             this.cid = 0
         }
+        this.setSoundrc()
         this.devices = {
             hdmi: {
                 min: -10239,

@@ -48,6 +48,15 @@ class JoystickController {
                 }
             }
 
+            this.walkingGaits.props.params.dimensions = {
+                front: 57,
+                side: 118,
+                middle: 92,
+                coxia: 45,
+                femur: 74,
+                tibia: 135,
+            }
+
             this.topic = new ROSLIB.Topic({
                 ros: this.ros,
                 name: '/ubiquityrobot/hexapod_controller_node/joint_states',
@@ -115,6 +124,14 @@ class JoystickController {
             } else {
                 this.walkingGaits.setState({ animationCount: 0 })
                 this.walkingGaits.reset()
+                this.walkingGaits.props.params.dimensions = {
+                    front: 57,
+                    side: 118,
+                    middle: 92,
+                    coxia: 45,
+                    femur: 74,
+                    tibia: 135,
+                }
                 this.resetPress = true
             }
         } else if (this.resetPress == true) {

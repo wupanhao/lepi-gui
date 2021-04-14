@@ -201,6 +201,15 @@
             angles[i] = parseInt(e.target.value)
             document.querySelector(`.label-${i} .value`).innerText = angles[i]
             client.pubJointAngles(angles)
+            // client.pubJointAngles(angles.map((angle, i) => {
+            //     if (i % 3 == 0) {
+            //         return angle
+            //     } else if (i % 3 == 1) {
+            //         return angle + 30
+            //     } else if (i % 3 == 2) {
+            //         return angle - 15
+            //     }
+            // }))
         }
         function toggleSwitch(e) {
             // console.log(e, e.target.checked)

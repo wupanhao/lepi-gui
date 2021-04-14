@@ -258,6 +258,8 @@ angular.module('myApp', [
             $rootScope.hardware_model = hardware_model
             if (hardware_model.Model && hardware_model.Model.indexOf("Pi 3 Model B") >= 0) {
                 setInterval($rootScope.updatePowerInfo, 2000)
+            } else {
+                setInterval($rootScope.updatePowerInfo, 5000)
             }
         })
 

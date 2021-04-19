@@ -86,6 +86,19 @@ function changeMenuActive(j) {
     })
 }
 
+function btnHandler2(message) {
+    console.log(message)
+
+    var code = keyCodeMap[message.value]
+
+    if (code == 'S' && message.type == 3) {
+        axios.get('/system/closeTerminal').then(res => {
+            console.log(res.data)
+            axios.get('/system/stopAll')
+        })
+        swal.close()
+    }
+}
 
 function btnHandler(message) {
     console.log(message)
@@ -228,11 +241,7 @@ angular.module('myApp', [
             // closeOnEsc: false
         });
         let handler = null
-        if (window.location.hostname == 'localhost') {
-            handler = btnHandler
-        }
-        $rootScope.ros = new ros_client($location.host(), handler)
-        window.ros = $rootScope.ros
+
         const sensorName = $rootScope.sensorName
         const sensors = [0, 0, 0, 0, 0]
         var onSensorChange = (msg) => {
@@ -247,21 +256,12 @@ angular.module('myApp', [
             swal({
                 title: text,
                 button: false,
-                timer: 600,
+                timer: 1600,
             });
             // setTimeout(swal.close, 1000)
         }
 
-        $http.get('/system/hardware_model').then(res => {
-            console.log(res.data)
-            let hardware_model = res.data
-            $rootScope.hardware_model = hardware_model
-            if (hardware_model.Model && hardware_model.Model.indexOf("Pi 3 Model B") >= 0) {
-                setInterval($rootScope.updatePowerInfo, 2000)
-            } else {
-                setInterval($rootScope.updatePowerInfo, 5000)
-            }
-        })
+
 
         console.log('set window.logPowerState to true to enable power log')
 
@@ -328,7 +328,24 @@ angular.module('myApp', [
             }, 3000)
         }
 
-        $rootScope.ros.conectToRos(onConnected, onConnectFail)
+        $http.get('/system/hardware_model').then(res => {
+            console.log(res.data)
+            let hardware_model = res.data
+            $rootScope.hardware_model = hardware_model
+            if (hardware_model.Model && hardware_model.Model.indexOf("Pi 3 Model B") >= 0) {
+                setInterval($rootScope.updatePowerInfo, 2000)
+                if (window.location.hostname == 'localhost') {
+                    handler = btnHandler
+                }
+            } else {
+                setInterval($rootScope.updatePowerInfo, 5000)
+                handler = btnHandler2
+            }
+
+            $rootScope.ros = new ros_client($location.host(), handler)
+            window.ros = $rootScope.ros
+            $rootScope.ros.conectToRos(onConnected, onConnectFail)
+        })
 
         function clickHandlerForContent(e) {
             console.log('clickHandlerForContent', e.code)
@@ -378,6 +395,7 @@ angular.module('myApp', [
                             swal({
                                 title: "正在执行",
                                 button: false,
+                                timer: 1500,
                             })
                             $http.get(item.api).then(res => {
                                 console.log(res.data)

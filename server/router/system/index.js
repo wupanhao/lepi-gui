@@ -99,7 +99,7 @@ function executeTerminal(file) {
 	console.log(file)
 
 	var extname = path.extname(file)
-	var cmd = 'DISPLAY=:0.1 konsole -p TerminalRows=19 -p TerminalColumns=34 -e bash -c "xdotool mousemove --screen 1  120 300 click 1 ;'
+	var cmd = 'DISPLAY=:0.1 konsole --hide-menubar -p TerminalRows=19 -p TerminalColumns=34 -e bash -c "xdotool mousemove --screen 1  120 300 click 1 ;'
 	// var cmd = 'x-terminal-emulator'
 	if (extname == '.py') {
 		param = `python ${file};bash"`
@@ -151,7 +151,7 @@ router.get('/openTerminal', function (req, res) {
 router.get('/closeTerminal', function (req, res) {
 	console.log(req.query)
 	try {
-		ChildProcess.execSync(`DISPLAY=:0.1 xdotool mousemove --screen 0  120 300 ; sudo killall konsole`)
+		ChildProcess.execSync(`DISPLAY=:0.1 xdotool mousemove --screen 1  120 300 click 1; sudo killall konsole `)
 	} catch (error) {
 		console.log(error)
 	}

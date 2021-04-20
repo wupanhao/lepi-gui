@@ -51,7 +51,7 @@ angular.module('myApp.wifi', ['ngRoute'])
         kb.onComplete = (passwd) => {
             const wifi = $rootScope.show[$rootScope.itemIndex]
             console.log(wifi, passwd)
-            swal({
+            swal.fire({
                 title: "正在连接",
                 text: "请稍等",
                 // icon: "/images/loading.gif",
@@ -64,14 +64,14 @@ angular.module('myApp.wifi', ['ngRoute'])
             $http.post('/wifi/connect', { ssid: wifi.ssid, psk: passwd }).then(res => {
                 console.log(res.data)
                 if (res.data && res.data.ssid) {
-                    swal({
+                    swal.fire({
                         title: "连接成功",
                         text: "",
                         button: false,
                         timer: 1000,
                     });
                 } else {
-                    swal({
+                    swal.fire({
                         title: "连接失败",
                         text: "",
                         button: false,
@@ -82,7 +82,7 @@ angular.module('myApp.wifi', ['ngRoute'])
 
             }, err => {
                 console.log(err)
-                swal({
+                swal.fire({
                     title: "连接出错",
                     // text: "",
                     timer: 1000,

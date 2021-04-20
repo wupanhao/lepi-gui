@@ -23,10 +23,10 @@ angular.module('myApp.sservo', ['ngRoute'])
         $scope.servos = []
         $scope.activeId = -1
 
-        swal({
+        swal.fire({
             title: "正在扫描舵机",
             text: "请稍等",
-            button: false,
+            showConfirmButton: false,
         });
 
         // $rootScope.updatePageInfo($rootScope.pageIndex)

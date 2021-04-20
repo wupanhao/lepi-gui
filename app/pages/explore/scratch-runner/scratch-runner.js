@@ -27,9 +27,10 @@ class Runner {
     const storage = new ScratchStorage();
     vm.attachStorage(storage);
     vm.on('workspaceUpdate', function () {
-      swal("加载完成", {
+      swal.fire("加载完成", {
         // icon: "success",
-        button: false,
+        showConfirmButton: false,
+
       });
       setTimeout(function () {
         swal.close()
@@ -217,8 +218,9 @@ class Runner {
     vm.start()
   }
   loadProjectFromFile(path) {
-    swal("程序加载中", {
-      button: false,
+    swal.fire({
+      title: "程序加载中",
+      showConfirmButton: false,
     });
     var buffer = fs.readFileSync(path);
     console.log(buffer)
@@ -226,8 +228,9 @@ class Runner {
 
   }
   loadProjectFromUrl(url) {
-    swal("程序加载中", {
-      button: false,
+    swal.fire({
+      title: "程序加载中",
+      showConfirmButton: false,
     });
 
     JSZipUtils.getBinaryContent(url, (err, data) => {

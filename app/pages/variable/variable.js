@@ -29,7 +29,7 @@ angular.module('myApp.variable', ['ngRoute'])
                         return { name: name, value: $scope.data[name] }
                     })
                     $rootScope.updatePageInfo()
-                    // swal({
+                    // swal.fire({
                     //     title: "HTML <small>标题</small>!",
                     //     text: `自定义<span style="color: #F8BB86">html<span>信息。`,
                     //     html: true
@@ -55,7 +55,7 @@ angular.module('myApp.variable', ['ngRoute'])
             if (item && item.name) {
                 $http.get(`/variable/delete?name=${encodeURI(item.name)}`).then(res => {
                     if (res.data && res.data.msg) {
-                        swal({
+                        swal.fire({
                             title: res.data.msg,
                             // text: "",
                             timer: 1000,
@@ -71,7 +71,7 @@ angular.module('myApp.variable', ['ngRoute'])
             if (item.name && item.value != undefined) {
                 $http.get(`/variable/set?name=${encodeURI(item.name)}&value=${encodeURI(item.value)}`).then(res => {
                     if (res.data && res.data.msg) {
-                        swal({
+                        swal.fire({
                             title: res.data.msg,
                             // text: "",
                             timer: 1000,
@@ -88,7 +88,7 @@ angular.module('myApp.variable', ['ngRoute'])
                 $http.get(`/variable/set?name=${encodeURI(name)}&value=${encodeURI(item.value)}`).then(() => {
                     $http.get(`/variable/delete?name=${encodeURI(item.name)}`).then(res => {
                         if (res.data && res.data.code == 0) {
-                            swal({
+                            swal.fire({
                                 title: '重命名成功',
                                 // text: "",
                                 timer: 1000,

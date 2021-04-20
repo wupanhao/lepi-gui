@@ -1576,6 +1576,23 @@ class ros_client {
 
     topic.publish(msg)
   }
+
+  systemPoweroff() {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'pi_driver_node/system_poweroff',
+        serviceType: 'pi_driver/SetInt32'
+      });
+
+      var request = new ROSLIB.ServiceRequest();
+
+      client.callService(request, (result) => {
+        console.log(result)
+        resolve()
+      });
+    })
+  }
 }
 
 // module.exports = ros_client

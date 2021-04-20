@@ -1,14 +1,14 @@
 'use strict';
 
 const reset_usb = async () => {
-  swal({
+  swal.fire({
     title: "正在执行",
     text: "请稍等",
     // icon: "/images/loading.gif",
     button: false,
   })
   let res = await axios.get('/system/usb_reset')
-  swal({
+  swal.fire({
     title: "已执行",
     text: "",
     button: false,
@@ -17,14 +17,14 @@ const reset_usb = async () => {
 }
 
 const calibrate = async () => {
-  swal({
+  swal.fire({
     title: "正在执行",
     text: "请稍等",
     // icon: "/images/loading.gif",
     button: false,
   })
   let res = await axios.get('/system/calibrate')
-  swal({
+  swal.fire({
     title: "已执行",
     text: "",
     button: false,
@@ -106,7 +106,7 @@ angular.module('myApp.setting', ['ngRoute'])
         text: '扩展系统分区',
         callback: (index) => {
           console.log(`menu item-${index} clicked`)
-          swal({
+          swal.fire({
             title: '正在设置',
             text: "请稍等",
             button: false,
@@ -114,7 +114,7 @@ angular.module('myApp.setting', ['ngRoute'])
           $http.get('/system/expand_rootfs').then(res => {
             var data = res.data
             if (data && data.msg) {
-              swal({
+              swal.fire({
                 title: data.msg,
                 text: "",
                 button: false,
@@ -127,7 +127,7 @@ angular.module('myApp.setting', ['ngRoute'])
         text: '系统更新',
         callback: (index) => {
           console.log(`menu item-${index} clicked`)
-          swal({
+          swal.fire({
             title: '正在检查更新',
             text: "请稍等",
             button: false,
@@ -135,7 +135,7 @@ angular.module('myApp.setting', ['ngRoute'])
           $http.get('/system/update').then(res => {
             var data = res.data
             if (data && data.msg) {
-              swal({
+              swal.fire({
                 title: data.msg,
                 text: "",
                 button: false,
@@ -149,7 +149,7 @@ angular.module('myApp.setting', ['ngRoute'])
         text: '固件更新',
         callback: (index) => {
           console.log(`menu item-${index} clicked`)
-          swal({
+          swal.fire({
             title: '正在更新',
             text: "请稍等",
             button: false,
@@ -157,7 +157,7 @@ angular.module('myApp.setting', ['ngRoute'])
           $http.get('/system/update_firmware').then(res => {
             var data = res.data
             if (data && data.msg) {
-              swal({
+              swal.fire({
                 title: data.msg,
                 text: "",
                 button: false,

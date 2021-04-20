@@ -29,11 +29,11 @@ angular.module('myApp.audio', ['ngRoute'])
                 text: '重置音频选项',
                 callback: (index) => {
                     $http.get('/system/reset_soundrc').then(res => {
-                        swal(res.data.msg, {
+                        swal.fire(res.data.msg, {
                             button: false,
                             timer: 1000,
                         })
-                        // swal({
+                        // swal.fire({
                         //     title: "启动完毕",
                         //     text: "可以开始你的创作了",
                         // });

@@ -48,17 +48,21 @@ angular.module('myApp.index', ['ngRoute'])
         text: '关机',
         callback: (index) => {
           console.log(`menu item-${index} clicked`)
-          swal("正在关机", {
-            button: false,
+          swal.fire({
+            title: "正在关机",
+            showConfirmButton: false,
           });
-          $http.get('/system/halt')
+          window.ros.systemPoweroff().then(() => {
+            $http.get('/system/halt')
+          })
         }
       }, {
         text: '重启',
         callback: (index) => {
           console.log(`menu item-${index} clicked`)
-          swal("正在准备重启", {
-            button: false,
+          swal.fire({
+            title: "正在准备重启",
+            showConfirmButton: false,
           });
           $http.get('/system/reboot')
         }

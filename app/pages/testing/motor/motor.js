@@ -30,7 +30,7 @@ angular.module('myApp.motor', ['ngRoute'])
                 callback: (index) => {
                     console.log(`menu item-${index} clicked`)
                     $rootScope.ros.motorSetCurrentPosition(0, 0)
-                    swal({
+                    swal.fire({
                         title: '已执行',
                         text: "",
                         button: false,

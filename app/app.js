@@ -3,7 +3,10 @@
 const iconTheme = 'banbao-v1'
 
 const audioContext = new (window.AudioContext || window.webkitAudioContext)()
-
+swal = Swal.mixin({
+    heightAuto: false,
+    showConfirmButton: false,
+})
 const KEY = {
     ArrowLeft: 37,
     ArrowUp: 38,
@@ -86,17 +89,51 @@ function changeMenuActive(j) {
     })
 }
 
+let shutdown_timer = null
 function btnHandler2(message) {
     console.log(message)
+    let ele = swal.getTitle()
+    let shutdown_request = swal.isVisible() && ele && ele.textContent == "关机?"
+    let code = keyCodeMap[message.value]
 
-    var code = keyCodeMap[message.value]
+    if (shutdown_request && message.type == 1) {
+        if (code == 'S' || code == 'Enter') {
+            console.log('shutdown')
+            swal.fire({
+                title: "正在关机",
+
+            });
+            window.ros.systemPoweroff().then(() => {
+                axios.get('/system/halt')
+            })
+        }
+    } else if (code == 'S' && message.type == 1) {
+        shutdown_timer = setTimeout(() => {
+            swal.fire({
+                title: '关机?',
+                allowEscapeKey: false,
+                showConfirmButton: false
+            })
+        }, 3000)
+    }
 
     if (code == 'S' && message.type == 3) {
-        axios.get('/system/closeTerminal').then(res => {
-            console.log(res.data)
-            axios.get('/system/stopAll')
-        })
-        swal.close()
+        if (shutdown_request) {
+
+        } else {
+            axios.get('/system/closeTerminal').then(res => {
+                console.log(res.data)
+                axios.get('/system/stopAll')
+            })
+            // swal.close()
+            try {
+                clearTimeout(shutdown_timer)
+                shutdown_timer = null
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
     }
 }
 
@@ -232,11 +269,11 @@ angular.module('myApp', [
 
         // if (navigator.platform.includes('arm')) {
         // navigator.platform: "Linux armv7l"
-        swal({
+        swal.fire({
             title: "服务正在启动",
             text: "请稍等",
             // icon: "/images/loading.gif",
-            button: false,
+
             // closeOnClickOutside: false,
             // closeOnEsc: false
         });
@@ -253,15 +290,13 @@ angular.module('myApp', [
             } else {
                 text = `${sensorName[sensors[msg.port - 1]] || ''}传感器已从S${msg.port}口断开`
             }
-            swal({
+            swal.fire({
                 title: text,
-                button: false,
+
                 timer: 1600,
             });
-            // setTimeout(swal.close, 1000)
+            // setTimeout(swal.fire.close, 1000)
         }
-
-
 
         console.log('set window.logPowerState to true to enable power log')
 
@@ -271,13 +306,13 @@ angular.module('myApp', [
             $rootScope.hardware_model = {}
             $rootScope.updatePowerInfo()
 
-            swal({
+            swal.fire({
                 title: "启动完毕",
                 text: "可以开始你的创作了",
-                button: false,
+
                 timer: 1000,
             });
-            // setTimeout(swal.close, 1000)
+            // setTimeout(swal.fire.close, 1000)
 
             var sensorListener = new ROSLIB.Topic({
                 ros: $rootScope.ros.ros,
@@ -314,11 +349,11 @@ angular.module('myApp', [
             */
             console.log('connect Fail, retry after 3 seconds')
 
-            swal({
+            swal.fire({
                 title: "服务正在启动",
                 text: "请稍等",
                 // icon: "/images/loading.gif",
-                button: false,
+
                 // closeOnClickOutside: false,
                 // closeOnEsc: false
             });
@@ -339,6 +374,8 @@ angular.module('myApp', [
                 }
             } else {
                 setInterval($rootScope.updatePowerInfo, 5000)
+                if (window.location.hostname == 'localhost') {
+                }
                 handler = btnHandler2
             }
 
@@ -392,9 +429,9 @@ angular.module('myApp', [
                             return
                         } else if (item.api) {
                             window.ignore_input = true
-                            swal({
+                            swal.fire({
                                 title: "正在执行",
-                                button: false,
+
                                 timer: 1500,
                             })
                             $http.get(item.api).then(res => {
@@ -571,6 +608,8 @@ angular.module('myApp', [
                     dispatchKeyEvent('R', 'keyup')
                     break;
                 case "Escape":
+                    e.stopPropagation();
+                    e.preventDefault();
                     dispatchKeyEvent('S', 'keyup')
                     break;
             }
@@ -578,6 +617,7 @@ angular.module('myApp', [
 
         document.addEventListener('keydown', (e) => {
             console.log('here', e.code)
+
             switch (e.code) {
                 case "F1":
                     e.stopPropagation();
@@ -595,6 +635,8 @@ angular.module('myApp', [
                     dispatchKeyEvent('R', 'keydown')
                     break;
                 case "Escape":
+                    e.stopPropagation();
+                    e.preventDefault();
                     dispatchKeyEvent('S', 'keydown')
                     break;
             }
@@ -606,6 +648,15 @@ angular.module('myApp', [
             // 不采用事件方式，改用回调函数
             // var name = 'keyEvent' + path
             // $rootScope.$broadcast(name, e)
+
+            // 先检查是否有弹窗
+            if (swal.isVisible()) {
+                if (e.code == 'KeyB') {
+                    swal.close()
+                }
+                return
+            }
+
             if (menuShown()) {
                 clickHandlerForMenu(e)
             } else {
@@ -619,6 +670,8 @@ angular.module('myApp', [
                     clickHandlerForContent(e)
                 }
             }
+
+
 
             switch (e.code) {
                 case "KeyM":
@@ -643,7 +696,7 @@ angular.module('myApp', [
                         // var pre = history.length
                         console.log('go back')
                         // $window.history.back()
-                        swal.close()
+
                         history.go(-1);
                         // if (history.length == pre) {
                         //     console.log('go back -2')

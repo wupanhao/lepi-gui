@@ -20,11 +20,10 @@ angular.module('myApp.rosNode', ['ngRoute'])
         console.log($location.path(), ' entered')
 
         const updateNodeStatus = () => {
-            // swal('正在更新数据')
-            swal({
+            swal.fire({
                 title: "正在更新数据",
                 text: "请稍等",
-                button: false,
+                showConfirmButton: false,
             });
             $http.get('/rosNode/status').then(res => {
                 console.log(res.data)
@@ -91,11 +90,11 @@ angular.module('myApp.rosNode', ['ngRoute'])
                     const name = $rootScope.show[i].name
                     console.log('启动' + name)
                     if ($rootScope.show[i].status != '已停止') {
-                        swal('节点已启动')
+                        swal.fire('节点已启动')
                         setTimeout(swal.close, 1000)
                         return
                     }
-                    swal('启动中，请稍等')
+                    swal.fire('启动中，请稍等')
                     $http.get(`/rosNode/launch?name=${name}`).then(res => {
                         const data = res.data
                         if (data.code == 0) {
@@ -112,15 +111,15 @@ angular.module('myApp.rosNode', ['ngRoute'])
                     const name = $rootScope.show[i].name
                     console.log('停止' + name)
                     if ($rootScope.show[i].status != '已启动') {
-                        swal('节点未启动')
+                        swal.fire('节点未启动')
                         setTimeout(swal.close, 1000)
                         return
                     }
-                    swal('正在关闭节点')
+                    swal.fire('正在关闭节点')
                     $http.get(`/rosNode/kill?name=${name}`).then(res => {
                         const data = res.data
                         if (data.code == 0) {
-                            swal('已停止')
+                            swal.fire('已停止')
                             updateNodeStatus()
                             setTimeout(swal.close, 1000)
                         }

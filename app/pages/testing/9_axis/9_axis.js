@@ -32,7 +32,7 @@ angular.module('myApp.9_axis', ['ngRoute'])
                 callback: (index) => {
                     console.log(`menu item-${index} clicked`)
                     $rootScope.ros.nineAxisSetEnable(0x47)
-                    swal({
+                    swal.fire({
                         title: '已执行',
                         text: "",
                         button: false,
@@ -45,7 +45,7 @@ angular.module('myApp.9_axis', ['ngRoute'])
                 callback: (index) => {
                     console.log(`menu item-${index} clicked`)
                     $rootScope.ros.nineAxisSetEnable(0x00)
-                    swal({
+                    swal.fire({
                         title: '已执行',
                         text: "",
                         button: false,

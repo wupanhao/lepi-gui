@@ -34,7 +34,7 @@ angular.module('myApp.bluetooth', ['ngRoute'])
             const item = $rootScope.show[$rootScope.itemIndex]
             $http.get(`/bluetooth/connect?mac=${item.mac}`).then(res => {
                 if (res.data && res.data.code == 0) {
-                    swal({
+                    swal.fire({
                         title: '连接中',
                         // text: "",
                         timer: 1000,
@@ -49,7 +49,7 @@ angular.module('myApp.bluetooth', ['ngRoute'])
             const item = $rootScope.show[$rootScope.itemIndex]
             $http.get(`/bluetooth/disconnect?mac=${item.mac}`).then(res => {
                 if (res.data && res.data.code == 0) {
-                    swal({
+                    swal.fire({
                         title: '断开中',
                         // text: "",
                         timer: 1000,
@@ -64,7 +64,7 @@ angular.module('myApp.bluetooth', ['ngRoute'])
             console.log('startScan')
             $http.get(`/bluetooth/startScan`).then(res => {
                 if (res.data && res.data.code == 0) {
-                    swal({
+                    swal.fire({
                         title: '正在重新扫描，请稍等',
                         // text: "",
                         timer: 1000,
@@ -77,7 +77,7 @@ angular.module('myApp.bluetooth', ['ngRoute'])
         function restartBluetooth() {
             $http.get(`/bluetooth/restart`).then(res => {
                 if (res.data && res.data.code == 0) {
-                    swal({
+                    swal.fire({
                         title: '正在重启蓝牙，请稍等',
                         // text: "",
                         timer: 1000,

@@ -101,10 +101,10 @@ function btnHandler2(message) {
             console.log('shutdown')
             swal.fire({
                 title: "正在关机",
-
             });
+
             window.ros.systemPoweroff().then(() => {
-                axios.get('/system/halt')
+                console.log('systemPoweroff responsed')
             })
         }
     } else if (code == 'S' && message.type == 1) {
@@ -348,15 +348,6 @@ angular.module('myApp', [
             }
             */
             console.log('connect Fail, retry after 3 seconds')
-
-            swal.fire({
-                title: "服务正在启动",
-                text: "请稍等",
-                // icon: "/images/loading.gif",
-
-                // closeOnClickOutside: false,
-                // closeOnEsc: false
-            });
 
             setTimeout(() => {
                 $rootScope.ros.conectToRos(onConnected, onConnectFail)

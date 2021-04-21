@@ -1,6 +1,9 @@
 # Install ROS Runtime
 # sudo apt install -y python-rospy python-rosnode python-roslaunch ros-core
 
+# pi4_driver_node
+pip install evdev
+
 # camera node
 sudo apt install -y python-cv-bridge python-opencv fonts-wqy-zenhei
 

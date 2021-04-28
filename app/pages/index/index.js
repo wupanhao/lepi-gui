@@ -52,13 +52,11 @@ angular.module('myApp.index', ['ngRoute'])
             title: "正在关机",
             showConfirmButton: false,
           });
-          let timer = setTimeout(() => {
-            axios.get('/system/halt')
-          }, 3000)
-          window.ros.systemPoweroff().then(() => {
-            console.log('systemPoweroff responsed')
-            clearTimeout(timer)
-          })
+          axios.get('/system/halt')
+          // window.ros.systemPoweroff().then(() => {
+          //   console.log('systemPoweroff responsed')
+          //   clearTimeout(timer)
+          // })
         }
       }, {
         text: '重启',

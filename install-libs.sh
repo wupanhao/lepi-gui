@@ -12,11 +12,11 @@ sudo apt install -y libopenblas-base liblapack-dev
 pip install dt-apriltags scipy
 
 # pi_ai module #https://www.tensorflow.org/lite/guide/python
-pip3 install https://dl.google.com/coral/python/tflite_runtime-2.1.0.post1-cp37-cp37m-linux_armv7l.whl
+# pip3 install https://dl.google.com/coral/python/tflite_runtime-2.1.0.post1-cp37-cp37m-linux_armv7l.whl
 # edge tpu #https://coral.ai/docs/accelerator/get-started/#1-install-the-edge-tpu-runtime
 echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | sudo tee /etc/apt/sources.list.d/coral-edgetpu.list
 curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-sudo apt update && sudo apt install -y libedgetpu1-std
+sudo apt update && sudo apt install -y libedgetpu1-std python3-tflite-runtime
 
 # ultra_face_inference_node
 sudo apt install -y libatlas-base-dev

@@ -69,7 +69,7 @@ dtoverlay=tft9341:rotate=0
 dtoverlay=uart3
 dtoverlay=dwc2,dr_mode=host
 enable_uart=1
-dtoverlay=gpio-poweroff,gpiopin=6
+dtoverlay=gpio-poweroff,gpiopin=6,active_low
 
 [all]
 #dtoverlay=vc4-fkms-v3d

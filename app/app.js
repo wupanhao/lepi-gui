@@ -6,7 +6,9 @@ const audioContext = new (window.AudioContext || window.webkitAudioContext)()
 swal = Swal.mixin({
     heightAuto: false,
     showConfirmButton: false,
+    allowEscapeKey: false,
 })
+
 const KEY = {
     ArrowLeft: 37,
     ArrowUp: 38,
@@ -93,7 +95,7 @@ let shutdown_timer = null
 function btnHandler2(message) {
     console.log(message)
     let ele = swal.getTitle()
-    let shutdown_request = swal.isVisible() && ele && ele.textContent == "关机?"
+    let shutdown_request = swal.isVisible() && ele && ele.textContent.indexOf("关机") >= 0
     let code = keyCodeMap[message.value]
 
     if (shutdown_request && message.type == 1) {
@@ -102,17 +104,16 @@ function btnHandler2(message) {
             swal.fire({
                 title: "正在关机",
             });
+            axios.get('/system/halt')
 
-            window.ros.systemPoweroff().then(() => {
-                console.log('systemPoweroff responsed')
-            })
+            // window.ros.systemPoweroff().then(() => {
+            //     console.log('systemPoweroff responsed')
+            // })
         }
     } else if (code == 'S' && message.type == 1) {
         shutdown_timer = setTimeout(() => {
             swal.fire({
                 title: '关机?',
-                allowEscapeKey: false,
-                showConfirmButton: false
             })
         }, 3000)
     }

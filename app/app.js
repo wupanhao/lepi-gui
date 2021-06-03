@@ -259,7 +259,7 @@ angular.module('myApp', [
         }]
         $rootScope.localMenus = {}
         $rootScope.localHandler = {}
-
+        $rootScope.localCallback = {}
         $rootScope.sensorName = {
             0: '',
             29: '红外',
@@ -538,7 +538,7 @@ angular.module('myApp', [
             }
 
             const localMenus = $rootScope.localMenus[$location.path()]
-
+            const localCallback = $rootScope.localCallback[$location.path()]
             if (localMenus) {
                 $rootScope.menus = localMenus.concat($rootScope.globalMenus)
             } else {
@@ -558,6 +558,11 @@ angular.module('myApp', [
                 $rootScope.maxItemIndex = $rootScope.show.length - 1
                 $rootScope.pageIndex = pageIndex
                 $rootScope.maxRowIndex = Math.ceil($rootScope.show.length / $rootScope.colNum) - 1
+
+                if(localCallback){
+                    localCallback(pageIndex)
+                }
+
                 if ($rootScope.maxPageIndex > 0) {
                     $rootScope.pageInfo = `${pageIndex + 1}/${$rootScope.maxPageIndex + 1}页`
                 } else {

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>recorder</title>
+    <script type="text/javascript" src="../../../node_modules/recorder-core/src/recorder-core.js"></script>
+    <script type="text/javascript" src="../../../node_modules/recorder-core/src/extensions/lib.fft.js"></script>
+    <script type="text/javascript"
+        src="../../../node_modules/recorder-core/src/extensions/frequency.histogram.view.js"></script>
+    <script type="text/javascript" src="../../../node_modules/recorder-core/src/extensions/wavesurfer.view.js"></script>
+    <script type="text/javascript" src="../../../node_modules/recorder-core/src/extensions/waveview.js"></script>
+    <style>
+        .myChart {
+            width: 240px;
+            height: 270px;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="myChart"></div>
+    <script>
+        var wave;
+        var rec = Recorder({
+            onProcess: function (buffers, powerLevel, bufferDuration, bufferSampleRate) {
+                wave.input(buffers[buffers.length - 1], powerLevel, bufferSampleRate);//输入音频数据，更新显示波形
+            }
+        });
+        rec.open(function () {
+            // wave = Recorder.WaveView({ elem: ".myChart" }); //创建wave对象
+            // wave = Recorder.WaveSurferView({ elem: ".myChart", direction: -1 }); //创建wave对象
+            wave = Recorder.FrequencyHistogramView({ elem: ".myChart" }); //创建wave对象
+            rec.start();
+        });
+    </script>
+</body>
+
+</html>

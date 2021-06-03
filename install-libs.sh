@@ -1,6 +1,8 @@
 # Install ROS Runtime
 # sudo apt install -y python-rospy python-rosnode python-roslaunch ros-core
 
+sudo cp ./conf/sitecustomize.py /usr/lib/python2.7/
+
 # pi4_driver_node
 pip install evdev
 
@@ -33,6 +35,11 @@ sudo apt install -y tesseract-ocr tesseract-ocr-chi-sim tesseract-ocr-chi-tra
 
 # run python and emulate input
 sudo apt install -y konsole xdotool
+
+# MNN
+# ./configure CFLAGS="-fPIC" CXXFLAGS="-fPIC" 重新编译protobuf
+# 编译MNN不要tools
+# 安装pytorch 1.5 https://github.com/Ben-Faessler/Python3-Wheels/tree/master/pytorch
 
 #sudo apt install python-image-geometry python3-image-geometry 
 

@@ -61,6 +61,11 @@ app.use('/', (req, res, next) => {
 
   }
 })
+
+app.get('/test', (req, res) => {
+  res.send('ok');
+})
+
 app.use('/static', express.static(path.join(__dirname, 'router/static')))
 app.use('/wifi', wifiRouter)
 

@@ -485,6 +485,18 @@ angular.module('myApp.plottor', ['ngRoute'])
             })
           })
           break
+        case '电压电流':
+          graph.adaChart.options.title.text = '电压电流'
+          $scope.selected = '电压电流'
+          changePlotType('xt');
+          startReadLoop(() => {
+            $rootScope.ros.getPowerMeas().then(res => {
+              if ($scope.selected == '电压电流') {
+                setupOrUpdate({ 'mV': res.data.y, 'mA': res.data.x })
+              }
+            })
+          })
+          break
         case '传感器S1':
           startSensorReadLoop(1)
           break
@@ -562,6 +574,11 @@ angular.module('myApp.plottor', ['ngRoute'])
         text: '传感器S5',
         callback: (index) => {
           switchDataSource('传感器S5')
+        }
+      }, {
+        text: '电压电流',
+        callback: (index) => {
+          switchDataSource('电压电流')
         }
       },
 

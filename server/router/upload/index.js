@@ -23,6 +23,7 @@ function createDirectory() {
 	mkdirIfNotExists(path.join(save_dir, 'Music'))
 	mkdirIfNotExists(path.join(save_dir, 'Photo'))
 	mkdirIfNotExists(path.join(save_dir, 'Recording'))
+	mkdirIfNotExists(path.join(save_dir, 'nes'))
 }
 
 createDirectory()
@@ -91,6 +92,8 @@ const saveStorage = multer.diskStorage({
 			cb(null, path.join(save_dir, 'Photo'))
 		} else if (path.extname(file.originalname) == '.wav' || path.extname(file.originalname) == '.oga') {
 			cb(null, path.join(save_dir, 'Recording'))
+		} else if (path.extname(file.originalname) == '.nes-save') {
+			cb(null, path.join(save_dir, 'nes'))
 		} else {
 			cb(null, temp_dir)
 		}

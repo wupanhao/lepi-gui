@@ -36,6 +36,57 @@ function readFileFromUrl(url) {
     xhr.send()
 }
 
+function readJsonFromUrl(url) {
+    return new Promise(resolve => {
+        //url 请求的URl
+        var xhr = new XMLHttpRequest();		//定义http请求对象
+        xhr.open("GET", url, true);
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        // xhr.send("userId=" + username + "&password=" + password + "&repo_type=" + type + "&repo_time=");
+        xhr.responseType = "blob";  // 返回类型blob
+        xhr.onload = (res) => {   // 定义请求完成的处理函数，请求前也可以增加加载框/禁用下载按钮逻辑
+            if (res.currentTarget && res.currentTarget.status === 200) {
+                var blob = res.currentTarget.response;
+                var reader = new FileReader();
+                reader.readAsText(blob);  // 转换为base64，可以直接放入a表情href
+                reader.onload = (e) => {
+                    console.log(e, reader.result);			//查看有没有接收到数据流
+                    resolve(reader.result)
+                }
+            }
+            else {
+                console.log(res)
+                resolve()
+                // alert("出现了未知的错误!");
+            }
+        }
+        xhr.send()
+    })
+}
+
+function post(url, data, config) {
+    return new Promise(resolve => {
+        //url 请求的URl
+        var xhr = new XMLHttpRequest();		//定义http请求对象
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-type", config.header['Content-Type']);
+        // xhr.send("userId=" + username + "&password=" + password + "&repo_type=" + type + "&repo_time=");
+        // xhr.responseType = "blob";  // 返回类型blob
+        xhr.onload = (res) => {   // 定义请求完成的处理函数，请求前也可以增加加载框/禁用下载按钮逻辑
+            if (res.currentTarget && res.currentTarget.status === 200) {
+                let result = res.currentTarget.response;
+                console.log(result)
+                resolve(result)
+            }
+            else {
+                console.log(res)
+                resolve()
+                // alert("出现了未知的错误!");
+            }
+        }
+        xhr.send()
+    })
+}
 
 // Start button and its handler.
 // Calling fceux.init() below must be done from an user event handler
@@ -48,25 +99,6 @@ function start() {
     fceux.init('#mycanvas');
 
     let game_url = getQuery()['game'] || '2048.nes'
-
-    // Download a game ROM and start it.
-    fceux.downloadGame(game_url);
-
-    let fps = 0
-
-    // Run the emulation update loop.
-    // Use requestAnimationFrame() to synchronise to repaints.
-    function updateLoop() {
-        window.requestAnimationFrame(updateLoop);
-        fceux.update();
-        fps++
-    }
-    window.requestAnimationFrame(updateLoop);
-
-    setInterval(() => {
-        console.log("fps ", fps / 2)
-        fps = 0
-    }, 2000)
 
     // Bind keyboard input events to controller 1.
     // The array index below corresponds to the button bit index.
@@ -100,14 +132,120 @@ function start() {
             }
         }
     }
-    window.addEventListener('keydown', keyHandler);
-    window.addEventListener('keyup', keyHandler);
 
-    // Add HTML for the input keys.
-    // const keysDiv = document.querySelector('#keys');
-    // keysDiv.innerHTML += keys
-    //   .map((key) => `${key[1]} - ${key[0]}`)
-    //   .join('<br/>');
+    let handleGameLoaded = () => {
+
+        // 默认以md5作为存档的key值
+        let md5 = fceux.gameMd5();
+        let save_url = game_url.substring(0, game_url.lastIndexOf(".") + 1) + 'nes-save'
+        localStorage['game_md5'] = md5;
+
+        // Export saves to localStorage at interval.
+        let saveFiles = () => {
+            if (md5) {
+                const saveFiles = fceux.exportSaveFiles();
+                const storedSaves = {};
+                for (let filename in saveFiles) {
+                    storedSaves[filename] = Array.from(saveFiles[filename]);
+                }
+                localStorage['save-' + md5] = JSON.stringify(storedSaves);
+                // console.log(saveFiles, storedSaves, localStorage)
+            }
+        }
+
+        let saveURLFiles = () => {
+            if (save_url) {
+                const saveFiles = fceux.exportSaveFiles();
+                const storedSaves = {};
+                for (let filename in saveFiles) {
+                    storedSaves[filename] = Array.from(saveFiles[filename]);
+                }
+                localStorage['save-' + save_url] = JSON.stringify(storedSaves);
+
+                var data = new window.FormData()
+                // data.append('name', filename)
+                let blob = new Blob([localStorage['save-' + save_url]])
+                data.append('upload_file', blob, decodeURI(save_url))
+                console.log(data)
+                let ip = window.location.hostname
+                if (ip) {
+                    let url = `http://${ip}:8000/upload/save`
+                    let config = {
+                        header: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }
+                    axios.post(url, data, config).then(response => {
+                        console.log(response)
+                    })
+
+                    // console.log(saveFiles, storedSaves, localStorage)
+                }
+            }
+        }
+
+        let saveGame = saveFiles
+
+        let loadSave = () => {
+            if (md5 && localStorage.hasOwnProperty('save-' + md5)) {
+                // Import saves from localStorage.
+                const save = JSON.parse(localStorage['save-' + md5]);
+                for (let filename in save) {
+                    save[filename] = new Uint8Array(save[filename]);
+                }
+                fceux.importSaveFiles(save);
+                console.log('load from localStorage', md5)
+            }
+        }
+
+        readJsonFromUrl(save_url).then(data => {
+            try {
+                console.log(data)
+                const save = JSON.parse(data);
+                for (let filename in save) {
+                    save[filename] = new Uint8Array(save[filename]);
+                }
+                if (save && save["rom.sav"].length == 8192) {
+                    fceux.importSaveFiles(save);
+                    console.log('load from url', save_url)
+                    // saveGame = saveURLFiles
+                } else {
+                    loadSave()
+                }
+
+            } catch (error) {
+                console.log(error)
+                loadSave()
+            }
+        })
+
+        window.addEventListener('keydown', keyHandler);
+        window.addEventListener('keyup', keyHandler);
+
+        let fps = 0
+
+        // Run the emulation update loop.
+        // Use requestAnimationFrame() to synchronise to repaints.
+        let updateLoop = () => {
+            window.requestAnimationFrame(updateLoop);
+            fceux.update();
+            fps++
+        }
+        window.requestAnimationFrame(updateLoop);
+
+        setInterval(() => {
+            console.log("fps ", fps / 10)
+            fps = 0
+            saveGame()
+        }, 10000)
+
+    }
+
+    fceux.addEventListener('game-loaded', handleGameLoaded);
+
+    // Download a game ROM and start it.
+    fceux.downloadGame(game_url);
+
 }
 
 // Create the Promise for the em-fceux instance.
@@ -132,7 +270,7 @@ FCEUX().then((fceux_) => {
         }
         start()
         document.onclick = null
-        document.removeEventListener('keydown',run_once)
+        document.removeEventListener('keydown', run_once)
     }
     document.onclick = run_once
     document.addEventListener('keydown', run_once)

@@ -55,7 +55,7 @@ angular.module('myApp.explore', ['ngRoute'])
                         var url_path = path.slice(data.homedir.length, path.length)
                         url_path = url_path.replace('\\', '/')
 
-                        var extName = splitNames[len - 1]
+                        var extName = splitNames[len - 1].toLowerCase()
                         switch (extName) {
                             case 'mp3':
                             case 'ogg':
@@ -92,6 +92,10 @@ angular.module('myApp.explore', ['ngRoute'])
                             case 'gif':
                                 imageUrl = `/explore${url_path}`
                                 url = encodeURI(`#!/imageViewer?src=/explore${url_path}`)
+                                break
+                            case 'nes':
+                                imageUrl = `assets/themes/${iconTheme}/games-nes.jpg`
+                                url = encodeURI(`/app/pages/explore/fceux?game=/explore${url_path}`)
                                 break
                         }
                     }

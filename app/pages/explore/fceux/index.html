@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="/app/assets/js/lepi-backhome.js"></script>
+  <style>
+    /* style="width: 522px; height: 400px; text-align: center" */
+    body {
+      margin: 0px;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      /* 水平居中 */
+      justify-content: center;
+      /* 垂直居中 */
+      align-items: center;
+      /* 隐藏鼠标 */
+      cursor: none;
+    }
+
+    .container {
+      display: flex;
+    }
+
+    #mycanvas{
+      width: 100vw;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Import em-fceux. -->
+  <script type="text/javascript" src="fceux.js"></script>
+
+  <div id="text">按任意键或点击屏幕开始游戏</div>
+
+  <!-- Contained div for canvas used by em-fceux. -->
+  <div class="container">
+    <canvas id="mycanvas"></canvas>
+  </div>
+
+  <!-- Our app script. -->
+  <script src="app.js"></script>
+</body>
+
+</html>

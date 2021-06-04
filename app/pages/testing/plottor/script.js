@@ -497,6 +497,31 @@ angular.module('myApp.plottor', ['ngRoute'])
             })
           })
           break
+        case 'Vout1':
+          graph.adaChart.options.title.text = 'Vout1'
+          $scope.selected = 'Vout1'
+          changePlotType('xt');
+          startReadLoop(() => {
+            $rootScope.ros.getVout1().then(res => {
+              if ($scope.selected == 'Vout1') {
+                setupOrUpdate({ 'mV': res.data.y, 'mA': res.data.x })
+              }
+            })
+          })
+          break
+        case 'Vout2':
+          graph.adaChart.options.title.text = 'Vout2'
+          $scope.selected = 'Vout2'
+          changePlotType('xt');
+          startReadLoop(() => {
+            $rootScope.ros.getVout2().then(res => {
+              if ($scope.selected == 'Vout2') {
+                setupOrUpdate({ 'mV': res.data.y, 'mA': res.data.x })
+              }
+            })
+          })
+          break
+
         case '传感器S1':
           startSensorReadLoop(1)
           break
@@ -579,6 +604,16 @@ angular.module('myApp.plottor', ['ngRoute'])
         text: '电压电流',
         callback: (index) => {
           switchDataSource('电压电流')
+        }
+      }, {
+        text: 'Vout1',
+        callback: (index) => {
+          switchDataSource('Vout1')
+        }
+      }, {
+        text: 'Vout2',
+        callback: (index) => {
+          switchDataSource('Vout2')
         }
       },
 

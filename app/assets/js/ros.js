@@ -1612,8 +1612,44 @@ class ros_client {
       });
     })
   }
+  getVout1() {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'pi_driver_node/system_get_vout1',
+        serviceType: 'pi_driver/SensorGet3Axes'
+      });
 
-  
+      var request = new ROSLIB.ServiceRequest();
+
+      client.callService(request, (result) => {
+        // console.log(result)
+        resolve(result)
+      }, (error) => {
+        console.log(error)
+        resolve()
+      });
+    })
+  }
+  getVout2() {
+    return new Promise((resolve) => {
+      var client = new ROSLIB.Service({
+        ros: this.ros,
+        name: ROS_NAMESPACE + 'pi_driver_node/system_get_vout2',
+        serviceType: 'pi_driver/SensorGet3Axes'
+      });
+
+      var request = new ROSLIB.ServiceRequest();
+
+      client.callService(request, (result) => {
+        // console.log(result)
+        resolve(result)
+      }, (error) => {
+        console.log(error)
+        resolve()
+      });
+    })
+  }
 }
 
 // module.exports = ros_client

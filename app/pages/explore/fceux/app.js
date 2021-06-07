@@ -88,6 +88,9 @@ function post(url, data, config) {
     })
 }
 
+let dir = 'vertical'
+
+
 // Start button and its handler.
 // Calling fceux.init() below must be done from an user event handler
 // (and only once) because of browser Web Audio restrictions.
@@ -102,7 +105,7 @@ function start() {
 
     // Bind keyboard input events to controller 1.
     // The array index below corresponds to the button bit index.
-    const keys = [
+    const keys_vertical = [
         ['KeyF', 'A', 0],
         ['KeyD', 'B', 1],
         ['KeyS', 'Select', 2],
@@ -116,7 +119,96 @@ function start() {
         ['F3', 'A', 0],
         ['Escape', 'B', 1],
     ];
+
+    const keys_left = [
+        ['KeyF', 'A', 0],
+        ['KeyD', 'B', 1],
+        ['KeyS', 'Select', 2],
+        ['Enter', 'Start', 3],
+        ['ArrowUp', 'Right', 7],
+        ['ArrowDown', 'Left', 6],
+        ['ArrowLeft', 'Up', 4],
+        ['ArrowRight', 'Down', 5],
+
+        ['F1', 'Select', 2],
+        ['F3', 'A', 0],
+        ['Escape', 'B', 1],
+    ];
+
+    const keys_right = [
+        ['KeyF', 'A', 0],
+        ['KeyD', 'B', 1],
+        ['KeyS', 'Select', 2],
+        ['Enter', 'Start', 3],
+        ['ArrowUp', 'Left', 6],
+        ['ArrowDown', 'Right', 7],
+        ['ArrowLeft', 'Down', 5],
+        ['ArrowRight', 'Up', 4],
+
+        ['F1', 'Select', 2],
+        ['F3', 'A', 0],
+        ['Escape', 'B', 1],
+    ];
+
+    const keysMap = {
+        'vertical': keys_vertical,
+        'left': keys_left,
+        'right': keys_right,
+    }
+
+    const keys = keysMap[dir]
+
     let bits = 0;
+
+    // Export saves to localStorage at interval.
+    let saveLocalStorage = () => {
+        let md5 = fceux.gameMd5();
+        if (md5) {
+            const saveFiles = fceux.exportSaveFiles();
+            const storedSaves = {};
+            for (let filename in saveFiles) {
+                storedSaves[filename] = Array.from(saveFiles[filename]);
+            }
+            localStorage['save-' + md5] = JSON.stringify(storedSaves);
+            console.log('saveLocalStorage', md5)
+        }
+    }
+
+    let saveURLFiles = () => {
+        return new Promise(resolve => {
+            let save_url = game_url.substring(0, game_url.lastIndexOf(".") + 1) + 'nes-save'
+            if (save_url) {
+                const saveFiles = fceux.exportSaveFiles();
+                const storedSaves = {};
+                for (let filename in saveFiles) {
+                    storedSaves[filename] = Array.from(saveFiles[filename]);
+                }
+                localStorage['save-' + save_url] = JSON.stringify(storedSaves);
+
+                var data = new window.FormData()
+                // data.append('name', filename)
+                let blob = new Blob([localStorage['save-' + save_url]])
+                data.append('upload_file', blob, decodeURI(save_url))
+                // console.log(data)
+                let ip = window.location.hostname
+                if (ip) {
+                    let url = `http://${ip}:8000/upload/save`
+                    let config = {
+                        header: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }
+                    axios.post(url, data, config).then(response => {
+                        console.log(response)
+                        resolve(response)
+                    })
+
+                    // console.log(saveFiles, storedSaves, localStorage)
+                }
+            }
+        })
+    }
+
     function keyHandler(ev) {
         console.log(ev.code)
         for (let i = 0; i < keys.length; ++i) {
@@ -131,62 +223,22 @@ function start() {
                 return
             }
         }
+
+        if (ev.code == 'F2' && ev.type == 'keydown') {
+            saveLocalStorage()
+            // saveURLFiles().then(res => {
+            //     console.log(res)
+            // })
+        }
+
     }
 
     let handleGameLoaded = () => {
 
-        // 默认以md5作为存档的key值
-        let md5 = fceux.gameMd5();
-        let save_url = game_url.substring(0, game_url.lastIndexOf(".") + 1) + 'nes-save'
-        localStorage['game_md5'] = md5;
-
-        // Export saves to localStorage at interval.
-        let saveFiles = () => {
-            if (md5) {
-                const saveFiles = fceux.exportSaveFiles();
-                const storedSaves = {};
-                for (let filename in saveFiles) {
-                    storedSaves[filename] = Array.from(saveFiles[filename]);
-                }
-                localStorage['save-' + md5] = JSON.stringify(storedSaves);
-                // console.log(saveFiles, storedSaves, localStorage)
-            }
-        }
-
-        let saveURLFiles = () => {
-            if (save_url) {
-                const saveFiles = fceux.exportSaveFiles();
-                const storedSaves = {};
-                for (let filename in saveFiles) {
-                    storedSaves[filename] = Array.from(saveFiles[filename]);
-                }
-                localStorage['save-' + save_url] = JSON.stringify(storedSaves);
-
-                var data = new window.FormData()
-                // data.append('name', filename)
-                let blob = new Blob([localStorage['save-' + save_url]])
-                data.append('upload_file', blob, decodeURI(save_url))
-                console.log(data)
-                let ip = window.location.hostname
-                if (ip) {
-                    let url = `http://${ip}:8000/upload/save`
-                    let config = {
-                        header: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    }
-                    axios.post(url, data, config).then(response => {
-                        console.log(response)
-                    })
-
-                    // console.log(saveFiles, storedSaves, localStorage)
-                }
-            }
-        }
-
-        let saveGame = saveFiles
+        // localStorage['game_md5'] = md5;
 
         let loadSave = () => {
+            let md5 = fceux.gameMd5();
             if (md5 && localStorage.hasOwnProperty('save-' + md5)) {
                 // Import saves from localStorage.
                 const save = JSON.parse(localStorage['save-' + md5]);
@@ -197,6 +249,7 @@ function start() {
                 console.log('load from localStorage', md5)
             }
         }
+        let save_url = game_url.substring(0, game_url.lastIndexOf(".") + 1) + 'nes-save'
 
         readJsonFromUrl(save_url).then(data => {
             try {
@@ -208,7 +261,6 @@ function start() {
                 if (save && save["rom.sav"].length == 8192) {
                     fceux.importSaveFiles(save);
                     console.log('load from url', save_url)
-                    // saveGame = saveURLFiles
                 } else {
                     loadSave()
                 }
@@ -217,27 +269,32 @@ function start() {
                 console.log(error)
                 loadSave()
             }
+
+            let fps = 0
+
+            // Run the emulation update loop.
+            // Use requestAnimationFrame() to synchronise to repaints.
+            let updateLoop = () => {
+                window.requestAnimationFrame(updateLoop);
+                fceux.update();
+                fps++
+            }
+            window.requestAnimationFrame(updateLoop);
+
+
+            setInterval(() => {
+                console.log("fps ", fps / 60)
+                fps = 0
+                saveLocalStorage()
+                // saveURLFiles()
+            }, 60000)
+
         })
 
         window.addEventListener('keydown', keyHandler);
         window.addEventListener('keyup', keyHandler);
 
-        let fps = 0
 
-        // Run the emulation update loop.
-        // Use requestAnimationFrame() to synchronise to repaints.
-        let updateLoop = () => {
-            window.requestAnimationFrame(updateLoop);
-            fceux.update();
-            fps++
-        }
-        window.requestAnimationFrame(updateLoop);
-
-        setInterval(() => {
-            console.log("fps ", fps / 10)
-            fps = 0
-            saveGame()
-        }, 10000)
 
     }
 
@@ -254,19 +311,34 @@ FCEUX().then((fceux_) => {
     fceux = fceux_;
     // Display the start button.
     // button.style.display = 'block';
-    let run_once = () => {
+    let run_once = (ev) => {
+        console.log(ev)
+        if (ev.type == 'keydown') {
+            if (ev.code == 'ArrowLeft') {
+                dir = 'left'
+            } else if (ev.code == 'ArrowRight') {
+                dir = 'right'
+            }
+        }
         document.querySelector('#text').style.display = 'none'
         console.log(document.documentElement.clientWidth, document.documentElement.clientHeight)
         if (document.documentElement.clientWidth / document.documentElement.clientHeight > 312 / 240) {
             // 横屏
             // document.querySelector('body').style.flexDirection= 'column'
             document.querySelector('.container').style.height = document.documentElement.clientHeight + 'px'
-            document.querySelector('.container').style.width = document.documentElement.clientHeight / 240 * 312 + 'px'
+            document.querySelector('.container').style.width = Math.ceil(document.documentElement.clientHeight / 240 * 312) + 'px'
         } else {
             // 竖屏
             // document.querySelector('body').style.flexDirection = 'row'
-            document.querySelector('.container').style.height = Math.ceil(document.documentElement.clientWidth / 312 * 240) + 'px'
-            document.querySelector('.container').style.width = document.documentElement.clientWidth + 'px'
+            if (dir != 'vertical') {
+                // document.querySelector('.container').style.height = document.documentElement.clientWidth + 'px'
+                document.querySelector('.container').style.height = document.documentElement.clientWidth + 'px';
+                document.querySelector('.container').style.width = Math.ceil(document.documentElement.clientWidth / 240 * 312 + 1) + 'px'
+                document.querySelector('.container').classList.add(dir)
+            } else {
+                document.querySelector('.container').style.height = Math.ceil(document.documentElement.clientWidth / 312 * 240) + 'px'
+                document.querySelector('.container').style.width = document.documentElement.clientWidth + 'px'
+            }
         }
         start()
         document.onclick = null

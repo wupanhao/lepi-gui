@@ -299,7 +299,7 @@ angular.module('myApp', [
             // setTimeout(swal.fire.close, 1000)
         }
 
-        console.log('set window.logPowerState to true to enable power log')
+        console.log('set ` window.logPowerState = true ` to enable power log')
 
         var onConnected = () => {
             console.log('connected to ros ', $rootScope.ros)
@@ -360,7 +360,7 @@ angular.module('myApp', [
             let hardware_model = res.data
             $rootScope.hardware_model = hardware_model
             if (hardware_model.Model && hardware_model.Model.indexOf("Pi 3 Model B") >= 0) {
-                setInterval($rootScope.updatePowerInfo, 2000)
+                setInterval($rootScope.updatePowerInfo, 5000)
                 if (window.location.hostname == 'localhost') {
                     handler = btnHandler
                 }
@@ -423,7 +423,6 @@ angular.module('myApp', [
                             window.ignore_input = true
                             swal.fire({
                                 title: "正在执行",
-
                                 timer: 1500,
                             })
                             $http.get(item.api).then(res => {
@@ -503,6 +502,21 @@ angular.module('myApp', [
                         setPowerState(data.est_power, data.charging)
                         // $rootScope.est_power = data.est_power
                     }
+                    // low power shutdown
+                    if (data.est_power <= 15 && data.charging == 0) {
+                        swal.fire({
+                            title: "电量过低",
+                            timer: 1500,
+                        })
+                    }
+                    if (data.est_power <= 10 && data.charging == 0) {
+                        swal.fire({
+                            title: "电量过低,自动关机",
+                            timer: 5000,
+                        })
+                        axios.get('/system/halt')
+                    }
+
                     // setTimeout($rootScope.updatePowerInfo, 1000)
                 })
             } catch (e) {
@@ -559,7 +573,7 @@ angular.module('myApp', [
                 $rootScope.pageIndex = pageIndex
                 $rootScope.maxRowIndex = Math.ceil($rootScope.show.length / $rootScope.colNum) - 1
 
-                if(localCallback){
+                if (localCallback) {
                     localCallback(pageIndex)
                 }
 

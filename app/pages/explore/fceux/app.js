@@ -88,6 +88,59 @@ function post(url, data, config) {
     })
 }
 
+let buttonMap = [
+    [0, 'A', 0],
+    [1, 'B', 1],
+    [8, 'Select', 2],
+    [9, 'Start', 3],
+    [12, 'Up', 4],
+    [13, 'Down', 5],
+    [14, 'Left', 6],
+    [15, 'Right', 7],
+]
+
+
+function getGamepad(index = 0) {
+    let gamepads = navigator.getGamepads()
+    for (let i = 0; i < gamepads.length; i++) {
+        const element = gamepads[i];
+        if (element) {
+            if (index == 0) {
+                return element
+            } else {
+                index--
+            }
+        }
+    }
+    return null
+}
+
+function getGamepadBits(index = 0) {
+    let bits = 0
+    let threshold = 0.5
+    let gamepad = getGamepad(index)
+    if (gamepad) {
+        for (let i = 0; i < buttonMap.length; i++) {
+            let j = buttonMap[i][0]
+            if (gamepad.buttons[j].pressed) {
+                bits |= 1 << buttonMap[i][2];
+            }
+        }
+        if (gamepad.axes[0] > threshold) {
+            bits |= 1 << 7;
+        } else if (gamepad.axes[0] < -threshold) {
+            bits |= 1 << 6;
+        }
+        if (gamepad.axes[1] > threshold) {
+            bits |= 1 << 5
+        } else if (gamepad.axes[1] < -threshold) {
+            bits |= 1 << 4
+        }
+    }
+    return bits
+}
+
+
 let dir = 'vertical'
 
 
@@ -218,7 +271,7 @@ function start() {
                 } else {
                     bits &= ~(1 << keys[i][2]);
                 }
-                fceux.setControllerBits(bits);
+                // fceux.setControllerBits(bits);
                 ev.preventDefault();
                 return
             }
@@ -230,8 +283,9 @@ function start() {
             //     console.log(res)
             // })
         }
-
     }
+
+
 
     let handleGameLoaded = () => {
 
@@ -275,6 +329,10 @@ function start() {
             // Run the emulation update loop.
             // Use requestAnimationFrame() to synchronise to repaints.
             let updateLoop = () => {
+                let input = new Uint32Array(1);
+                input[0] = (getGamepadBits(1) << 24) | (getGamepadBits(1) << 18) | (getGamepadBits(1) << 8) | getGamepadBits(0) | bits
+                console.log(input[0])
+                fceux.setControllerBits(input[0]);
                 window.requestAnimationFrame(updateLoop);
                 fceux.update();
                 fps++
@@ -293,8 +351,6 @@ function start() {
 
         window.addEventListener('keydown', keyHandler);
         window.addEventListener('keyup', keyHandler);
-
-
 
     }
 

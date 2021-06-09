@@ -1,39 +1,67 @@
-// const VirtualMachine = require('scratch-vm')
-// const ScratchStorage = require('scratch-storage')
-// const ScratchRender = require('scratch-render')
-// const AudioEngine = require('scratch-audio')
-// const ScratchSVGRenderer = require('scratch-svg-renderer')
-// const axios = require("axios");
-// const JSZipUtils = require("jszip-utils")
-
 const Scratch = window.Scratch = window.Scratch || {};
 
+const scratchKeyMap = {
+  'ArrowLeft': "ArrowUp",
+  'ArrowUp': "ArrowRight",
+  'ArrowRight': "ArrowDown",
+  'ArrowDown': "ArrowLeft",
+  'Enter': " ",
+  'M': "T"
+}
+
+let swal = Swal.mixin({
+  heightAuto: false,
+  showConfirmButton: false,
+  allowEscapeKey: false,
+})
+
 class Runner {
-  constructor() {
+  constructor(canvasId = 'scratch-stage') {
+    console.log('create scratch runner')
     const vm = new VirtualMachine();
     Scratch.vm = vm
+    Scratch.runner = this
     this.vm = vm
     this.running = false
-    vm.setTurboMode(true);
-    var canvas = document.getElementById('scratch-stage');
+    // vm.setTurboMode(true);
+    // var canvas = document.getElementById(canvasId);
+    const canvas = document.createElement('canvas')
+    canvas.setAttribute('id', canvasId)
+    this.canvas = canvas
     const storage = new ScratchStorage();
-    // var AssetType = storage.AssetType;
-    // storage.addWebSource([AssetType.Project], getProjectUrl);
-    // storage.addWebSource([AssetType.ImageVector, AssetType.ImageBitmap, AssetType.Sound], getAssetUrl);
     vm.attachStorage(storage);
-    // const audioContext = new window.AudioContext()
-    // audioContext.resume().then(() => {
-    //   console.log('audioContext resumed')
-    // })
     vm.on('workspaceUpdate', function () {
-      swal("加载完成", {
-        // icon: "success",
-        button: false,
-      });
+      swal.fire("加载完成");
       setTimeout(function () {
-        // swal.close()
+        swal.close()
       }, 500);
       // vm.greenFlag();
+      const monitors = vm.runtime.getMonitorState()._list
+      for (let i = 0; i < monitors.size; i++) {
+        const monitor = monitors.get(i)[1];
+        console.log(monitor)
+        if (monitor.mode != 'list' && monitor.visible) {
+          const element = document.createElement('div')
+          element.classList.add('monitor-container')
+          element.setAttribute('id', 'monitor-' + i)
+          element.setAttribute('value', monitor.value)
+          // monitor.params.VARIABLE || monitor.id
+          var lable = monitor.params.VARIABLE || monitor.id
+          var type = 'addon'
+          if (monitor.params.VARIABLE) {
+            type = 'builtin'
+          }
+          if (monitor.mode == 'default' || monitor.mode == 'slider') {
+            element.innerHTML = `<span class="monitor-label">${lable}</span> <span class="monitor-value ${type}">${monitor.value}</span>`
+          } else if (monitor.mode == 'large') {
+            element.innerHTML = `<span class="monitor-large-value ${type}">${monitor.value}</span>`
+          }
+          element.style.top = monitor.y / 3.0 * 2 + 'px'
+          element.style.left = monitor.x / 3.0 * 2 + 'px'
+          document.querySelector('#monitor-list').appendChild(element)
+        }
+        Scratch.monitors = monitors
+      }
     })
 
     vm.on('PROJECT_RUN_START', () => {
@@ -45,81 +73,130 @@ class Runner {
       this.running = false
     })
 
-    var renderer = new ScratchRender(canvas);
+    vm.on('MONITORS_UPDATE', (monitorState) => {
+      // console.log('MONITORS_UPDATE', monitorState)
+      if (Scratch.monitors && Scratch.monitors.size > 0) {
+        const monitors = vm.runtime.getMonitorState()._list
+        for (let i = 0; i < monitors.size; i++) {
+          const monitorNew = monitors.get(i)[1];
+          const monitorOld = Scratch.monitors.get(i)[1]
+          if (monitorNew.visible && monitorNew.mode != 'list' && monitorNew.value != monitorOld.value) {
+            const element = document.querySelector(`#monitor-${i} .monitor-value`) || document.querySelector(`#monitor-${i} .monitor-large-value`)
+            if (element) {
+              element.textContent = monitorNew.value
+            }
+          }
+        }
+        Scratch.monitors = monitors
+      }
+
+    })
+
+    var renderer = new ScratchRender(this.canvas);
     Scratch.renderer = renderer;
     vm.attachRenderer(renderer);
     try {
-      var audioEngine = new AudioEngine();
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)()
+
+      var audioEngine = new AudioEngine(audioContext);
       vm.attachAudioEngine(audioEngine);
+      document.audioEngine = audioEngine
     } catch (error) {
       console.log(error)
     }
-
     vm.attachV2SVGAdapter(new ScratchSVGRenderer.SVGRenderer());
     vm.attachV2BitmapAdapter(new ScratchSVGRenderer.BitmapAdapter());
 
+    let touchData = {
+      start: { clientX: 0, clientY: 0 },
+      end: { clientX: 0, clientY: 0 },
+    }
+    function calculatePageMove() {
+      return
+    }
+
+    function postMouseData(e, keydown = null) {
+      if (window.location.hash.split('?')[0] != '#!/scratchRunner') {
+        return
+      }
+      const rect = canvas.getBoundingClientRect();
+      // console.log(e.clientX, e.clientY, rect.left, rect.top)
+      const data = {
+        y: e.clientX - rect.left,
+        x: 320 - (e.clientY - rect.top),
+        canvasHeight: rect.width,
+        canvasWidth: rect.height
+      };
+      if (keydown != null) {
+        data.isDown = keydown
+      }
+      // console.log(e, data)
+      Scratch.vm.postIOData('mouse', data);
+    }
+
     // Feed mouse events as VM I/O events.
     document.addEventListener('mousemove', e => {
-      const rect = canvas.getBoundingClientRect();
-      const coordinates = {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-        canvasWidth: rect.width,
-        canvasHeight: rect.height
-      };
-      Scratch.vm.postIOData('mouse', coordinates);
+      // console.log('mousemove')
+      postMouseData(e)
     });
-    canvas.addEventListener('mousedown', e => {
-      const rect = canvas.getBoundingClientRect();
-      const data = {
-        isDown: true,
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-        canvasWidth: rect.width,
-        canvasHeight: rect.height
-      };
-      Scratch.vm.postIOData('mouse', data);
-      e.preventDefault();
+    document.addEventListener('mousedown', e => {
+      console.log('mousedown')
+      postMouseData(e, true)
+      touchData.start = e
     });
-    canvas.addEventListener('mouseup', e => {
-      const rect = canvas.getBoundingClientRect();
-      const data = {
-        isDown: false,
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-        canvasWidth: rect.width,
-        canvasHeight: rect.height
-      };
-      Scratch.vm.postIOData('mouse', data);
-      e.preventDefault();
+    document.addEventListener("touchstart", e => {
+      console.log('touchstart', e)
+      touchData.start = e.touches[0]
+      postMouseData(e.touches[0], true)
+    })
+    document.addEventListener('mouseup', e => {
+      console.log('mouseup')
+      postMouseData(e, false)
+      touchData.end = e
+      if (window.location.hash.split('?')[0] != '#!/scratchRunner') {
+        calculatePageMove()
+        return
+      }
     });
-
+    document.addEventListener("touchend", e => {
+      console.log('touchend', e)
+      postMouseData(e.changedTouches[0], false)
+      touchData.end = e.changedTouches[0]
+      if (window.location.hash.split('?')[0] != '#!/scratchRunner') {
+        calculatePageMove()
+        return
+      }
+    })
     // Feed keyboard events as VM I/O events.
     document.addEventListener('keydown', e => {
       // Don't capture keys intended for Blockly inputs.
       if (e.target !== document && e.target !== document.body) {
         return;
       }
-      console.log(e)
-      if (e.keyCode == 69) { // S Stop
+
+      if (e.code == "KeyS") { // S Stop
         this.vm.stopAll()
         this.running = false
-      } else if (e.keyCode == 82) { // R Run
+      } else if (e.code == "KeyR") { // R Run
         this.vm.greenFlag()
         this.running = true
       }
 
+      console.log(e)
       Scratch.vm.postIOData('keyboard', {
-        key: e.key,
+        key: scratchKeyMap[e.key] ? scratchKeyMap[e.key] : e.key,
         isDown: true
       });
 
     });
     document.addEventListener('keyup', e => {
+      if (window.location.hash.split('?')[0] != '#!/scratchRunner') {
+        return
+      }
       // Always capture up events,
       // even those that have switched to other targets.
       Scratch.vm.postIOData('keyboard', {
-        key: e.key,
+        key: scratchKeyMap[e.key] ? scratchKeyMap[e.key] : e.key,
         isDown: false
       });
 
@@ -132,8 +209,9 @@ class Runner {
     vm.start()
   }
   loadProjectFromFile(path) {
-    swal("程序加载中", {
-      button: false,
+    swal.fire({
+      title: "程序加载中",
+      showConfirmButton: false,
     });
     var buffer = fs.readFileSync(path);
     console.log(buffer)
@@ -141,9 +219,11 @@ class Runner {
 
   }
   loadProjectFromUrl(url) {
-    swal("程序加载中", {
-      button: false,
+    swal.fire({
+      title: "程序加载中",
+      showConfirmButton: false,
     });
+
     JSZipUtils.getBinaryContent(url, (err, data) => {
       console.log(data)
       this.vm.loadProject(data)
@@ -151,12 +231,7 @@ class Runner {
   }
 }
 
-navigator.getUserMedia({ audio: true }, function (stream) {
-  const runner = new Runner()
-  runner.loadProjectFromUrl('http://localhost:8000/explore/Desktop/乐派/hello.sb3')
-  // console.log(getUrlParam('path'))
-}, function (err) {
-  console.log(err)
-  const runner = new Runner()
-  runner.loadProjectFromUrl('http://localhost:8000/explore/Desktop/乐派/hello.sb3')
-})
+
+const runner = Scratch.runner || new Runner()
+runner.loadProjectFromUrl('/explore/Scratch/debug.sb3')
+

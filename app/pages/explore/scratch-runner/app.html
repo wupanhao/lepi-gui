@@ -9,32 +9,131 @@
     #scratch-stage {
       width: 320px;
       height: 240px;
+      z-index: -1;
+      position: absolute;
+      /* transform: rotateX(180deg); */
+      /* 
+          transform: rotate(-90deg);
+          left: -40px;
+          top: 40px; 
+          */
+    }
+
+    #scratch {
+      overflow: hidden;
+      margin: 0px;
+      padding: 0px;
+      width: 320px;
+      height: 240px;
       transform: rotate(-90deg);
       position: absolute;
       left: -40px;
       top: 40px;
+      /* cursor: none; */
     }
 
-    body {
+    #monitor-list {
+      width: 320px;
+      height: 240px;
+      transform: rotate(-90deg);
+      position: absolute;
+      left: -40px;
+      top: 40px;
+      /* border: black 1px solid; */
+      background-color: transparent;
+      z-index: 42;
+    }
+
+
+    .monitor-container {
+      position: absolute;
+      background: var(--ui-primary);
+      z-index: var(--z-index-monitor);
+      border: 1px solid var(--ui-black-transparent);
+      border-radius: calc(var(--space) / 2);
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 0.75rem;
+      transition: box-shadow 0.2s;
+      pointer-events: all;
       overflow: hidden;
-      margin: 0px;
-      padding: 0px;
-      cursor: none;
+    }
+
+    .default-monitor {
+      display: flex;
+      flex-direction: column;
+      padding: 3px;
+    }
+
+    .monitor-label {
+      font-weight: bold;
+      text-align: center;
+      margin: 0 0 0 2px;
+      color: black;
+    }
+
+    .monitor-value {
+      min-width: 40px;
+      text-align: center;
+      color: white;
+      margin: 0 2px 0 0;
+      /* top right bottom left */
+      border-radius: calc(var(--space) / 2);
+      padding: 0 2px;
+      white-space: pre-wrap;
+      transform: translateZ(0);
+      /* Fixes flickering in Safari */
+    }
+
+    .monitor-container .builtin {
+      background: rgb(255, 140, 26);
+    }
+
+    .monitor-container .addon {
+      background: rgb(15, 189, 140);
+    }
+
+    .monitor-large-value {
+      min-height: 1.4rem;
+      min-width: 3rem;
+      padding: 0.1rem 0.25rem;
+      text-align: center;
+      color: white;
+      font-size: 1rem;
+      white-space: pre-wrap;
+      transform: translateZ(0);
+      /* Fixes flickering in Safari */
+    }
+
+    .monitor {
+      color: rgb(43, 156, 99);
+      display: block;
+      position: absolute;
+      z-index: 38;
+      background-color: black;
     }
   </style>
+  <link rel="stylesheet" href="./scratch-runner.css">
+  <link rel="stylesheet" href="../../../node_modules/sweetalert2/dist/sweetalert2.min.css">
 </head>
 
 <body>
-  <canvas id="scratch-stage"></canvas>
-  <!-- <div id="blocks"></div> -->
+
+  <div id="monitor-list">
+    <!-- <div class="monitor-container">
+        <div class="monitor-label"></div>
+        <div class="monitor-value"></div>
+    </div> -->
+  </div>
+  <div id="scratch">
+  </div>
   <!-- Playground -->
-  <script src="../../../lib/sweetalert/dist/sweetalert.min.js"></script>
-  <script src="../../../lib/jszip-utils/dist/jszip-utils.js"></script>
-  <script src="../../../lib/scratch-audio/dist.js"></script>
-  <script src="../../../lib/scratch-render/dist/web/scratch-render.js"></script>
-  <script src="../../../lib/scratch-svg-renderer/dist/web/scratch-svg-renderer.js"></script>
-  <script src="../../../lib/scratch-storage/dist/web/scratch-storage.js"></script>
-  <script src="../../../lib/scratch-vm/dist/web/scratch-vm.js"></script>
+  <script src="../../../node_modules/sweetalert2/dist/sweetalert2.min.js"></script>
+  <script src="../../../node_modules/jszip-utils/dist/jszip-utils.js"></script>
+  <script src="../../../node_modules/scratch-render/dist/web/scratch-render.js"></script>
+  <script src="../../../node_modules/scratch-svg-renderer/dist/web/scratch-svg-renderer.js"></script>
+  <script src="../../../node_modules/scratch-storage/dist/web/scratch-storage.js"></script>
+  <script src="../../../node_modules/scratch-vm/dist/web/scratch-vm.js"></script>
+  <script src="../../../assets/js/scratch-audio.js"></script>
 
   <script src="./runner.js"></script>
 </body>

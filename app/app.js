@@ -91,52 +91,7 @@ function changeMenuActive(j) {
     })
 }
 
-let shutdown_timer = null
-function btnHandler2(message) {
-    console.log(message)
-    let ele = swal.getTitle()
-    let shutdown_request = swal.isVisible() && ele && ele.textContent.indexOf("关机") >= 0
-    let code = keyCodeMap[message.value]
 
-    if (shutdown_request && message.type == 1) {
-        if (code == 'S' || code == 'Enter') {
-            console.log('shutdown')
-            swal.fire({
-                title: "正在关机",
-            });
-            axios.get('/system/halt')
-
-            // window.ros.systemPoweroff().then(() => {
-            //     console.log('systemPoweroff responsed')
-            // })
-        }
-    } else if (code == 'S' && message.type == 1) {
-        shutdown_timer = setTimeout(() => {
-            swal.fire({
-                title: '关机?',
-            })
-        }, 3000)
-    }
-
-    if (code == 'S' && message.type == 3) {
-        if (shutdown_request) {
-
-        } else {
-            axios.get('/system/closeTerminal').then(res => {
-                console.log(res.data)
-                axios.get('/system/stopAll')
-            })
-            // swal.close()
-            try {
-                clearTimeout(shutdown_timer)
-                shutdown_timer = null
-            } catch (error) {
-                console.log(error)
-            }
-        }
-
-    }
-}
 
 function btnHandler(message) {
     console.log(message)
@@ -245,7 +200,7 @@ angular.module('myApp', [
         $locationProvider.hashPrefix('!');
         $routeProvider.otherwise({ redirectTo: '/index' });
     }])
-    .controller('App', function ($rootScope, $location, $http) {
+    .controller('App', function ($rootScope, $location, $http, $route) {
         console.log('call only once')
         window.$rootScope = $rootScope
         $rootScope.debug = false
@@ -353,6 +308,77 @@ angular.module('myApp', [
             setTimeout(() => {
                 $rootScope.ros.conectToRos(onConnected, onConnectFail)
             }, 3000)
+        }
+
+
+        let shutdown_timer = null
+        let btnHandler2 = (message) => {
+            console.log(message)
+
+            if (message.value == 1) {
+                // Debug Run
+                // console.log($location)
+
+                if (window.location.hash.split('?')[0] != '#!/scratchRunner') {
+                    $location.url('/scratchRunner?src=/explore/Scratch/debug.sb3');
+                    $rootScope.$apply();
+                } else {
+                    $route.reload();
+                    // $rootScope.$apply();
+                }
+
+
+
+                // $state.go('#!/scratchRunner?src=/explore/Scratch/debug.sb3');
+                // $window.open('#!/scratchRunner?src=/explore/Scratch/debug.sb3', '_self')
+                // $location.path('#!/scratchRunner?src=/explore/Scratch/debug.sb3').replace()
+                // window.location.assign('#!/scratchRunner?src=/explore/Scratch/debug.sb3')
+                return
+            }
+
+
+            let ele = swal.getTitle()
+            let shutdown_request = swal.isVisible() && ele && ele.textContent.indexOf("关机") >= 0
+            let code = keyCodeMap[message.value]
+
+            if (shutdown_request && message.type == 1) {
+                if (code == 'S' || code == 'Enter') {
+                    console.log('shutdown')
+                    swal.fire({
+                        title: "正在关机",
+                    });
+                    axios.get('/system/halt')
+
+                    // window.ros.systemPoweroff().then(() => {
+                    //     console.log('systemPoweroff responsed')
+                    // })
+                }
+            } else if (code == 'S' && message.type == 1) {
+                shutdown_timer = setTimeout(() => {
+                    swal.fire({
+                        title: '关机?',
+                    })
+                }, 3000)
+            }
+
+            if (code == 'S' && message.type == 3) {
+                if (shutdown_request) {
+
+                } else {
+                    axios.get('/system/closeTerminal').then(res => {
+                        console.log(res.data)
+                        axios.get('/system/stopAll')
+                    })
+                    // swal.close()
+                    try {
+                        clearTimeout(shutdown_timer)
+                        shutdown_timer = null
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }
+
+            }
         }
 
         $http.get('/system/hardware_model').then(res => {

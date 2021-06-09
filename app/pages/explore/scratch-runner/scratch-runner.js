@@ -127,7 +127,7 @@ class Runner {
         return
       }
       const rect = canvas.getBoundingClientRect();
-      console.log(e.clientX, e.clientY, rect.left, rect.top)
+      // console.log(e.clientX, e.clientY, rect.left, rect.top)
       const data = {
         y: e.clientX - rect.left,
         x: 320 - (e.clientY - rect.top),
@@ -137,13 +137,13 @@ class Runner {
       if (keydown != null) {
         data.isDown = keydown
       }
-      console.log(e, data)
+      // console.log(e, data)
       Scratch.vm.postIOData('mouse', data);
     }
 
     // Feed mouse events as VM I/O events.
     document.addEventListener('mousemove', e => {
-      console.log('mousemove')
+      // console.log('mousemove')
       postMouseData(e)
     });
     document.addEventListener('mousedown', e => {

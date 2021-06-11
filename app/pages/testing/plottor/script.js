@@ -371,6 +371,8 @@ angular.module('myApp.plottor', ['ngRoute'])
 
     $scope.selected = ''
 
+    let updateFreq = [1000 * 30, 1000 * 5, 1000 / 2.0, 1000 / 15.0, 1000 / 30.0]
+    let updateMode = 3
     let timer = null
 
     function tryClearInterval() {
@@ -395,7 +397,7 @@ angular.module('myApp.plottor', ['ngRoute'])
             tryClearInterval()
             return
           }
-        }, 66)
+        }, updateFreq[updateMode])
       }
     }
 
@@ -417,6 +419,11 @@ angular.module('myApp.plottor', ['ngRoute'])
                 let B = value >> 16 & 0xFF
                 let A = value >> 24 & 0xFF
                 setupOrUpdate({ R, G, B, A })
+              } else if (type == 35) {
+                let active = (value >> 31) & 0x01
+                let env = ((value >> 16) & 0x7fff) / 100.0
+                let meas = (value & 0xffff) / 100.0
+                setupOrUpdate({ active, env, meas })
               } else {
                 setupOrUpdate({ value })
               }
@@ -437,6 +444,7 @@ angular.module('myApp.plottor', ['ngRoute'])
     }
 
     function switchDataSource(item) {
+
       changePlotType('xt');
 
       switch (item) {
@@ -618,6 +626,39 @@ angular.module('myApp.plottor', ['ngRoute'])
       },
 
     ]
+
+    const localHandler = (e) => {
+      var i = $scope.activeId
+      switch (e.code) {
+        case "ArrowLeft":
+          if (updateMode > 0) {
+            updateMode--
+          }
+
+          break;
+        case "ArrowRight":
+          if (updateMode < updateFreq.length - 1) {
+            updateMode++
+          }
+          break;
+        default:
+          return false
+      }
+      swal.fire({
+        title: `数据更新间隔:${parseInt(updateFreq[updateMode])}ms`,
+        timer: 1500,
+      })
+      if ($scope.selected > 0) {
+        switchDataSource(`传感器S${$scope.selected}`)
+      } else {
+        switchDataSource($scope.selected)
+      }
+      console.log($scope.selected)
+      return true
+    }
+
+    $rootScope.localHandler[$location.path()] = localHandler
+
     $rootScope.updatePageInfo()
 
     reset()

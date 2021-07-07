@@ -83,6 +83,10 @@ angular.module('myApp.explore', ['ngRoute'])
                                 imageUrl = `assets/themes/${iconTheme}/icon-shell.png`
                                 api = encodeURI(`/system/execFile?path=${path}`)
                                 break
+                            case 'js':
+                                imageUrl = `assets/themes/${iconTheme}/icon-shell.png`
+                                api = encodeURI(`/system/execFile?path=${path}`)
+                                break
                             case 'png':
                             case 'jpg':
                             case 'svg':

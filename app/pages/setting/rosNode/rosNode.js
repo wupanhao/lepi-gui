@@ -13,7 +13,7 @@ angular.module('myApp.rosNode', ['ngRoute'])
         $rootScope.show_header = true
         $rootScope.show_footer = true
         $rootScope.title = '节点管理'
-        $rootScope.rowNum = 6
+        $rootScope.rowNum = 8
         $rootScope.colNum = 1
         $rootScope.items = []
         $rootScope.show = []

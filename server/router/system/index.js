@@ -105,7 +105,9 @@ function executeTerminal(file) {
 		param = `python ${file};bash"`
 	} else if (extname == '.sh') {
 		param = `bash ${file};bash"`
-	} else {
+	} else if (extname == '.js') {
+		param = `source ~/nodejs.sh && node ${file};bash"`
+	}else {
 		param = `${file}"`
 	}
 

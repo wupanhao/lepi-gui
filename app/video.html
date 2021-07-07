@@ -104,7 +104,7 @@
                     }
                     content = ''
                     topics.map(topic => {
-                        content += `<option value="${topic}">${topic_maps[topic]}</option>`
+                        content += `<option value="${topic}">${topic_maps[topic] ? topic_maps[topic] : topic}</option>`
                     })
                     ele.innerHTML = content
                     try {

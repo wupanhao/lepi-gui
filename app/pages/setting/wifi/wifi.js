@@ -27,7 +27,7 @@ angular.module('myApp.wifi', ['ngRoute'])
                     item.ssid = decodeURI(item.ssid.split('\\x').join('%'))
                     return item
                 })
-                $rootScope.rowNum = 6
+                $rootScope.rowNum = 8
                 $rootScope.colNum = 1
                 $rootScope.updatePageInfo()
             }, (err) => {

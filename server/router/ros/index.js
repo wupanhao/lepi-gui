@@ -84,10 +84,16 @@ const rosnodes = {
     cmd: `${prefix} roslaunch pi_driver joystick_node.launch" `,
     auto_start: false
   },
+  '/ubiquityrobot/pupper_driver_node': {
+    name: 'pupper_driver_node',
+    text: '四足机器人',
+    cmd: `${prefix} roslaunch pi_robot pupper_driver_node.launch" `,
+    auto_start: false
+  },
   '/ubiquityrobot/hexapod_driver_node': {
     name: 'hexapod_driver_node',
     text: '六足机器人',
-    cmd: `${prefix} roslaunch hexapod_controller hexapod_driver_node.launch" `,
+    cmd: `${prefix} roslaunch pi_robot hexapod_driver_node.launch" `,
     auto_start: false
   },
 }

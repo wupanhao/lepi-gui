@@ -99,16 +99,18 @@ function executeTerminal(file) {
 	console.log(file)
 
 	var extname = path.extname(file)
-	var cmd = 'DISPLAY=:0.1 konsole --hide-menubar -p TerminalRows=19 -p TerminalColumns=34 -e bash -c "xdotool mousemove --screen 1  120 300 click 1 ;'
+	var dir = path.dirname(file)
+	var filename = path.basename(file)
+	var cmd = `DISPLAY=:0.1 konsole --hide-menubar -p TerminalRows=19 -p TerminalColumns=34 -e bash -c "xdotool mousemove --screen 1  120 300 click 1 ; cd ${dir} && `
 	// var cmd = 'x-terminal-emulator'
 	if (extname == '.py') {
-		param = `python ${file};bash"`
+		param = `python ${filename};bash"`
 	} else if (extname == '.sh') {
-		param = `bash ${file};bash"`
+		param = `bash ${filename};bash"`
 	} else if (extname == '.js') {
-		param = `source ~/nodejs.sh && node ${file};bash"`
-	}else {
-		param = `${file}"`
+		param = `source ~/nodejs.sh && node ${filename};bash"`
+	} else {
+		param = `./${filename};bash"`
 	}
 
 	if (my_process && !my_process.killed) {

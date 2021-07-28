@@ -25,8 +25,9 @@ function createDirectory() {
     mkdirIfNotExists(path.join(save_dir, 'Recording'))
     mkdirIfNotExists(path.join(save_dir, 'nes'))
     mkdirIfNotExists(path.join(save_dir, 'ros/smart_audio_node/'))
+    mkdirIfNotExists(path.join(save_dir, 'ros/learning_machine/image'))
+    mkdirIfNotExists(path.join(save_dir, 'ros/learning_machine/audio'))
 }
-
 createDirectory()
 
 // watchFile(temp_dir)
@@ -95,15 +96,25 @@ const saveStorage = multer.diskStorage({
             cb(null, path.join(save_dir, 'Recording'))
         } else if (path.extname(file.originalname) == '.nes-save') {
             cb(null, path.join(save_dir, 'nes'))
-		} else if (path.extname(file.originalname) == '.bnf') {
-			cb(null, path.join(save_dir, 'ros/smart_audio_node/'))
-		} else {
+        } else if (path.extname(file.originalname) == '.bnf') {
+            cb(null, path.join(save_dir, 'ros/smart_audio_node/'))
+        } else if (path.extname(file.originalname) == '.zip-ml-image') {
+            cb(null, path.join(save_dir, 'ros/learning_machine/image'))
+        } else if (path.extname(file.originalname) == '.zip-ml-audio') {
+            cb(null, path.join(save_dir, 'ros/learning_machine/audio'))
+        } else {
             cb(null, temp_dir)
         }
     },
     filename: function (req, file, cb) {
         // console.log(file)
-        cb(null, file.originalname)
+        if (path.extname(file.originalname) == '.zip-ml-image') {
+            cb(null, file.originalname.replace('zip-ml-image', 'zip'))
+        } else if (path.extname(file.originalname) == '.zip-ml-audio') {
+            cb(null, file.originalname.replace('zip-ml-audio', 'zip'))
+        } else {
+            cb(null, file.originalname)
+        }
         // cb(null, Date.now() + '-' + file.originalname)
     }
 })

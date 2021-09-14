@@ -5,6 +5,7 @@ sudo cp ./conf/sitecustomize.py /usr/lib/python2.7/
 
 # pi4_driver_node
 pip install evdev
+pip3 install evdev
 
 # camera node
 sudo apt install -y python-cv-bridge python-opencv fonts-wqy-zenhei

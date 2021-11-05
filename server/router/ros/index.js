@@ -168,7 +168,7 @@ function startPiDriver() {
 }
 
 function startPiServer() {
-  if (os.arch() != 'arm') {
+  if (os.arch().indexOf('arm') < 0) {
     console.log('on PC, ignore')
     return
   }

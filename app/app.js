@@ -529,6 +529,7 @@ angular.module('myApp', [
                         // $rootScope.est_power = data.est_power
                     }
                     // low power shutdown
+                    return
                     if (data.est_power <= 15 && data.charging == 0) {
                         swal.fire({
                             title: "电量过低",

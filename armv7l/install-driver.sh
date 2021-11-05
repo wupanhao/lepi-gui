@@ -2,7 +2,7 @@
 cat /boot/config.txt | grep tft9341
 if [ $? -ne 0 ]; then
   echo "LCD Driver not install, install now"
-  cd ~/workspace/lepi-gui
+  cd ~/workspace/lepi-gui/armv7l
   bash install-lcd.sh
 else
   echo "LCD Driver installed, ignore"
@@ -23,7 +23,8 @@ if [ $? -ne 0 ]; then
   cd ~/workspace
   git clone https://github.com/respeaker/seeed-voicecard
   cd ~/workspace/seeed-voicecard
-  sudo ./install.sh --compat-kernel
+  sudo ./install.sh
+  #sudo ./install.sh --compat-kernel
 else
   echo "WM8960 Audio Driver installed, ignore"
 fi

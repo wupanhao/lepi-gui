@@ -12,27 +12,33 @@ sudo apt install -y python-cv-bridge python-opencv fonts-wqy-zenhei
 
 # apriltag node
 sudo apt install -y libopenblas-base liblapack-dev
+sudo apt install -y libatlas3-base libgfortran5
 pip install dt-apriltags scipy
 
 # pi_ai module #https://www.tensorflow.org/lite/guide/python
 # pip3 install https://dl.google.com/coral/python/tflite_runtime-2.1.0.post1-cp37-cp37m-linux_armv7l.whl
 # edge tpu #https://coral.ai/docs/accelerator/get-started/#1-install-the-edge-tpu-runtime
-echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | sudo tee /etc/apt/sources.list.d/coral-edgetpu.list
-curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-sudo apt update && sudo apt install -y libedgetpu1-std python3-tflite-runtime
+#echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | sudo tee /etc/apt/sources.list.d/coral-edgetpu.list
+#curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+#sudo apt update && sudo apt install -y libedgetpu1-std python3-tflite-runtime
+#sudo rm /etc/apt/sources.list.d/coral-edgetpu.list
 
 # ultra_face_inference_node
 sudo apt install -y libatlas-base-dev
-pip3 install opencv-python pyyaml
+pip3 install --upgrade numpy
+pip3 install opencv-python==4.5.3.56 pyyaml
 sudo apt install -y python3-rospkg python3-cv-bridge libjasper1
 
 # face recognize node
 pip install face_recognition
 
 # text recognize and barcode_scanner node
-pip install pytesseract pyzbar
+pip3 install pytesseract pyzbar
 sudo apt install -y tesseract-ocr tesseract-ocr-chi-sim tesseract-ocr-chi-tra
 #pip install pytesseract pyzbar # for python
+
+# smart audio node
+sudo apt install mpg123 python3-pyaudio
 
 # run python and emulate input
 sudo apt install -y konsole xdotool

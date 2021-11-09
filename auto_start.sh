@@ -3,4 +3,4 @@ mkdir -p ~/.config/autostart
 cp ./conf/gui.desktop ~/.config/autostart/
 cp ./conf/start.sh ~/
 chmod +x ~/start.sh
-cp ./conf/nodejs.sh ~/
+#cp ./conf/nodejs.sh ~/

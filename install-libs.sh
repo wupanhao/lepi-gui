@@ -43,6 +43,10 @@ sudo apt install mpg123 python3-pyaudio
 # run python and emulate input
 sudo apt install -y konsole xdotool
 
+# pi robot
+ln -s /home/pi/workspace/lepi-ros-server/catkin_ws/src/pi_robot/include/hexapod_controller ~/Lepi_Data
+ln -s /home/pi/workspace/lepi-ros-server/catkin_ws/src/pi_robot/include/pupper_controller ~/Lepi_Data
+
 # MNN
 # ./configure CFLAGS="-fPIC" CXXFLAGS="-fPIC" 重新编译protobuf
 # 编译MNN不要tools

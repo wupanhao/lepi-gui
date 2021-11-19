@@ -257,12 +257,17 @@ router.get('/kill', function (req, res) {
 
 router.get('/launch', function (req, res) {
   const nodeName = req.query['name']
+  const force = req.query['force']
   if (!nodeName) {
     res.json({ msg: '参数未提供:name', code: -1 })
     return
   }
   if (nodeInfo[nodeName]) {
-    if (nodeInfo[nodeName].status != '已停止') {
+    if (force && force == 'true'){
+      // 强制重启
+      console.log('强制重启')
+    }
+    else if (nodeInfo[nodeName].status != '已停止') {
       res.json({ msg: '节点已启动:' + nodeName, code: -22 })
       return
     }

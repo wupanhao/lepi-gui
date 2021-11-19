@@ -41,7 +41,7 @@ touch /home/pi/Lepi_Data/.variable.yaml
 node -v
 if [ $? -ne 0 ]; then
   echo "nodejs not install, install now"
-  cd ~/workspace/lepi-gui
+  cd ~/workspace/lepi-gui/armv7l
   bash install-nodejs.sh
 else
   echo "nodejs installed, ignore"

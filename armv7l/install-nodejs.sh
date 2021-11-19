@@ -30,6 +30,6 @@ function install_from_wget(){
 }
 # install_from_apt
 install_from_wget
-npm i -g electron@7.0.0
+npm i -g electron
 npm i -g yarn
 #npm i -g electron-rebuild

@@ -125,6 +125,22 @@ angular.module('myApp.rosNode', ['ngRoute'])
                         }
                     })
                 }
+            },
+            {
+                text: '强制重启',
+                callback: () => {
+                    const i = $rootScope.itemIndex
+                    const name = $rootScope.show[i].name
+                    console.log('强制重启' + name)
+                    swal.fire('重启中，请稍等')
+                    $http.get(`/rosNode/launch?name=${name}&force=true`).then(res => {
+                        const data = res.data
+                        if (data.code == 0) {
+                            updateNodeStatus()
+                            setTimeout(swal.close, 1000)
+                        }
+                    })
+                }
             }
         ]
 

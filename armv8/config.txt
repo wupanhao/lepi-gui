@@ -5,10 +5,6 @@
 # uncomment if you get no picture on HDMI for a default "safe" mode
 #hdmi_safe=1
 
-# uncomment this if your display has a black border of unused pixels visible
-# and your display can output without overscan
-#disable_overscan=1
-
 # uncomment the following to adjust overscan. Use positive numbers if console
 # goes off screen, and negative if there is too much border
 #overscan_left=16
@@ -40,13 +36,12 @@
 #sdtv_mode=2
 
 #uncomment to overclock the arm. 700 MHz is the default.
-#arm_freq=1800
-#over_voltage=6
+#arm_freq=800
 
 # Uncomment some or all of these to enable the optional hardware interfaces
 dtparam=i2c_arm=on
-#dtparam=i2s=on
-#dtparam=spi=on
+dtparam=i2s=on
+dtparam=spi=on
 
 # Uncomment this to enable infrared communication.
 #dtoverlay=gpio-ir,gpio_pin=17
@@ -57,23 +52,48 @@ dtparam=i2c_arm=on
 # Enable audio (loads snd_bcm2835)
 dtparam=audio=on
 
+# Automatically load overlays for detected cameras
+camera_auto_detect=1
+
+# Automatically load overlays for detected DSI displays
+# display_auto_detect=1
+
+# Enable DRM VC4 V3D driver
+# dtoverlay=vc4-kms-v3d
+max_framebuffers=2
+
+# Run in 64-bit mode
+arm_64bit=1
+
+# Disable compensation for displays with overscan
+disable_overscan=1
+
+[cm4]
+# Enable host mode on the 2711 built-in XHCI USB controller.
+# This line should be removed if the legacy DWC2 controller is required
+# (e.g. for USB device mode) or if USB support is not required.
+otg_mode=1
+
+[pi3]
+dtoverlay=tft9341-lcd:rotate=0
+dtoverlay=gpio-poweroff
+
 [pi4]
 # Enable DRM VC4 V3D driver on top of the dispmanx display stack
-#dtoverlay=vc4-fkms-v3d
-#max_framebuffers=2
+# dtoverlay=vc4-fkms-v3d
+# max_framebuffers=2
+dtoverlay=tft9341:rotate=0
 dtoverlay=uart3
-dtoverlay=dwc2,dr_mode=host
+#dtoverlay=dwc2,dr_mode=host
 enable_uart=1
 dtoverlay=gpio-poweroff,gpiopin=6,active_low
-gpio=14=op,dl
-
+gpio=14=op,dh
+dtparam=ant2
+#arm_freq=2000
+#over_voltage=6
+# Run as fast as firmware / board allows
+arm_boost=1
 
 [all]
-#dtoverlay=vc4-fkms-v3d
-#hdmi_force_hotplug=1
-dtparam=i2c_arm=on
-dtparam=spi=on
-enable_uart=1
-dtoverlay=tft9341:rotate=0
 dtoverlay=i2s-mmap
 dtparam=i2s=on

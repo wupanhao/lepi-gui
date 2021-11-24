@@ -12,6 +12,10 @@ try {
 	console.log('no local setting found')
 	console.log(env)
 }
-
-
+/*
+export ELECTRON_GET_USE_PROXY=1 # 值为1或true
+export GLOBAL_AGENT_HTTP_PROXY=http://192.168.50.243:10809
+export GLOBAL_AGENT_HTTPS_PROXY=https://192.168.50.243:10809
+*/
+// export ELECTRON_MIRROR="https://npm.taobao.org/mirrors/electron/"
 module.exports = env

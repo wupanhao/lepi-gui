@@ -44,7 +44,7 @@ let devInfo = {
 
 function measureTemp(callback) {
 	var regex = /temp=([^'C]+)/;
-	var cmd = ChildProcess.spawn("/opt/vc/bin/vcgencmd", ["measure_temp"]);
+	var cmd = ChildProcess.spawn("/usr/bin/vcgencmd", ["measure_temp"]);
 
 	cmd.stdout.on("data", function (buf) {
 		callback(null, parseFloat(regex.exec(buf.toString("utf8"))[1]));

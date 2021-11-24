@@ -1,6 +1,7 @@
 sudo mkdir -p /etc/X11/xorg.conf.d/
-sudo cp ../conf/99-calibration.conf /etc/X11/xorg.conf.d/99-calibration.conf
-sudo cp ../conf/99-fbturbo.conf /usr/share/X11/xorg.conf.d/99-fbturbo.conf
+
+sudo cp ./99-calibration.conf /etc/X11/xorg.conf.d/99-calibration.conf
+sudo cp ./99-fbturbo.conf /etc/X11/xorg.conf.d/99-fbturbo.conf
 # both lcd and touch panel driver
 sudo cp ./tft9341.dtbo /boot/overlays/tft9341.dtbo
 

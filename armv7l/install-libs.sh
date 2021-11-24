@@ -18,10 +18,11 @@ pip install dt-apriltags scipy
 # pi_ai module #https://www.tensorflow.org/lite/guide/python
 # pip3 install https://dl.google.com/coral/python/tflite_runtime-2.1.0.post1-cp37-cp37m-linux_armv7l.whl
 # edge tpu #https://coral.ai/docs/accelerator/get-started/#1-install-the-edge-tpu-runtime
-#echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | sudo tee /etc/apt/sources.list.d/coral-edgetpu.list
-#curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-#sudo apt update && sudo apt install -y libedgetpu1-std python3-tflite-runtime
-#sudo rm /etc/apt/sources.list.d/coral-edgetpu.list
+echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | sudo tee /etc/apt/sources.list.d/coral-edgetpu.list
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+sudo apt update
+sudo apt install -y libedgetpu1-std python3-tflite-runtime
+sudo rm /etc/apt/sources.list.d/coral-edgetpu.list
 
 # ultra_face_inference_node
 sudo apt install -y libatlas-base-dev
@@ -46,7 +47,8 @@ sudo apt install -y konsole xdotool
 # pi robot
 ln -s /home/pi/workspace/lepi-ros-server/catkin_ws/src/pi_robot/include/hexapod_controller ~/Lepi_Data
 ln -s /home/pi/workspace/lepi-ros-server/catkin_ws/src/pi_robot/include/pupper_controller ~/Lepi_Data
-
+pip install transforms3d
+pip3 install transforms3d
 # MNN
 # ./configure CFLAGS="-fPIC" CXXFLAGS="-fPIC" 重新编译protobuf
 # 编译MNN不要tools

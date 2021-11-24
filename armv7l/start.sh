@@ -11,7 +11,7 @@ else
 fi
 xset dpms 0 0 0
 xset s off
-bash -c "source /home/pi/nodejs.sh && source /home/pi/workspace/lepi-gui/env.sh && electron  /home/pi/workspace/lepi-gui/server/server.js > /tmp/gui.log &"
+bash -c "source /home/pi/nodejs.sh && source /home/pi/env.sh && electron  /home/pi/workspace/lepi-gui/server/server.js > /tmp/gui.log &"
 #docker run -t -v /home/pi:/home/pi --net host --privileged --rm --name lepi_server wupanhao/lepi_server:melodic bash -c "source env.sh && roslaunch pi_driver lepi_server.launch" > /tmp/lepi_server.log &
 #sleep 10
 #DISPLAY=:0.1 bash -c "source /home/pi/workspace/lepi-gui/ros_env.sh && roslaunch pi_driver lepi_host.launch " > /tmp/lepi_host.log &

@@ -7,7 +7,7 @@ const router = express.Router();
 
 // const ns = '/variable'
 
-const prefix = `bash -c "source ${os.homedir()}/workspace/lepi-gui/env.sh && `
+const prefix = `bash -c "source ${os.homedir()}/env.sh && `
 // const prefix = 'docker exec -t lepi_server bash -c "source env.sh && '
 
 const rosnodes = {
@@ -186,7 +186,7 @@ function startPiServer() {
           cmd += ` ${nodeInfo[key].name}:=True`
         }
       }
-      cmd = `bash -c "source ${os.homedir()}/workspace/lepi-gui/env.sh && ${cmd}" > /tmp/lepi_server.log`
+      cmd = `${prefix} ${cmd}" > /tmp/lepi_server.log`
       console.log(cmd)
       const child = ChildProcess.spawn(cmd, {
         // const child = ChildProcess.spawn(`docker run -t -v /home/pi:/home/pi --rm --net host --privileged --name lepi_server wupanhao/lepi_driver bash -c "source ${os.homedir()}/workspace/lepi-ros-server/env.sh && roslaunch pi_driver lepi_server.launch" > /tmp/lepi_server.log &`, {

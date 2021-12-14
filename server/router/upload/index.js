@@ -27,6 +27,7 @@ function createDirectory() {
     mkdirIfNotExists(path.join(save_dir, 'ros/smart_audio_node/'))
     mkdirIfNotExists(path.join(save_dir, 'ros/learning_machine/image'))
     mkdirIfNotExists(path.join(save_dir, 'ros/learning_machine/audio'))
+    mkdirIfNotExists(path.join(save_dir, 'ros/learning_machine/pose'))
 }
 createDirectory()
 
@@ -102,6 +103,8 @@ const saveStorage = multer.diskStorage({
             cb(null, path.join(save_dir, 'ros/learning_machine/image'))
         } else if (path.extname(file.originalname) == '.zip-ml-audio') {
             cb(null, path.join(save_dir, 'ros/learning_machine/audio'))
+        } else if (path.extname(file.originalname) == '.zip-ml-pose') {
+            cb(null, path.join(save_dir, 'ros/learning_machine/pose'))
         } else {
             cb(null, temp_dir)
         }
@@ -112,6 +115,8 @@ const saveStorage = multer.diskStorage({
             cb(null, file.originalname.replace('zip-ml-image', 'zip'))
         } else if (path.extname(file.originalname) == '.zip-ml-audio') {
             cb(null, file.originalname.replace('zip-ml-audio', 'zip'))
+        } else if (path.extname(file.originalname) == '.zip-ml-pose') {
+            cb(null, file.originalname.replace('zip-ml-pose', 'zip'))
         } else {
             cb(null, file.originalname)
         }

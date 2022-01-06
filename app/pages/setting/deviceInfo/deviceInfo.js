@@ -3,7 +3,7 @@
 function secondsTotimePast(seconds) {
     const m_total = Math.floor(seconds / 60)
     const h_total = Math.floor(m_total / 60)
-    const d_total = Math.floor(h_total / 60)
+    const d_total = Math.floor(h_total / 24)
     return `${d_total}天${h_total % 24}时${m_total % 60}分`
 }
 

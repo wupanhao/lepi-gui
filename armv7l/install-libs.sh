@@ -47,8 +47,8 @@ sudo apt install -y konsole xdotool
 # pi robot
 ln -s /home/pi/workspace/lepi-ros-server/catkin_ws/src/pi_robot/include/hexapod_controller ~/Lepi_Data
 ln -s /home/pi/workspace/lepi-ros-server/catkin_ws/src/pi_robot/include/pupper_controller ~/Lepi_Data
-pip install transforms3d
-pip3 install transforms3d
+pip install transforms3d flask-cors
+pip3 install transforms3d flask-cors
 # MNN
 # ./configure CFLAGS="-fPIC" CXXFLAGS="-fPIC" 重新编译protobuf
 # 编译MNN不要tools

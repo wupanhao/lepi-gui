@@ -78,6 +78,18 @@ const rosnodes = {
     cmd: `${prefix} roslaunch pi_ai image_classifier_node.launch" `,
     auto_start: true
   },
+  '/ubiquityrobot/hand_detector_node': {
+    name: 'hand_detector_node',
+    text: '手势识别',
+    cmd: `${prefix} roslaunch pi_ai hand_detector_node.launch" `,
+    auto_start: true
+  },
+  '/ubiquityrobot/pose_estimator_node': {
+    name: 'pose_estimator_node',
+    text: '姿态估计',
+    cmd: `${prefix} roslaunch pi_ai pose_estimator_node.launch" `,
+    auto_start: true
+  },
   '/ubiquityrobot/joystick_node': {
     name: 'joystick_node',
     text: '游戏手柄',

@@ -58,6 +58,7 @@ angular.module('myApp.explore', ['ngRoute'])
                         var extName = splitNames[len - 1].toLowerCase()
                         switch (extName) {
                             case 'mp3':
+                            case 'flac':
                             case 'ogg':
                             case 'oga':
                             case 'wav':

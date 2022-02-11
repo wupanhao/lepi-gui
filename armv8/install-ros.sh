@@ -15,4 +15,4 @@ wstool init src noetic-custom_ros.rosinstall
 #wstool update -j4 -t src
 rosdep install -y --from-paths src --ignore-src --rosdistro noetic --skip-keys="python3-catkin-pkg-modules python3-rosdep-modules"  -r --os=debian:bullseye
 sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/noetic
-echo "source ~/workspace/lepi-gui/armv8/env.sh" >> ~/nodejs.sh
+#echo "source ~/env.sh" >> ~/nodejs.sh

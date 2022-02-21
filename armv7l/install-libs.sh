@@ -45,6 +45,7 @@ sudo apt install mpg123 python3-pyaudio
 sudo apt install -y konsole xdotool
 
 # pi robot
+mkdir ~/Lepi_Data
 ln -s /home/pi/workspace/lepi-ros-server/catkin_ws/src/pi_robot/include/hexapod_controller ~/Lepi_Data
 ln -s /home/pi/workspace/lepi-ros-server/catkin_ws/src/pi_robot/include/pupper_controller ~/Lepi_Data
 pip install transforms3d flask-cors

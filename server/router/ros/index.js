@@ -51,7 +51,7 @@ const rosnodes = {
   '/ubiquityrobot/text_recognizer_node': {
     name: 'text_recognizer_node',
     text: '文本识别',
-    cmd: `${prefix} roslaunch pi_cam text_recognizer_node.launch" `,
+    cmd: `${prefix} roslaunch pi_ai text_recognizer_node.launch" `,
     auto_start: true
   },
   '/ubiquityrobot/image_processor_node': {

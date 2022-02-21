@@ -1,5 +1,7 @@
 #/bin/bash
 #/home/pi/start.sh
+sleep 5
+sudo dtoverlay seeed-2mic-voicecard
 if [ "$DISPLAY" == ":0.0" ]; then
     echo "DISPLAY=$DISPLAY"
 else

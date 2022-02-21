@@ -2,7 +2,8 @@
 #/home/pi/start.sh
 #docker start demo_duck > /home/pi/demo_duck.log
 #docker exec -t  demo_duck bash -c "source /demo_duck/env.sh && roslaunch duckietown_demos duck_service.launch"  > /tmp/duckie.log
-#sleep 5
+sleep 5
+sudo dtoverlay seeed-2mic-voicecard
 if [ "$DISPLAY" == ":0.0" ]; then
     echo "DISPLAY=$DISPLAY"
 else

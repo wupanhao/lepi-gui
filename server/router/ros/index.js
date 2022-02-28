@@ -60,12 +60,14 @@ const rosnodes = {
     cmd: `${prefix} roslaunch pi_cam image_processor_node.launch" `,
     auto_start: true
   },
+  /*
   '/ubiquityrobot/smart_audio_node': {
     name: 'smart_audio_node',
     text: '智能语音',
     cmd: `${prefix} DISPLAY=:0 roslaunch pi_ai smart_audio_node.launch" `,
     auto_start: true
   },
+  */
   '/ubiquityrobot/object_detector_node': {
     name: 'object_detector_node',
     text: '目标检测',

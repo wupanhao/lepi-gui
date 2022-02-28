@@ -109,7 +109,7 @@ getDeviceInfo().then(info => {
 
 function stopAll() {
 	file_name = path.join(__dirname, 'stopMotors.py')
-	// ChildProcess.exec(`DISPLAY=:0.1 xdotool mousemove --screen 0  120 300 ; sudo killall konsole;python ${file_name}`)
+	// ChildProcess.exec(`xdotool mousemove --screen 0  120 300 ; sudo killall konsole;python ${file_name}`)
 	ChildProcess.exec(`python ${file_name}`)
 }
 
@@ -119,7 +119,7 @@ function executeTerminal(file) {
 	var extname = path.extname(file)
 	var dir = path.dirname(file)
 	var filename = path.basename(file)
-	var cmd = `DISPLAY=:0.1 konsole --hide-menubar -p TerminalRows=19 -p TerminalColumns=34 -e bash -c "xdotool mousemove --screen 1  120 300 click 1 ; cd ${dir} && `
+	var cmd = `konsole --hide-menubar --fullscreen -e bash -c " cd ${dir} && `
 	// var cmd = 'x-terminal-emulator'
 	if (extname == '.py') {
 		param = `python ${filename};bash"`
@@ -173,7 +173,7 @@ router.get('/openTerminal', function (req, res) {
 router.get('/closeTerminal', function (req, res) {
 	console.log(req.query)
 	try {
-		ChildProcess.execSync(`DISPLAY=:0.1 xdotool mousemove --screen 1  120 300 click 1; sudo killall konsole `)
+		ChildProcess.execSync(`sudo killall konsole `)
 	} catch (error) {
 		console.log(error)
 	}
@@ -191,7 +191,7 @@ router.get('/inputString', (req, res) => {
 	}
 	const enter = req.query.enter
 
-	var cmd = `export DISPLAY=:0.1 && xdotool type '${input}'`
+	var cmd = `xdotool type '${input}'`
 	if (enter)
 		cmd = cmd + ' && xdotool key Return'
 	console.log(cmd)
@@ -209,7 +209,7 @@ router.get('/inputString', (req, res) => {
 router.get('/inputKey', (req, res) => {
 	console.log(req.query)
 	var keys = Object.keys(req.query).join('+')
-	var cmd = `export DISPLAY=:0.1 && xdotool key ${keys}`
+	var cmd = `xdotool key ${keys}`
 	console.log(cmd)
 	ChildProcess.exec(cmd, (error, stdout, stderr) => {
 		if (error || stderr) {
@@ -240,7 +240,7 @@ router.get('/halt', function (req, res) {
 		status: 'ok'
 	})
 	ChildProcess.exec("rosnode kill -a", () => {
-		ChildProcess.exec("sudo halt")
+		ChildProcess.exec("sudo halt -p")
 	})
 })
 router.get('/reboot', function (req, res) {
@@ -389,7 +389,7 @@ EndSection
 
 router.get('/calibrate', function (req, res) {
 	try {
-		let buf = ChildProcess.execSync('sudo killall xinput_calibrator; DISPLAY=:0.1 xinput_calibrator')
+		let buf = ChildProcess.execSync('sudo killall xinput_calibrator; xinput_calibrator')
 		let out = buf.toString()
 		let result = out.match(/Option	"Calibration"	"(\d+) (\d+) (\d+) (\d+)"/)
 		if (result.length == 5) {

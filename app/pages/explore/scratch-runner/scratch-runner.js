@@ -34,7 +34,7 @@ class Runner {
       });
       setTimeout(function () {
         swal.close()
-      }, 500);
+      }, 1000);
       // vm.greenFlag();
       const monitors = vm.runtime.getMonitorState()._list
       for (let i = 0; i < monitors.size; i++) {

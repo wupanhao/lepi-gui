@@ -223,6 +223,7 @@ angular.module('myApp', [
             35: '热释',
         }
 
+
         // if (navigator.platform.includes('arm')) {
         // navigator.platform: "Linux armv7l"
         swal.fire({
@@ -259,40 +260,42 @@ angular.module('myApp', [
         var onConnected = () => {
             console.log('connected to ros ', $rootScope.ros)
             window.ros = $rootScope.ros
-            $rootScope.hardware_model = {}
-            $rootScope.updatePowerInfo()
 
-            swal.fire({
-                title: "启动完毕",
-                text: "可以开始你的创作了",
-
-                timer: 1000,
-            });
-            // setTimeout(swal.fire.close, 1000)
-
-            var sensorListener = new ROSLIB.Topic({
-                ros: $rootScope.ros.ros,
-                name: '/ubiquityrobot/pi_driver_node/sensor_status_change',
-                messageType: 'pi_driver/SensorStatusChange'
+            let reloaded = new ROSLIB.Param({
+                ros: window.ros.ros,
+                name: 'reloaded'
             });
 
-            sensorListener.subscribe(onSensorChange)
+            reloaded.get(value => {
+                console.log('reloaded', value)
+                if (value) {
+                    $rootScope.hardware_model = {}
+                    $rootScope.updatePowerInfo()
 
+                    swal.fire({
+                        title: "启动完毕",
+                        text: "可以开始你的创作了",
 
-            if (window.location.hostname == 'localhost') {
-                /*
-                let joyListener = new ROSLIB.Topic({
-                    ros: $rootScope.ros.ros,
-                    name: '/ubiquityrobot/joystick_node/joy_state',
-                    messageType: 'std_msgs/String'
-                });
-                window.joyController = new JoystickController()
-                joyListener.subscribe((msg) => {
-                    window.joyController.onJoyMessage(msg)
-                })
-                */
-                window.logPowerState = false
-            }
+                        timer: 1000,
+                    });
+                    // setTimeout(swal.fire.close, 1000)
+
+                    var sensorListener = new ROSLIB.Topic({
+                        ros: $rootScope.ros.ros,
+                        name: '/ubiquityrobot/pi_driver_node/sensor_status_change',
+                        messageType: 'pi_driver/SensorStatusChange'
+                    });
+
+                    sensorListener.subscribe(onSensorChange)
+
+                    if (window.location.hostname == 'localhost') {
+                        window.logPowerState = false
+                    }
+                } else {
+                    reloaded.set(true)
+                    window.location.reload(true);
+                }
+            })
 
         }
 
@@ -381,7 +384,7 @@ angular.module('myApp', [
             }
         }
 
-        $http.get('/system/hardware_model').then(res => {
+        $http.get('/system/hardware_model').then(async (res) => {
             console.log(res.data)
             let hardware_model = res.data
             $rootScope.hardware_model = hardware_model
@@ -396,6 +399,19 @@ angular.module('myApp', [
                 }
                 handler = btnHandler2
             }
+
+            let rsp = await $http.get('/system/deviceInfo')
+            let size = parseInt(rsp.data.disk.total)
+            if (size < 20) {
+                swal.fire({
+                    title: "首次运行需要重新调整分区",
+                    text: "等待重新启动",
+                });
+                await $http.get('/system/expand_rootfs')
+                await $http.get('/system/reboot')
+                return
+            }
+
 
             $rootScope.ros = new ros_client($location.host(), handler)
             window.ros = $rootScope.ros

@@ -173,7 +173,7 @@ router.get('/openTerminal', function (req, res) {
 router.get('/closeTerminal', function (req, res) {
 	console.log(req.query)
 	try {
-		ChildProcess.execSync(`sudo killall konsole `)
+		ChildProcess.execSync(`sudo killall konsole; xdotool mousemove 120 300 click 1`)
 	} catch (error) {
 		console.log(error)
 	}
@@ -181,6 +181,7 @@ router.get('/closeTerminal', function (req, res) {
 		status: 'ok',
 		msg: 'terminal is close'
 	})
+	// ChildProcess.execSync(`xdotool mousemove 120 300 click 1`)
 })
 
 router.get('/inputString', (req, res) => {

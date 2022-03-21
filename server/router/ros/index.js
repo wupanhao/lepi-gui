@@ -110,6 +110,12 @@ const rosnodes = {
     cmd: `${prefix} roslaunch pi_robot hexapod_driver_node.launch" `,
     auto_start: false
   },
+  '/rosbridge_websocket': {
+    name: 'rosbridge_websocket',
+    text: 'Scratch3.0',
+    cmd: `${prefix} roslaunch rosbridge_server rosbridge_websocket.launch" `,
+    auto_start: false
+  },
 }
 const availableNode = Object.keys(rosnodes)
 

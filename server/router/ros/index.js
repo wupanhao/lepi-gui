@@ -92,6 +92,12 @@ const rosnodes = {
     cmd: `${prefix} roslaunch pi_ai pose_estimator_node.launch" `,
     auto_start: true
   },
+  '/ubiquityrobot/movenet_pose_node': {
+    name: 'movenet_pose_node',
+    text: '姿态估计(快速)',
+    cmd: `${prefix} roslaunch pi_ai movenet_pose_node.launch" `,
+    auto_start: true
+  },
   '/ubiquityrobot/joystick_node': {
     name: 'joystick_node',
     text: '游戏手柄',
@@ -114,7 +120,7 @@ const rosnodes = {
     name: 'rosbridge_websocket',
     text: 'Scratch3.0',
     cmd: `${prefix} roslaunch rosbridge_server rosbridge_websocket.launch" `,
-    auto_start: false
+    auto_start: true
   },
 }
 const availableNode = Object.keys(rosnodes)

@@ -38,6 +38,11 @@ sudo apt install -y tesseract-ocr tesseract-ocr-chi-sim tesseract-ocr-chi-tra
 # smart audio node
 sudo apt install mpg123 python3-pyaudio
 
+# bluetooth node (not use for now)
+# pip install pybleno pyroute2
+# sudo setcap cap_net_raw+eip $(eval readlink -f `which python`)
+# sudo setcap cap_net_raw+eip $(eval readlink -f `which python3`)
+
 # run python and emulate input
 sudo apt install -y konsole xdotool
 
